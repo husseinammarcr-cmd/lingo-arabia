@@ -4,6 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CheckCircle, XCircle, Lightbulb, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AudioButton } from '@/components/AudioButton';
+import { useSpeech } from '@/hooks/useSpeech';
 
 export type ExerciseType = 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching';
 
@@ -32,6 +34,31 @@ interface ExerciseRendererProps {
   onAnswer: (isCorrect: boolean) => void;
   disabled?: boolean;
 }
+
+// Listening button component with speech synthesis
+const ListeningButton = ({ text, disabled }: { text: string; disabled: boolean }) => {
+  const { speak, isSupported } = useSpeech();
+
+  const handleListen = () => {
+    if (text) {
+      speak(text);
+    }
+  };
+
+  return (
+    <Button
+      type="button"
+      variant="secondary"
+      size="lg"
+      className="w-full h-20"
+      onClick={handleListen}
+      disabled={disabled || !isSupported}
+    >
+      <Volume2 className="w-8 h-8 ml-3" />
+      <span>استمع</span>
+    </Button>
+  );
+};
 
 export const ExerciseRenderer = ({
   type,
@@ -283,18 +310,7 @@ export const ExerciseRenderer = ({
       case 'listening':
         return (
           <div className="space-y-4">
-            <Button
-              type="button"
-              variant="secondary"
-              size="lg"
-              className="w-full h-20"
-              onClick={() => {
-                console.log('Play audio');
-              }}
-            >
-              <Volume2 className="w-8 h-8 ml-3" />
-              <span>استمع</span>
-            </Button>
+            <ListeningButton text={data.answer || ''} disabled={answered || disabled} />
             <Input
               value={textAnswer}
               onChange={(e) => setTextAnswer(e.target.value)}
@@ -396,7 +412,10 @@ export const ExerciseRenderer = ({
         <CardContent className="p-6">
           <h2 className="text-xl font-bold mb-2">{promptAr}</h2>
           {promptEn && (
-            <p className="text-muted-foreground ltr-text">{promptEn}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-muted-foreground ltr-text">{promptEn}</p>
+              <AudioButton text={promptEn} size="sm" className="text-muted-foreground" />
+            </div>
           )}
         </CardContent>
       </Card>
