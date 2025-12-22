@@ -135,11 +135,46 @@ export type Database = {
           },
         ]
       }
+      placement_tests: {
+        Row: {
+          answers_json: Json
+          breakdown_json: Json | null
+          created_at: string
+          id: string
+          score: number
+          suggested_level: string
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          answers_json?: Json
+          breakdown_json?: Json | null
+          created_at?: string
+          id?: string
+          score: number
+          suggested_level: string
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          answers_json?: Json
+          breakdown_json?: Json | null
+          created_at?: string
+          id?: string
+          score?: number
+          suggested_level?: string
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
+          current_level: string | null
           daily_goal: Database["public"]["Enums"]["daily_goal"] | null
           email: string | null
+          has_taken_placement: boolean | null
           id: string
           interests: string[] | null
           is_premium: boolean | null
@@ -147,14 +182,19 @@ export type Database = {
           level: Database["public"]["Enums"]["user_level"] | null
           name: string | null
           onboarding_completed: boolean | null
+          placement_level: string | null
+          placement_score: number | null
+          placement_taken_at: string | null
           streak_count: number | null
           updated_at: string | null
           xp: number | null
         }
         Insert: {
           created_at?: string | null
+          current_level?: string | null
           daily_goal?: Database["public"]["Enums"]["daily_goal"] | null
           email?: string | null
+          has_taken_placement?: boolean | null
           id: string
           interests?: string[] | null
           is_premium?: boolean | null
@@ -162,14 +202,19 @@ export type Database = {
           level?: Database["public"]["Enums"]["user_level"] | null
           name?: string | null
           onboarding_completed?: boolean | null
+          placement_level?: string | null
+          placement_score?: number | null
+          placement_taken_at?: string | null
           streak_count?: number | null
           updated_at?: string | null
           xp?: number | null
         }
         Update: {
           created_at?: string | null
+          current_level?: string | null
           daily_goal?: Database["public"]["Enums"]["daily_goal"] | null
           email?: string | null
+          has_taken_placement?: boolean | null
           id?: string
           interests?: string[] | null
           is_premium?: boolean | null
@@ -177,6 +222,9 @@ export type Database = {
           level?: Database["public"]["Enums"]["user_level"] | null
           name?: string | null
           onboarding_completed?: boolean | null
+          placement_level?: string | null
+          placement_score?: number | null
+          placement_taken_at?: string | null
           streak_count?: number | null
           updated_at?: string | null
           xp?: number | null

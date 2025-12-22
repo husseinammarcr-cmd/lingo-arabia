@@ -15,6 +15,9 @@ import LessonPlayer from "./pages/LessonPlayer";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
+import PlacementTest from "./pages/PlacementTest";
+import PlacementTestStart from "./pages/PlacementTestStart";
+import PlacementTestResult from "./pages/PlacementTestResult";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +40,9 @@ const App = () => (
               <Route path="/courses/:level" element={<CourseLevel />} />
               <Route path="/courses/:level/:unit" element={<CourseUnit />} />
               <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
+              <Route path="/placement-test" element={<PlacementTest />} />
+              <Route path="/placement-test/start" element={<PlacementTestStart />} />
+              <Route path="/placement-test/result" element={<PlacementTestResult />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/premium" element={<Premium />} />

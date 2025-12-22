@@ -14,6 +14,11 @@ interface Profile {
   is_premium: boolean;
   interests: string[] | null;
   onboarding_completed: boolean;
+  current_level: string | null;
+  placement_level: string | null;
+  placement_score: number | null;
+  has_taken_placement: boolean;
+  placement_taken_at: string | null;
 }
 
 interface AuthContextType {

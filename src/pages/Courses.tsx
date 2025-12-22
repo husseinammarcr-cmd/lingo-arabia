@@ -87,6 +87,24 @@ const Courses = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 max-w-4xl">
+        {/* Placement Test Banner */}
+        {!profile?.has_taken_placement && (
+          <Card className="mb-6 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/placement-test')}>
+            <CardContent className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <div className="font-bold text-foreground">اختبار تحديد المستوى</div>
+                  <div className="text-sm text-muted-foreground">اكتشف مستواك وابدأ من المكان المناسب</div>
+                </div>
+              </div>
+              <ChevronLeft className="w-5 h-5 text-primary" />
+            </CardContent>
+          </Card>
+        )}
+
         {/* Page Title */}
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-2">مستويات التعلم</h2>
