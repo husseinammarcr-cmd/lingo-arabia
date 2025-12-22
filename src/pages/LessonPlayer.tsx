@@ -6,18 +6,21 @@ import { ExerciseRenderer } from '@/components/ExerciseRenderer';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
-import { X, Heart, Star, ChevronRight, Trophy } from 'lucide-react';
+import { X, Heart, Star, ChevronRight, Trophy, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 
 const LessonPlayer = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { user, isLoading } = useAuth();
+  const updateProgress = useUpdateProgress();
   
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [hearts, setHearts] = useState(5);
   const [xpEarned, setXpEarned] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const lessonData = getLessonById(lessonId || '');
   const exercises = lessonData?.lesson.hasRealExercises ? A1_UNIT1_LESSON1_EXERCISES : [];
@@ -27,6 +30,24 @@ const LessonPlayer = () => {
       navigate('/auth');
     }
   }, [user, isLoading, navigate]);
+
+  // Save progress when lesson completes
+  useEffect(() => {
+    if (isComplete && lessonId && lessonData && !isSaving) {
+      setIsSaving(true);
+      const totalXp = xpEarned + lessonData.lesson.xpReward;
+      
+      updateProgress.mutate({
+        lessonId,
+        completed: true,
+        score: Math.round((xpEarned / (exercises.length * 5)) * 100),
+        heartsRemaining: hearts,
+        xpEarned: totalXp
+      }, {
+        onSettled: () => setIsSaving(false)
+      });
+    }
+  }, [isComplete]);
 
   if (isLoading) {
     return (
@@ -88,7 +109,18 @@ const LessonPlayer = () => {
     }, 1500);
   };
 
+  const handleContinue = () => {
+    const nextLessonId = getNextLesson(lessonId || '');
+    if (nextLessonId) {
+      navigate(`/lesson/${nextLessonId}`);
+    } else {
+      navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`);
+    }
+  };
+
   if (isComplete) {
+    const totalXp = xpEarned + lessonData.lesson.xpReward;
+    
     return (
       <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center" dir="rtl">
         <div className="text-center max-w-md mx-auto px-4">
@@ -104,7 +136,7 @@ const LessonPlayer = () => {
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 text-xp text-2xl font-bold">
                     <Star className="w-6 h-6 fill-current" />
-                    <span>+{xpEarned}</span>
+                    <span>+{totalXp}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">نقاط XP</p>
                 </div>
@@ -119,8 +151,20 @@ const LessonPlayer = () => {
             </CardContent>
           </Card>
 
-          <Button variant="hero" size="xl" onClick={() => navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`)}>
-            متابعة
+          <Button 
+            variant="hero" 
+            size="xl" 
+            onClick={handleContinue}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                جاري الحفظ...
+              </>
+            ) : (
+              'متابعة'
+            )}
           </Button>
         </div>
       </div>
