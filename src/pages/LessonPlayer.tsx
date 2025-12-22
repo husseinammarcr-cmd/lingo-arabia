@@ -7,7 +7,8 @@ import { ExerciseRenderer } from '@/components/ExerciseRenderer';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
-import { X, Heart, Star, ChevronRight, Trophy, Loader2, BookOpen, Dumbbell, ClipboardCheck, Volume2, ChevronLeft } from 'lucide-react';
+import { X, Heart, Star, ChevronRight, Trophy, Loader2, BookOpen, Dumbbell, ClipboardCheck, ChevronLeft } from 'lucide-react';
+import { AudioButton } from '@/components/AudioButton';
 import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 import { useEvaluateAchievements } from '@/hooks/useEvaluateAchievements';
@@ -520,28 +521,48 @@ const LessonPlayer = () => {
           <CardContent className="p-8 text-center">
             {isVocab ? (
               <>
-                <p className="text-4xl font-bold text-primary mb-4 ltr-text">
-                  {(item as VocabItem).english}
-                </p>
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <p className="text-4xl font-bold text-primary ltr-text">
+                    {(item as VocabItem).english}
+                  </p>
+                  <AudioButton 
+                    text={(item as VocabItem).english} 
+                    size="lg"
+                    variant="secondary"
+                    className="text-primary"
+                  />
+                </div>
                 <p className="text-2xl text-foreground mb-4">{(item as VocabItem).arabic}</p>
                 {(item as VocabItem).example && (
                   <div className="mt-6 p-4 bg-background/50 rounded-lg">
-                    <p className="text-lg text-muted-foreground ltr-text">{(item as VocabItem).example}</p>
+                    <div className="flex items-center justify-center gap-2">
+                      <p className="text-lg text-muted-foreground ltr-text">{(item as VocabItem).example}</p>
+                      <AudioButton 
+                        text={(item as VocabItem).example || ''} 
+                        size="sm"
+                        className="text-muted-foreground"
+                      />
+                    </div>
                     <p className="text-sm text-muted-foreground mt-1">{(item as VocabItem).exampleAr}</p>
                   </div>
                 )}
               </>
             ) : (
               <>
-                <p className="text-2xl font-bold text-primary mb-4 ltr-text">
-                  {(item as SentenceItem).english}
-                </p>
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <p className="text-2xl font-bold text-primary ltr-text">
+                    {(item as SentenceItem).english}
+                  </p>
+                  <AudioButton 
+                    text={(item as SentenceItem).english} 
+                    size="lg"
+                    variant="secondary"
+                    className="text-primary"
+                  />
+                </div>
                 <p className="text-xl text-foreground">{(item as SentenceItem).arabic}</p>
               </>
             )}
-            <Button type="button" variant="ghost" size="icon" className="mt-4">
-              <Volume2 className="w-6 h-6" />
-            </Button>
           </CardContent>
         </Card>
         
