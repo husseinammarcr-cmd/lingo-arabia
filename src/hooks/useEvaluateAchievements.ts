@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 interface AchievementCondition {
-  type: 'xp_reached' | 'streak_reached' | 'lessons_completed' | 'first_lesson' | 'unit_completed' | 'level_completed';
+  type: 'xp_reached' | 'streak_reached' | 'lessons_completed' | 'first_lesson' | 'unit_completed' | 'level_completed' | 'perfect_lesson';
   value?: number;
   level?: string;
 }
@@ -20,13 +20,14 @@ interface Achievement {
 }
 
 export const useEvaluateAchievements = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const queryClient = useQueryClient();
 
   const evaluateAchievements = useCallback(async (stats?: {
     lessonsCompleted?: number;
     unitsCompleted?: string[];
     levelsCompleted?: string[];
+    perfectLesson?: boolean;
   }) => {
     if (!user || !profile) {
       console.log('[Achievements] No user or profile, skipping evaluation');
@@ -114,6 +115,10 @@ export const useEvaluateAchievements = () => {
 
           case 'level_completed':
             earned = stats?.levelsCompleted?.includes(condition.level || '') || false;
+            break;
+
+          case 'perfect_lesson':
+            earned = stats?.perfectLesson === true;
             break;
         }
 
