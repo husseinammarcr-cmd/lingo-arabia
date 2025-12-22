@@ -16,6 +16,7 @@ import {
   Share2
 } from 'lucide-react';
 import PageBackground from '@/components/PageBackground';
+import Header from '@/components/Header';
 import { getLevelRecommendation, getLevelDescription } from '@/lib/placementQuestions';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
@@ -101,14 +102,7 @@ const PlacementTestResult = () => {
     <PageBackground>
       <div className="min-h-screen" dir="rtl">
         {/* Header */}
-        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-          <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-            <h1 className="text-xl font-bold text-primary">LingoArab</h1>
-            <Button variant="ghost" size="icon" onClick={handleShare}>
-              <Share2 className="w-5 h-5" />
-            </Button>
-          </div>
-        </header>
+        <Header />
 
         <main className="container mx-auto px-4 py-8 max-w-2xl">
           {/* Congratulations */}

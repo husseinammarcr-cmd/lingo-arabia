@@ -1,12 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
   ChevronLeft, 
-  Moon, 
-  Sun, 
   Clock, 
   Target, 
   Award,
@@ -14,19 +11,18 @@ import {
   BookOpen
 } from 'lucide-react';
 import PageBackground from '@/components/PageBackground';
+import Header from '@/components/Header';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 const PlacementTest = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [lastTestDate, setLastTestDate] = useState<Date | null>(null);
   const [canRetake, setCanRetake] = useState(true);
 
   useEffect(() => {
     if (!isLoading && !user) {
-      // Redirect to auth with returnUrl
       navigate('/auth?returnUrl=/placement-test');
     }
   }, [user, isLoading, navigate]);
@@ -72,19 +68,7 @@ const PlacementTest = () => {
     <PageBackground>
       <div dir="rtl" className="min-h-screen">
         {/* Header */}
-        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-          <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
-                <ChevronLeft className="w-5 h-5 rotate-180" />
-              </Button>
-              <h1 className="text-xl font-bold text-primary">LingoArab</h1>
-            </div>
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </Button>
-          </div>
-        </header>
+        <Header showBack />
 
         <main className="container mx-auto px-4 py-8 max-w-2xl">
           {/* Hero */}
