@@ -17,8 +17,8 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-4 py-4 md:py-3 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border overflow-visible">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {showBack && (
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
@@ -29,7 +29,7 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
             <img 
               src={logo} 
               alt="LingoArab Logo" 
-              className="h-16 sm:h-14 md:h-11 w-auto"
+              className="h-16 sm:h-14 md:h-10 w-auto -my-3 md:-my-1"
             />
           </a>
         </div>
