@@ -25,11 +25,11 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
               <ChevronLeft className="w-5 h-5 rotate-180" />
             </Button>
           )}
-          <a href="/" className="flex items-center">
+          <a href="/" className="flex items-center flex-shrink-0">
             <img 
               src={logo} 
               alt="LingoArab Logo" 
-              className="h-8 md:h-10 w-auto"
+              className="h-12 md:h-10 w-auto"
             />
           </a>
         </div>
