@@ -314,7 +314,7 @@ const LessonPlayer = () => {
     const exercise = lessonContent.exercises[practiceIndex];
     return (
       <ExerciseRenderer
-        type={exercise.type}
+        type={exercise.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
         promptAr={exercise.promptAr}
         promptEn={exercise.promptEn}
         data={{
@@ -325,6 +325,7 @@ const LessonPlayer = () => {
           words: exercise.data.words,
           correct_order: exercise.data.correctOrder,
           hint_ar: exercise.data.hint,
+          pairs: exercise.data.pairs,
         }}
         onAnswer={handlePracticeAnswer}
       />
@@ -336,7 +337,7 @@ const LessonPlayer = () => {
     const quiz = lessonContent.quiz[quizIndex];
     return (
       <ExerciseRenderer
-        type={quiz.type}
+        type={quiz.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
         promptAr={quiz.promptAr}
         promptEn={quiz.promptEn}
         data={{
@@ -347,6 +348,7 @@ const LessonPlayer = () => {
           words: quiz.data.words,
           correct_order: quiz.data.correctOrder,
           hint_ar: quiz.data.hint,
+          pairs: quiz.data.pairs,
         }}
         onAnswer={handleQuizAnswer}
       />
