@@ -37,11 +37,14 @@ interface ExerciseRendererProps {
 
 // Listening button component with speech synthesis
 const ListeningButton = ({ text, disabled }: { text: string; disabled: boolean }) => {
-  const { speak, isSupported } = useSpeech();
+  const { speak, isSupported, voiceCount } = useSpeech();
 
   const handleListen = () => {
-    if (text) {
-      speak(text);
+    const cleanText = (text || '').trim();
+    console.log('[ListeningButton] Clicked, text:', cleanText, 'voices:', voiceCount);
+    
+    if (cleanText) {
+      speak(cleanText);
     }
   };
 
@@ -55,7 +58,7 @@ const ListeningButton = ({ text, disabled }: { text: string; disabled: boolean }
       disabled={disabled || !isSupported}
     >
       <Volume2 className="w-8 h-8 ml-3" />
-      <span>استمع</span>
+      <span>{isSupported ? 'استمع' : 'الصوت غير متاح'}</span>
     </Button>
   );
 };
