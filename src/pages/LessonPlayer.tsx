@@ -80,6 +80,8 @@ const LessonPlayer = () => {
   const [quizTotal, setQuizTotal] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const [hasSaved, setHasSaved] = useState(false);
 
   const lessonData = getLessonById(lessonId || '');
   const lessonContent = getLessonContent(lessonId || '');
@@ -128,12 +130,32 @@ const LessonPlayer = () => {
     }
   }, [user, isLoading, navigate]);
 
-  // Save to DB when lesson completes
+  // Calculate pass status
+  const calculatePassed = useCallback(() => {
+    if (!lessonContent || quizTotal === 0) return true;
+    return (quizScore / quizTotal) * 100 >= lessonContent.passingScore;
+  }, [lessonContent, quizScore, quizTotal]);
+
+  // Save to DB when lesson completes (only if passed)
   useEffect(() => {
-    if (isComplete && lessonId && lessonData && !isSaving) {
+    if (isComplete && lessonId && lessonData && !isSaving && !hasSaved) {
+      const passed = calculatePassed();
+      
+      // Only save completion if user passed
+      if (!passed) {
+        clearProgress();
+        return;
+      }
+      
       setIsSaving(true);
-      clearProgress(); // Clear localStorage on completion
+      setSaveError(false);
+      clearProgress();
+      
       const totalXp = xpEarned + lessonData.lesson.xpReward;
+      const saveTimeout = setTimeout(() => {
+        setIsSaving(false);
+        setSaveError(true);
+      }, 10000); // 10 second timeout
       
       updateProgress.mutate({
         lessonId,
@@ -142,10 +164,19 @@ const LessonPlayer = () => {
         heartsRemaining: hearts,
         xpEarned: totalXp
       }, {
-        onSettled: () => setIsSaving(false)
+        onSuccess: () => {
+          clearTimeout(saveTimeout);
+          setHasSaved(true);
+          setIsSaving(false);
+        },
+        onError: () => {
+          clearTimeout(saveTimeout);
+          setIsSaving(false);
+          setSaveError(true);
+        }
       });
     }
-  }, [isComplete, lessonId, lessonData, isSaving, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress]);
+  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed]);
 
   if (isLoading) {
     return (
@@ -208,6 +239,29 @@ const LessonPlayer = () => {
     }
   };
 
+  const handleRetry = () => {
+    // Reset quiz state for retry
+    setQuizIndex(0);
+    setQuizScore(0);
+    setHearts(5);
+    setIsComplete(false);
+    setHasSaved(false);
+    setSaveError(false);
+    setSection('quiz');
+  };
+
+  const handleBackToUnit = () => {
+    clearProgress();
+    navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`);
+  };
+
+  const handleRetrySave = () => {
+    setSaveError(false);
+    setHasSaved(false);
+    // Trigger save again by toggling states
+    setIsSaving(false);
+  };
+
   const handleLearnNext = () => {
     const totalLearnItems = lessonContent.vocab.length + lessonContent.sentences.length;
     if (learnIndex < totalLearnItems - 1) {
@@ -261,7 +315,8 @@ const LessonPlayer = () => {
   // Completion screen
   if (isComplete) {
     const totalXp = xpEarned + lessonData.lesson.xpReward;
-    const passed = lessonContent ? (quizScore / quizTotal) * 100 >= lessonContent.passingScore : true;
+    const passed = calculatePassed();
+    const scorePercent = quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 0;
     
     return (
       <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center" dir="rtl">
@@ -276,23 +331,31 @@ const LessonPlayer = () => {
             {passed ? 'أحسنت!' : 'حاول مرة أخرى'}
           </h2>
           <p className="text-muted-foreground mb-6">
-            {passed ? 'لقد أكملت الدرس بنجاح' : `تحتاج ${lessonContent.passingScore}% للنجاح`}
+            {passed 
+              ? 'لقد أكملت الدرس بنجاح' 
+              : `حصلت على ${scorePercent}% - تحتاج ${lessonContent?.passingScore || 70}% للنجاح`}
           </p>
           
           <Card className="mb-6">
             <CardContent className="p-6">
               <div className="flex justify-around">
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 text-xp text-2xl font-bold">
-                    <Star className="w-6 h-6 fill-current" />
-                    <span>+{totalXp}</span>
+                  <div className={cn(
+                    "flex items-center justify-center gap-1 text-2xl font-bold",
+                    passed ? "text-xp" : "text-muted-foreground"
+                  )}>
+                    <Star className={cn("w-6 h-6", passed && "fill-current")} />
+                    <span>{passed ? `+${totalXp}` : '0'}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">نقاط XP</p>
                 </div>
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 text-primary text-2xl font-bold">
+                  <div className={cn(
+                    "flex items-center justify-center gap-1 text-2xl font-bold",
+                    passed ? "text-primary" : "text-destructive"
+                  )}>
                     <ClipboardCheck className="w-6 h-6" />
-                    <span>{quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 0}%</span>
+                    <span>{scorePercent}%</span>
                   </div>
                   <p className="text-sm text-muted-foreground">نتيجة الاختبار</p>
                 </div>
@@ -307,22 +370,81 @@ const LessonPlayer = () => {
             </CardContent>
           </Card>
 
-          <Button 
-            type="button"
-            variant="hero" 
-            size="xl" 
-            onClick={handleContinue}
-            disabled={isSaving}
-          >
-            {isSaving ? (
+          {/* Error state */}
+          {saveError && (
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
+              حدث خطأ في حفظ التقدم
+            </div>
+          )}
+
+          {/* Buttons based on state */}
+          <div className="space-y-3">
+            {passed ? (
               <>
-                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                جاري الحفظ...
+                {saveError ? (
+                  <div className="flex gap-2">
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      size="lg" 
+                      onClick={handleRetrySave}
+                      className="flex-1"
+                    >
+                      إعادة المحاولة
+                    </Button>
+                    <Button 
+                      type="button"
+                      variant="hero" 
+                      size="lg" 
+                      onClick={handleContinue}
+                      className="flex-1"
+                    >
+                      متابعة
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    type="button"
+                    variant="hero" 
+                    size="xl" 
+                    className="w-full"
+                    onClick={handleContinue}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                        جاري الحفظ...
+                      </>
+                    ) : (
+                      'متابعة'
+                    )}
+                  </Button>
+                )}
               </>
             ) : (
-              'متابعة'
+              <>
+                <Button 
+                  type="button"
+                  variant="hero" 
+                  size="xl" 
+                  className="w-full"
+                  onClick={handleRetry}
+                >
+                  حاول مرة أخرى
+                </Button>
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  size="lg" 
+                  className="w-full"
+                  onClick={handleBackToUnit}
+                >
+                  العودة للوحدة
+                </Button>
+              </>
             )}
-          </Button>
+          </div>
         </div>
       </div>
     );
