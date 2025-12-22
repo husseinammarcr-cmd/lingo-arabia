@@ -53,6 +53,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
+import PageBackground from '@/components/PageBackground';
 
 const iconMap: Record<string, React.ElementType> = {
   'hand-wave': HandMetal,
@@ -124,23 +125,26 @@ const CourseLevel = () => {
   // Level not found - show friendly empty state
   if (!level) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center" dir="rtl">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">المستوى غير موجود</h2>
-          <p className="text-muted-foreground mb-6">عذراً، لم نتمكن من العثور على هذا المستوى</p>
-          <Button onClick={() => navigate('/courses')}>
-            <ChevronRight className="w-4 h-4 ml-2" />
-            العودة للمستويات
-          </Button>
+      <PageBackground>
+        <div className="min-h-screen flex flex-col items-center justify-center" dir="rtl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-foreground mb-4">المستوى غير موجود</h2>
+            <p className="text-muted-foreground mb-6">عذراً، لم نتمكن من العثور على هذا المستوى</p>
+            <Button onClick={() => navigate('/courses')}>
+              <ChevronRight className="w-4 h-4 ml-2" />
+              العودة للمستويات
+            </Button>
+          </div>
         </div>
-      </div>
+      </PageBackground>
     );
   }
 
   const colors = levelColors[level.code] || levelColors['A1'];
 
   return (
-    <div className="min-h-screen bg-gradient-hero" dir="rtl">
+    <PageBackground>
+      <div dir="rtl">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -257,7 +261,8 @@ const CourseLevel = () => {
           })}
         </div>
       </main>
-    </div>
+      </div>
+    </PageBackground>
   );
 };
 

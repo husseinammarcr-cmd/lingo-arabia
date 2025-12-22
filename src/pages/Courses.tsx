@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
+import PageBackground from '@/components/PageBackground';
 
 const levelIcons: Record<string, React.ElementType> = {
   'A1': BookOpen,
@@ -56,7 +57,8 @@ const Courses = () => {
   const totalLessons = getTotalLessonsCount();
 
   return (
-    <div className="min-h-screen bg-gradient-hero" dir="rtl">
+    <PageBackground>
+      <div dir="rtl">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -149,7 +151,8 @@ const Courses = () => {
           })}
         </div>
       </main>
-    </div>
+      </div>
+    </PageBackground>
   );
 };
 
