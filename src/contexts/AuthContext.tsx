@@ -6,9 +6,14 @@ interface Profile {
   id: string;
   name: string | null;
   email: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
   level: 'beginner' | 'intermediate' | 'advanced';
   daily_goal: '5' | '10' | '15';
   xp: number;
+  weekly_xp: number;
+  monthly_xp: number;
+  user_level: number;
   streak_count: number;
   last_study_date: string | null;
   is_premium: boolean;
@@ -19,6 +24,7 @@ interface Profile {
   placement_score: number | null;
   has_taken_placement: boolean;
   placement_taken_at: string | null;
+  country_code: string | null;
 }
 
 interface AuthContextType {

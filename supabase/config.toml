@@ -1,1 +1,4 @@
 project_id = "qrbrilfuchxojsofzqwm"
+
+[functions.detect-country]
+verify_jwt = false
