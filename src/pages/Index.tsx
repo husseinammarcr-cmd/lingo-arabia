@@ -65,7 +65,7 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="xl"
-              onClick={() => navigate('/auth')}
+              onClick={() => navigate(user ? '/placement-test' : '/auth?returnUrl=/placement-test')}
               className="text-lg"
             >
               اختبار تحديد المستوى

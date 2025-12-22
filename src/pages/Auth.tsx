@@ -22,6 +22,10 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Get returnUrl from query params
+  const searchParams = new URLSearchParams(window.location.search);
+  const returnUrl = searchParams.get('returnUrl') || '/courses';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -41,7 +45,7 @@ const Auth = () => {
       if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) throw error;
-        navigate('/learn');
+        navigate(returnUrl);
       } else {
         const { error } = await signUp(email, password, name);
         if (error) throw error;
