@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { X, Heart, Star, ChevronRight, Trophy, Loader2, BookOpen, Dumbbell, ClipboardCheck, Volume2, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
+import { useEvaluateAchievements } from '@/hooks/useEvaluateAchievements';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
@@ -60,8 +61,9 @@ const clearProgress = () => {
 const LessonPlayer = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, refreshProfile } = useAuth();
   const updateProgress = useUpdateProgress();
+  const { evaluateAchievements } = useEvaluateAchievements();
   
   // Use refs to track initialization
   const initializedRef = useRef(false);
@@ -164,10 +166,15 @@ const LessonPlayer = () => {
         heartsRemaining: hearts,
         xpEarned: totalXp
       }, {
-        onSuccess: () => {
+        onSuccess: async () => {
           clearTimeout(saveTimeout);
           setHasSaved(true);
           setIsSaving(false);
+          
+          // Refresh profile to get updated XP values, then evaluate achievements
+          await refreshProfile();
+          console.log('[LessonPlayer] Evaluating achievements after lesson completion');
+          await evaluateAchievements();
         },
         onError: () => {
           clearTimeout(saveTimeout);
@@ -176,7 +183,7 @@ const LessonPlayer = () => {
         }
       });
     }
-  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed]);
+  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements]);
 
   if (isLoading) {
     return (
