@@ -18,6 +18,8 @@ import Premium from "./pages/Premium";
 import PlacementTest from "./pages/PlacementTest";
 import PlacementTestStart from "./pages/PlacementTestStart";
 import PlacementTestResult from "./pages/PlacementTestResult";
+import LeaderboardPage from "./pages/LeaderboardPage";
+import ChallengesPage from "./pages/ChallengesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,8 @@ const App = () => (
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/premium" element={<Premium />} />
+              <Route path="/leaderboard" element={<LeaderboardPage />} />
+              <Route path="/challenges" element={<ChallengesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
