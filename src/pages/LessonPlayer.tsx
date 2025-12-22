@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLessonById } from '@/lib/curriculum';
-import { getLessonContent, LessonContent, VocabItem, SentenceItem, ExerciseItem, QuizItem } from '@/lib/a1-lessons';
+import { getLessonContent, VocabItem, SentenceItem } from '@/lib/a1-lessons';
 import { ExerciseRenderer } from '@/components/ExerciseRenderer';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -13,19 +13,70 @@ import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
+interface LessonProgress {
+  lessonId: string;
+  section: LessonSection;
+  learnIndex: number;
+  practiceIndex: number;
+  quizIndex: number;
+  hearts: number;
+  xpEarned: number;
+  quizScore: number;
+}
+
+const STORAGE_KEY = 'lesson_progress';
+
+const loadProgress = (lessonId: string): LessonProgress | null => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved) as LessonProgress;
+      if (data.lessonId === lessonId) {
+        return data;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load progress:', e);
+  }
+  return null;
+};
+
+const saveProgress = (progress: LessonProgress) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  } catch (e) {
+    console.error('Failed to save progress:', e);
+  }
+};
+
+const clearProgress = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {
+    console.error('Failed to clear progress:', e);
+  }
+};
+
 const LessonPlayer = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { user, isLoading } = useAuth();
   const updateProgress = useUpdateProgress();
   
-  const [section, setSection] = useState<LessonSection>('learn');
-  const [learnIndex, setLearnIndex] = useState(0);
-  const [practiceIndex, setPracticeIndex] = useState(0);
-  const [quizIndex, setQuizIndex] = useState(0);
-  const [hearts, setHearts] = useState(5);
-  const [xpEarned, setXpEarned] = useState(0);
-  const [quizScore, setQuizScore] = useState(0);
+  // Use refs to track initialization
+  const initializedRef = useRef(false);
+  const lessonIdRef = useRef(lessonId);
+  
+  // Load saved progress or use defaults
+  const savedProgress = lessonId ? loadProgress(lessonId) : null;
+  
+  const [section, setSection] = useState<LessonSection>(savedProgress?.section || 'learn');
+  const [learnIndex, setLearnIndex] = useState(savedProgress?.learnIndex || 0);
+  const [practiceIndex, setPracticeIndex] = useState(savedProgress?.practiceIndex || 0);
+  const [quizIndex, setQuizIndex] = useState(savedProgress?.quizIndex || 0);
+  const [hearts, setHearts] = useState(savedProgress?.hearts ?? 5);
+  const [xpEarned, setXpEarned] = useState(savedProgress?.xpEarned || 0);
+  const [quizScore, setQuizScore] = useState(savedProgress?.quizScore || 0);
   const [quizTotal, setQuizTotal] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -33,15 +84,55 @@ const LessonPlayer = () => {
   const lessonData = getLessonById(lessonId || '');
   const lessonContent = getLessonContent(lessonId || '');
 
+  // Save progress whenever state changes
+  useEffect(() => {
+    if (lessonId && !isComplete && initializedRef.current) {
+      saveProgress({
+        lessonId,
+        section,
+        learnIndex,
+        practiceIndex,
+        quizIndex,
+        hearts,
+        xpEarned,
+        quizScore
+      });
+    }
+  }, [lessonId, section, learnIndex, practiceIndex, quizIndex, hearts, xpEarned, quizScore, isComplete]);
+
+  // Mark as initialized after first render
+  useEffect(() => {
+    initializedRef.current = true;
+  }, []);
+
+  // Reset state if lessonId changes
+  useEffect(() => {
+    if (lessonId !== lessonIdRef.current) {
+      lessonIdRef.current = lessonId;
+      const newSavedProgress = lessonId ? loadProgress(lessonId) : null;
+      setSection(newSavedProgress?.section || 'learn');
+      setLearnIndex(newSavedProgress?.learnIndex || 0);
+      setPracticeIndex(newSavedProgress?.practiceIndex || 0);
+      setQuizIndex(newSavedProgress?.quizIndex || 0);
+      setHearts(newSavedProgress?.hearts ?? 5);
+      setXpEarned(newSavedProgress?.xpEarned || 0);
+      setQuizScore(newSavedProgress?.quizScore || 0);
+      setIsComplete(false);
+    }
+  }, [lessonId]);
+
+  // Auth redirect
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
     }
   }, [user, isLoading, navigate]);
 
+  // Save to DB when lesson completes
   useEffect(() => {
     if (isComplete && lessonId && lessonData && !isSaving) {
       setIsSaving(true);
+      clearProgress(); // Clear localStorage on completion
       const totalXp = xpEarned + lessonData.lesson.xpReward;
       
       updateProgress.mutate({
@@ -54,7 +145,7 @@ const LessonPlayer = () => {
         onSettled: () => setIsSaving(false)
       });
     }
-  }, [isComplete]);
+  }, [isComplete, lessonId, lessonData, isSaving, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress]);
 
   if (isLoading) {
     return (
@@ -69,7 +160,7 @@ const LessonPlayer = () => {
       <div className="min-h-screen bg-background flex flex-col items-center justify-center" dir="rtl">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground mb-4">الدرس غير موجود</h2>
-          <Button onClick={() => navigate('/courses')}>
+          <Button type="button" onClick={() => navigate('/courses')}>
             <ChevronRight className="w-4 h-4 ml-2" />
             العودة للمستويات
           </Button>
@@ -78,7 +169,6 @@ const LessonPlayer = () => {
     );
   }
 
-  // If no lesson content available, show coming soon
   if (!lessonContent) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center" dir="rtl">
@@ -88,7 +178,7 @@ const LessonPlayer = () => {
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">{lessonData.lesson.titleAr}</h2>
           <p className="text-muted-foreground mb-6">هذا الدرس قيد الإعداد. سيتم إضافة المحتوى قريباً!</p>
-          <Button onClick={() => navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`)}>
+          <Button type="button" onClick={() => navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`)}>
             <ChevronRight className="w-4 h-4 ml-2" />
             العودة للوحدة
           </Button>
@@ -109,6 +199,7 @@ const LessonPlayer = () => {
   };
 
   const handleContinue = () => {
+    clearProgress();
     const nextLessonId = getNextLesson(lessonId || '');
     if (nextLessonId) {
       navigate(`/lesson/${nextLessonId}`);
@@ -163,6 +254,10 @@ const LessonPlayer = () => {
     }, 1500);
   };
 
+  const handleClose = () => {
+    navigate(-1);
+  };
+
   // Completion screen
   if (isComplete) {
     const totalXp = xpEarned + lessonData.lesson.xpReward;
@@ -197,7 +292,7 @@ const LessonPlayer = () => {
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 text-primary text-2xl font-bold">
                     <ClipboardCheck className="w-6 h-6" />
-                    <span>{Math.round((quizScore / quizTotal) * 100)}%</span>
+                    <span>{quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 0}%</span>
                   </div>
                   <p className="text-sm text-muted-foreground">نتيجة الاختبار</p>
                 </div>
@@ -213,6 +308,7 @@ const LessonPlayer = () => {
           </Card>
 
           <Button 
+            type="button"
             variant="hero" 
             size="xl" 
             onClick={handleContinue}
@@ -231,6 +327,10 @@ const LessonPlayer = () => {
       </div>
     );
   }
+
+  // Generate stable keys for exercises
+  const practiceExerciseKey = `${lessonId}-practice-${practiceIndex}`;
+  const quizExerciseKey = `${lessonId}-quiz-${quizIndex}`;
 
   // Section tabs
   const renderSectionTabs = () => (
@@ -291,7 +391,7 @@ const LessonPlayer = () => {
                 <p className="text-xl text-foreground">{(item as SentenceItem).arabic}</p>
               </>
             )}
-            <Button variant="ghost" size="icon" className="mt-4">
+            <Button type="button" variant="ghost" size="icon" className="mt-4">
               <Volume2 className="w-6 h-6" />
             </Button>
           </CardContent>
@@ -301,7 +401,7 @@ const LessonPlayer = () => {
           {learnIndex + 1} / {lessonContent.vocab.length + lessonContent.sentences.length}
         </div>
 
-        <Button variant="hero" size="xl" className="w-full" onClick={handleLearnNext}>
+        <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleLearnNext}>
           {learnIndex < lessonContent.vocab.length + lessonContent.sentences.length - 1 ? 'التالي' : 'ابدأ التدريب'}
           <ChevronLeft className="w-5 h-5 mr-2" />
         </Button>
@@ -314,6 +414,7 @@ const LessonPlayer = () => {
     const exercise = lessonContent.exercises[practiceIndex];
     return (
       <ExerciseRenderer
+        key={practiceExerciseKey}
         type={exercise.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
         promptAr={exercise.promptAr}
         promptEn={exercise.promptEn}
@@ -337,6 +438,7 @@ const LessonPlayer = () => {
     const quiz = lessonContent.quiz[quizIndex];
     return (
       <ExerciseRenderer
+        key={quizExerciseKey}
         type={quiz.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
         promptAr={quiz.promptAr}
         promptEn={quiz.promptEn}
@@ -360,7 +462,7 @@ const LessonPlayer = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background border-b border-border px-4 py-3">
         <div className="flex items-center gap-4 max-w-2xl mx-auto">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button type="button" variant="ghost" size="icon" onClick={handleClose}>
             <X className="w-5 h-5" />
           </Button>
           

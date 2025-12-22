@@ -50,17 +50,13 @@ export const ExerciseRenderer = ({
   const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
   const [selectedEnglish, setSelectedEnglish] = useState<number | null>(null);
 
+  // Reset state only when the component is truly remounted via key change
+  // We no longer use dependencies that change on every render
   useEffect(() => {
-    // Reset state when exercise changes
-    setSelectedOption(null);
-    setTextAnswer('');
-    setReorderedWords([]);
-    setShowHint(false);
-    setAnswered(false);
-    setIsCorrect(false);
-    setMatchedPairs({});
-    setSelectedEnglish(null);
-  }, [type, promptAr, data]);
+    return () => {
+      // Cleanup on unmount
+    };
+  }, []);
 
   const checkAnswer = () => {
     let correct = false;
@@ -146,6 +142,7 @@ export const ExerciseRenderer = ({
             {data.options?.map((option, index) => (
               <Button
                 key={index}
+                type="button"
                 variant={
                   answered
                     ? index === data.correct
@@ -227,6 +224,7 @@ export const ExerciseRenderer = ({
                 reorderedWords.map((wordIndex, i) => (
                   <Button
                     key={i}
+                    type="button"
                     variant="default"
                     size="sm"
                     onClick={() => handleWordClick(wordIndex)}
@@ -244,6 +242,7 @@ export const ExerciseRenderer = ({
               {data.words?.map((word, index) => (
                 <Button
                   key={index}
+                  type="button"
                   variant={reorderedWords.includes(index) ? 'outline' : 'secondary'}
                   size="lg"
                   onClick={() => handleWordClick(index)}
@@ -285,11 +284,11 @@ export const ExerciseRenderer = ({
         return (
           <div className="space-y-4">
             <Button
+              type="button"
               variant="secondary"
               size="lg"
               className="w-full h-20"
               onClick={() => {
-                // Placeholder for audio playback
                 console.log('Play audio');
               }}
             >
@@ -323,6 +322,7 @@ export const ExerciseRenderer = ({
                   return (
                     <Button
                       key={index}
+                      type="button"
                       variant={isMatched ? 'success' : isSelected ? 'default' : 'secondary'}
                       className={cn(
                         "w-full justify-start ltr-text",
@@ -345,6 +345,7 @@ export const ExerciseRenderer = ({
                   return (
                     <Button
                       key={index}
+                      type="button"
                       variant={isMatched ? 'success' : 'secondary'}
                       className={cn(
                         "w-full justify-start",
@@ -420,6 +421,7 @@ export const ExerciseRenderer = ({
             </Card>
           ) : (
             <Button
+              type="button"
               variant="ghost"
               size="sm"
               onClick={() => setShowHint(true)}
@@ -435,6 +437,7 @@ export const ExerciseRenderer = ({
       {/* Submit button */}
       {!answered && (
         <Button
+          type="button"
           variant="hero"
           size="xl"
           className="w-full"
