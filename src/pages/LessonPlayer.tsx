@@ -229,7 +229,12 @@ const LessonPlayer = () => {
     }
   };
 
-  const handleContinue = () => {
+  const handleBackToLessons = () => {
+    clearProgress();
+    navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`);
+  };
+
+  const handleNextLesson = () => {
     clearProgress();
     const nextLessonId = getNextLesson(lessonId || '');
     if (nextLessonId) {
@@ -396,30 +401,44 @@ const LessonPlayer = () => {
                       type="button"
                       variant="hero" 
                       size="lg" 
-                      onClick={handleContinue}
+                      onClick={handleBackToLessons}
                       className="flex-1"
                     >
                       متابعة
                     </Button>
                   </div>
-                ) : (
+                ) : isSaving ? (
                   <Button 
                     type="button"
                     variant="hero" 
                     size="xl" 
                     className="w-full"
-                    onClick={handleContinue}
-                    disabled={isSaving}
+                    disabled
                   >
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                        جاري الحفظ...
-                      </>
-                    ) : (
-                      'متابعة'
-                    )}
+                    <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                    جاري الحفظ...
                   </Button>
+                ) : (
+                  <>
+                    <Button 
+                      type="button"
+                      variant="hero" 
+                      size="xl" 
+                      className="w-full"
+                      onClick={handleBackToLessons}
+                    >
+                      العودة إلى الدروس
+                    </Button>
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      size="lg" 
+                      className="w-full"
+                      onClick={handleNextLesson}
+                    >
+                      ابدأ الدرس التالي
+                    </Button>
+                  </>
                 )}
               </>
             ) : (
