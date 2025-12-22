@@ -73,6 +73,13 @@
     --gradient-hero: linear-gradient(180deg, hsl(168 40% 97%) 0%, hsl(168 30% 94%) 100%);
     --gradient-xp: linear-gradient(135deg, hsl(270 70% 55%), hsl(280 70% 65%));
     --gradient-streak: linear-gradient(135deg, hsl(25 95% 50%), hsl(35 95% 60%));
+    --gradient-sky: linear-gradient(180deg, hsl(195 85% 95%) 0%, hsl(195 75% 90%) 100%);
+    --gradient-turquoise: linear-gradient(135deg, hsl(180 70% 50%), hsl(195 80% 60%));
+
+    /* Feature card colors */
+    --feature-sky: 195 85% 95%;
+    --feature-sky-dark: 195 75% 88%;
+    --feature-turquoise: 180 70% 50%;
 
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(168 50% 20% / 0.08);
@@ -80,6 +87,7 @@
     --shadow-elevated: 0 8px 24px -6px hsl(168 50% 20% / 0.12);
     --shadow-glow: 0 0 20px hsl(168 76% 42% / 0.3);
     --shadow-accent-glow: 0 0 20px hsl(38 92% 55% / 0.4);
+    --shadow-feature: 0 8px 32px -8px hsl(195 70% 40% / 0.15);
   }
 
   .dark {
