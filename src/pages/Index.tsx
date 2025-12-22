@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { BookOpen, Star, Flame, Trophy, ChevronLeft, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
+import PageBackground from '@/components/PageBackground';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,7 +19,8 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-hero" dir="rtl">
+    <PageBackground>
+      <div dir="rtl">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -110,13 +112,14 @@ const Index = () => {
         </Card>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2024 LingoArab. جميع الحقوق محفوظة.</p>
-        </div>
-      </footer>
-    </div>
+        {/* Footer */}
+        <footer className="border-t border-border/50 py-8 bg-background/50 backdrop-blur-sm">
+          <div className="container mx-auto px-4 text-center text-muted-foreground">
+            <p>© 2024 LingoArab. جميع الحقوق محفوظة.</p>
+          </div>
+        </footer>
+      </div>
+    </PageBackground>
   );
 };
 
