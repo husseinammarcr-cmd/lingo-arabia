@@ -239,14 +239,18 @@ export const useUpdateProgress = () => {
         }
 
         const newXp = (profile.xp || 0) + xpEarned;
+        const newWeeklyXp = (profile.weekly_xp || 0) + xpEarned;
+        const newMonthlyXp = (profile.monthly_xp || 0) + xpEarned;
 
         await updateProfile({
           xp: newXp,
+          weekly_xp: newWeeklyXp,
+          monthly_xp: newMonthlyXp,
           streak_count: newStreakCount,
           last_study_date: today
         });
 
-        console.log('Profile updated:', { newXp, newStreakCount, lastStudyDate: today });
+        console.log('Profile updated:', { newXp, newWeeklyXp, newMonthlyXp, newStreakCount, lastStudyDate: today });
       }
 
       return { success: true, wasAlreadyCompleted };
