@@ -16,8 +16,9 @@ import {
   PenLine
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Header from '@/components/Header';
+import { useUserProgress, isLessonUnlocked } from '@/hooks/useProgress';
 
 const lessonIcons: Record<string, React.ElementType> = {
   'المفردات': BookOpen,
@@ -38,9 +39,18 @@ const CourseUnit = () => {
   const navigate = useNavigate();
   const { level: levelParam, unit: unitParam } = useParams<{ level: string; unit: string }>();
   const { user, profile, isLoading } = useAuth();
+  const { data: progressData } = useUserProgress();
 
   const level = getLevelByCode(levelParam || '');
   const unit = level ? getUnitById(level.code, unitParam || '') : undefined;
+
+  // Get completed lesson IDs
+  const completedLessons = useMemo(() => {
+    if (!progressData) return [];
+    return progressData
+      .filter(p => p.completed)
+      .map(p => p.lesson_id);
+  }, [progressData]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -94,10 +104,10 @@ const CourseUnit = () => {
         <div className="space-y-3">
           {unit.lessons.map((lesson, index) => {
             const IconComponent = lessonIcons[lesson.titleAr] || BookOpen;
-            // First lesson unlocked, rest locked for placeholder
-            const isLocked = index > 0 && !lesson.hasRealExercises;
-            const isCompleted = false;
+            const isCompleted = completedLessons.includes(lesson.id);
+            const isUnlocked = isLessonUnlocked(lesson.id, completedLessons);
             const hasExercises = lesson.hasRealExercises;
+            const isLocked = !isUnlocked && !hasExercises;
 
             return (
               <Card
@@ -107,7 +117,7 @@ const CourseUnit = () => {
                   "relative overflow-hidden cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200",
                   isLocked && "opacity-50 cursor-not-allowed",
                   isCompleted && "ring-2 ring-success",
-                  hasExercises && "ring-2 ring-primary"
+                  hasExercises && !isCompleted && "ring-2 ring-primary"
                 )}
               >
                 <CardContent className="p-4">
@@ -132,7 +142,12 @@ const CourseUnit = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">الدرس {index + 1}</span>
-                        {hasExercises && (
+                        {isCompleted && (
+                          <span className="text-xs bg-success/10 text-success px-2 py-0.5 rounded-full">
+                            مكتمل
+                          </span>
+                        )}
+                        {hasExercises && !isCompleted && (
                           <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                             تمارين حقيقية
                           </span>
