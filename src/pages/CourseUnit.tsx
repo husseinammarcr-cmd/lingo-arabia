@@ -1,17 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { getLevelByCode, getUnitById } from '@/lib/curriculum';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   ChevronLeft, 
   ChevronRight,
-  Moon, 
-  Sun, 
-  LogOut, 
   Star, 
-  Crown,
   Lock,
   CheckCircle,
   PlayCircle,
@@ -22,6 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
+import Header from '@/components/Header';
 
 const lessonIcons: Record<string, React.ElementType> = {
   'المفردات': BookOpen,
@@ -41,8 +37,7 @@ const levelColors: Record<string, { bg: string; text: string; accent: string }> 
 const CourseUnit = () => {
   const navigate = useNavigate();
   const { level: levelParam, unit: unitParam } = useParams<{ level: string; unit: string }>();
-  const { user, profile, signOut, isLoading } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { user, profile, isLoading } = useAuth();
 
   const level = getLevelByCode(levelParam || '');
   const unit = level ? getUnitById(level.code, unitParam || '') : undefined;
@@ -82,31 +77,7 @@ const CourseUnit = () => {
   return (
     <div className="min-h-screen bg-gradient-hero" dir="rtl">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate(`/courses/${level.code.toLowerCase()}`)}>
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-            <h1 className="text-xl font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>
-              LingoArab
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-xp/10 text-xp px-3 py-1.5 rounded-full font-bold">
-              <Star className="w-4 h-4 fill-current" />
-              <span>{profile?.xp || 0}</span>
-            </div>
-            {profile?.is_premium && <Crown className="w-5 h-5 text-accent fill-accent" />}
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </Button>
-            <Button variant="ghost" size="icon" onClick={signOut}>
-              <LogOut className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header showBack showUserInfo />
 
       <main className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Unit Header */}

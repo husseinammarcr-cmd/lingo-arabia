@@ -4,7 +4,8 @@ import { useUserAchievements } from '@/hooks/useAchievements';
 import { StreakWidget } from '@/components/StreakWidget';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, Trophy, ArrowRight, Crown, Settings } from 'lucide-react';
+import { Star, Trophy, Crown, Settings } from 'lucide-react';
+import Header from '@/components/Header';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -13,13 +14,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero" dir="rtl">
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate('/learn')}><ArrowRight className="w-5 h-5" /></Button>
-          <h1 className="text-xl font-bold">الملف الشخصي</h1>
-          <Button variant="ghost" size="icon"><Settings className="w-5 h-5" /></Button>
-        </div>
-      </header>
+      <Header showBack />
 
       <main className="container mx-auto px-4 py-6 max-w-2xl space-y-6">
         <Card>

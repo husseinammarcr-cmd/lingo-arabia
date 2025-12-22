@@ -6,14 +6,11 @@ import { useUserProgress } from '@/hooks/useProgress';
 import { UnitCard } from '@/components/UnitCard';
 import { StreakWidget } from '@/components/StreakWidget';
 import { AdSlot } from '@/components/AdSlot';
-import { Button } from '@/components/ui/button';
-import { Star, Crown, Moon, Sun, LogOut } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+import Header from '@/components/Header';
 
 const Learn = () => {
   const navigate = useNavigate();
-  const { user, profile, signOut, isLoading: authLoading } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { user, profile, isLoading: authLoading } = useAuth();
   const { data: units, isLoading: unitsLoading } = useUnits();
   const { data: lessons } = useLessons();
   const { data: progress } = useUserProgress();
@@ -48,29 +45,7 @@ const Learn = () => {
   return (
     <div className="min-h-screen bg-gradient-hero" dir="rtl">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>LingoArab</h1>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-xp/10 text-xp px-3 py-1.5 rounded-full font-bold">
-              <Star className="w-4 h-4 fill-current" />
-              <span>{profile?.xp || 0}</span>
-            </div>
-            {profile?.is_premium && <Crown className="w-5 h-5 text-accent fill-accent" />}
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate('/profile')}>
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                {profile?.name?.charAt(0) || 'U'}
-              </div>
-            </Button>
-            <Button variant="ghost" size="icon" onClick={signOut}>
-              <LogOut className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header showUserInfo />
 
       <main className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Streak Widget */}

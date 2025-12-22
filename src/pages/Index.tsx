@@ -1,14 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen, Star, Flame, Trophy, ChevronLeft, Moon, Sun } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+import { BookOpen, Star, Flame, Trophy, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import PageBackground from '@/components/PageBackground';
+import Header from '@/components/Header';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
 
   const features = [
@@ -22,25 +21,7 @@ const Index = () => {
     <PageBackground>
       <div dir="rtl">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-primary">LingoArab</h1>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </Button>
-            {user ? (
-              <Button variant="default" onClick={() => navigate('/courses')}>
-                تابع التعلم
-              </Button>
-            ) : (
-              <Button variant="outline" onClick={() => navigate('/auth')}>
-                تسجيل الدخول
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header showAuthButton />
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 md:py-24 text-center">
