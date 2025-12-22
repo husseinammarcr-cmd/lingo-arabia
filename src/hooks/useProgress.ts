@@ -121,6 +121,48 @@ export function isLessonUnlocked(lessonId: string, completedLessons: string[]): 
   return false;
 }
 
+// Get unit progress from completed lessons
+export interface UnitProgress {
+  unitId: string;
+  completedLessons: number;
+  totalLessons: number;
+  isCompleted: boolean;
+  isUnlocked: boolean;
+}
+
+export function getUnitProgress(
+  levelCode: string,
+  completedLessonIds: string[]
+): UnitProgress[] {
+  const level = CURRICULUM.find(l => l.code.toLowerCase() === levelCode.toLowerCase());
+  if (!level) return [];
+
+  const unitProgressList: UnitProgress[] = [];
+  let previousUnitCompleted = true; // First unit is always unlocked
+
+  for (const unit of level.units) {
+    const lessonIds = unit.lessons.map(l => l.id);
+    const completedCount = lessonIds.filter(id => completedLessonIds.includes(id)).length;
+    const isCompleted = completedCount === lessonIds.length && lessonIds.length > 0;
+    
+    unitProgressList.push({
+      unitId: unit.id,
+      completedLessons: completedCount,
+      totalLessons: lessonIds.length,
+      isCompleted,
+      isUnlocked: previousUnitCompleted
+    });
+
+    // Debug log
+    console.log(`Unit ${unit.id}: ${completedCount}/${lessonIds.length} lessons, unlocked: ${previousUnitCompleted}`);
+
+    // Next unit is unlocked if current unit is completed
+    previousUnitCompleted = isCompleted;
+  }
+
+  return unitProgressList;
+}
+
 export const useUpdateProgress = () => {
   const { user, updateProfile, profile } = useAuth();
   const queryClient = useQueryClient();

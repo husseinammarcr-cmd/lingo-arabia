@@ -46,9 +46,10 @@ import {
   ClipboardCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
+import { useUserProgress, getUnitProgress } from '@/hooks/useProgress';
 
 const iconMap: Record<string, React.ElementType> = {
   'hand-wave': HandMetal,
@@ -99,8 +100,27 @@ const CourseLevel = () => {
   const navigate = useNavigate();
   const { level: levelParam } = useParams<{ level: string }>();
   const { user, profile, isLoading } = useAuth();
+  const { data: progressData, isLoading: isProgressLoading } = useUserProgress();
 
   const level = getLevelByCode(levelParam || '');
+
+  // Compute completed lesson IDs from progress data
+  const completedLessonIds = useMemo(() => {
+    if (!progressData) return [];
+    return progressData
+      .filter(p => p.completed)
+      .map(p => p.lesson_id);
+  }, [progressData]);
+
+  // Compute unit progress for this level
+  const unitProgressMap = useMemo(() => {
+    if (!levelParam) return {};
+    const progressList = getUnitProgress(levelParam, completedLessonIds);
+    return progressList.reduce((acc, up) => {
+      acc[up.unitId] = up;
+      return acc;
+    }, {} as Record<string, ReturnType<typeof getUnitProgress>[0]>);
+  }, [levelParam, completedLessonIds]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -108,7 +128,7 @@ const CourseLevel = () => {
     }
   }, [user, isLoading, navigate]);
 
-  if (isLoading) {
+  if (isLoading || isProgressLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-pulse text-primary text-xl">جاري التحميل...</div>
@@ -155,14 +175,14 @@ const CourseLevel = () => {
 
         {/* Units List */}
         <div className="space-y-4">
-          {level.units.map((unit, index) => {
+        {level.units.map((unit, index) => {
             const IconComponent = iconMap[unit.icon] || BookOpen;
-            const lessonsCount = unit.lessons.length;
-            // Placeholder - first unit unlocked, rest locked for now
-            const isLocked = index > 0;
-            const completedLessons = 0;
+            const unitProgress = unitProgressMap[unit.id];
+            const lessonsCount = unitProgress?.totalLessons ?? unit.lessons.length;
+            const completedLessons = unitProgress?.completedLessons ?? 0;
+            const isLocked = unitProgress ? !unitProgress.isUnlocked : index > 0;
             const progress = lessonsCount > 0 ? (completedLessons / lessonsCount) * 100 : 0;
-            const isCompleted = completedLessons === lessonsCount && lessonsCount > 0;
+            const isCompleted = unitProgress?.isCompleted ?? false;
 
             return (
               <Card
