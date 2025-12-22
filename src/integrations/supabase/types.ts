@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       achievements: {
         Row: {
+          condition_json: Json | null
           created_at: string | null
           description_ar: string
           description_en: string
@@ -27,6 +28,7 @@ export type Database = {
           xp_reward: number | null
         }
         Insert: {
+          condition_json?: Json | null
           created_at?: string | null
           description_ar: string
           description_en: string
@@ -38,6 +40,7 @@ export type Database = {
           xp_reward?: number | null
         }
         Update: {
+          condition_json?: Json | null
           created_at?: string | null
           description_ar?: string
           description_en?: string
@@ -49,6 +52,59 @@ export type Database = {
           xp_reward?: number | null
         }
         Relationships: []
+      }
+      challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string | null
+          description_ar: string
+          description_en: string
+          id: string
+          is_active: boolean
+          key: string
+          name_ar: string
+          name_en: string
+          reward_achievement_id: string | null
+          reward_xp: number
+          target_value: number
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string | null
+          description_ar: string
+          description_en: string
+          id?: string
+          is_active?: boolean
+          key: string
+          name_ar: string
+          name_en: string
+          reward_achievement_id?: string | null
+          reward_xp?: number
+          target_value?: number
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string | null
+          description_ar?: string
+          description_en?: string
+          id?: string
+          is_active?: boolean
+          key?: string
+          name_ar?: string
+          name_en?: string
+          reward_achievement_id?: string | null
+          reward_xp?: number
+          target_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenges_reward_achievement_id_fkey"
+            columns: ["reward_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       exercises: {
         Row: {
@@ -170,9 +226,12 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          country_code: string | null
           created_at: string | null
           current_level: string | null
           daily_goal: Database["public"]["Enums"]["daily_goal"] | null
+          display_name: string | null
           email: string | null
           has_taken_placement: boolean | null
           id: string
@@ -180,6 +239,8 @@ export type Database = {
           is_premium: boolean | null
           last_study_date: string | null
           level: Database["public"]["Enums"]["user_level"] | null
+          month_start: string | null
+          monthly_xp: number | null
           name: string | null
           onboarding_completed: boolean | null
           placement_level: string | null
@@ -187,12 +248,18 @@ export type Database = {
           placement_taken_at: string | null
           streak_count: number | null
           updated_at: string | null
+          user_level: number | null
+          week_start: string | null
+          weekly_xp: number | null
           xp: number | null
         }
         Insert: {
+          avatar_url?: string | null
+          country_code?: string | null
           created_at?: string | null
           current_level?: string | null
           daily_goal?: Database["public"]["Enums"]["daily_goal"] | null
+          display_name?: string | null
           email?: string | null
           has_taken_placement?: boolean | null
           id: string
@@ -200,6 +267,8 @@ export type Database = {
           is_premium?: boolean | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
+          month_start?: string | null
+          monthly_xp?: number | null
           name?: string | null
           onboarding_completed?: boolean | null
           placement_level?: string | null
@@ -207,12 +276,18 @@ export type Database = {
           placement_taken_at?: string | null
           streak_count?: number | null
           updated_at?: string | null
+          user_level?: number | null
+          week_start?: string | null
+          weekly_xp?: number | null
           xp?: number | null
         }
         Update: {
+          avatar_url?: string | null
+          country_code?: string | null
           created_at?: string | null
           current_level?: string | null
           daily_goal?: Database["public"]["Enums"]["daily_goal"] | null
+          display_name?: string | null
           email?: string | null
           has_taken_placement?: boolean | null
           id?: string
@@ -220,6 +295,8 @@ export type Database = {
           is_premium?: boolean | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
+          month_start?: string | null
+          monthly_xp?: number | null
           name?: string | null
           onboarding_completed?: boolean | null
           placement_level?: string | null
@@ -227,6 +304,9 @@ export type Database = {
           placement_taken_at?: string | null
           streak_count?: number | null
           updated_at?: string | null
+          user_level?: number | null
+          week_start?: string | null
+          weekly_xp?: number | null
           xp?: number | null
         }
         Relationships: []
@@ -323,6 +403,47 @@ export type Database = {
           },
         ]
       }
+      user_challenges: {
+        Row: {
+          challenge_id: string
+          completed: boolean
+          completed_at: string | null
+          id: string
+          progress: number
+          started_at: string | null
+          user_id: string
+          week_start: string | null
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          progress?: number
+          started_at?: string | null
+          user_id: string
+          week_start?: string | null
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          progress?: number
+          started_at?: string | null
+          user_id?: string
+          week_start?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -346,6 +467,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      compute_user_level: {
+        Args: {
+          lessons_completed?: number
+          streak_count?: number
+          total_xp: number
+        }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
