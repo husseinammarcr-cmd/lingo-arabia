@@ -5,7 +5,12 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle, XCircle, Lightbulb, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type ExerciseType = 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation';
+export type ExerciseType = 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching';
+
+interface MatchingPair {
+  english: string;
+  arabic: string;
+}
 
 interface ExerciseData {
   options?: string[];
@@ -16,6 +21,7 @@ interface ExerciseData {
   correct_order?: number[];
   hint_ar?: string;
   hint_en?: string;
+  pairs?: MatchingPair[];
 }
 
 interface ExerciseRendererProps {
@@ -41,6 +47,8 @@ export const ExerciseRenderer = ({
   const [showHint, setShowHint] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
+  const [selectedEnglish, setSelectedEnglish] = useState<number | null>(null);
 
   useEffect(() => {
     // Reset state when exercise changes
@@ -50,6 +58,8 @@ export const ExerciseRenderer = ({
     setShowHint(false);
     setAnswered(false);
     setIsCorrect(false);
+    setMatchedPairs({});
+    setSelectedEnglish(null);
   }, [type, promptAr, data]);
 
   const checkAnswer = () => {
@@ -70,8 +80,13 @@ export const ExerciseRenderer = ({
         correct = JSON.stringify(reorderedWords) === JSON.stringify(data.correct_order);
         break;
       case 'listening':
-        // Placeholder for listening exercises
         correct = textAnswer.trim().toLowerCase() === (data.answer?.toLowerCase() || '');
+        break;
+      case 'matching':
+        // Check if all pairs are correctly matched
+        const pairs = data.pairs || [];
+        correct = Object.keys(matchedPairs).length === pairs.length &&
+          Object.entries(matchedPairs).every(([eng, arb]) => parseInt(eng) === arb);
         break;
     }
 
@@ -104,8 +119,22 @@ export const ExerciseRenderer = ({
         return textAnswer.trim().length > 0;
       case 'reorder':
         return reorderedWords.length === (data.words?.length || 0);
+      case 'matching':
+        return Object.keys(matchedPairs).length === (data.pairs?.length || 0);
       default:
         return false;
+    }
+  };
+
+  const handleMatchClick = (isEnglish: boolean, index: number) => {
+    if (answered || disabled) return;
+    
+    if (isEnglish) {
+      setSelectedEnglish(index);
+    } else if (selectedEnglish !== null) {
+      // Match the selected English with this Arabic
+      setMatchedPairs(prev => ({ ...prev, [selectedEnglish]: index }));
+      setSelectedEnglish(null);
     }
   };
 
@@ -275,6 +304,82 @@ export const ExerciseRenderer = ({
               disabled={answered || disabled}
               dir="ltr"
             />
+          </div>
+        );
+
+      case 'matching':
+        const pairs = data.pairs || [];
+        const shuffledArabic = [...pairs].sort(() => Math.random() - 0.5);
+        
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              {/* English column */}
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground mb-2">English</p>
+                {pairs.map((pair, index) => {
+                  const isMatched = matchedPairs[index] !== undefined;
+                  const isSelected = selectedEnglish === index;
+                  return (
+                    <Button
+                      key={index}
+                      variant={isMatched ? 'success' : isSelected ? 'default' : 'secondary'}
+                      className={cn(
+                        "w-full justify-start ltr-text",
+                        isMatched && "opacity-60"
+                      )}
+                      onClick={() => handleMatchClick(true, index)}
+                      disabled={answered || disabled || isMatched}
+                    >
+                      {pair.english}
+                    </Button>
+                  );
+                })}
+              </div>
+              
+              {/* Arabic column */}
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground mb-2">العربية</p>
+                {pairs.map((pair, index) => {
+                  const isMatched = Object.values(matchedPairs).includes(index);
+                  return (
+                    <Button
+                      key={index}
+                      variant={isMatched ? 'success' : 'secondary'}
+                      className={cn(
+                        "w-full justify-start",
+                        isMatched && "opacity-60"
+                      )}
+                      onClick={() => handleMatchClick(false, index)}
+                      disabled={answered || disabled || isMatched || selectedEnglish === null}
+                    >
+                      {pair.arabic}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {answered && (
+              <div className={cn(
+                "p-4 rounded-lg text-center",
+                isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
+              )}>
+                <p className="font-semibold flex items-center justify-center gap-2">
+                  {isCorrect ? (
+                    <>
+                      <CheckCircle className="w-5 h-5" />
+                      ممتاز!
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-5 h-5" />
+                      حاول مرة أخرى
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
           </div>
         );
 
