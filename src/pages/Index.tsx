@@ -28,7 +28,7 @@ const Index = () => {
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
             {user ? (
-              <Button variant="default" onClick={() => navigate('/learn')}>
+              <Button variant="default" onClick={() => navigate('/courses')}>
                 تابع التعلم
               </Button>
             ) : (
@@ -54,7 +54,7 @@ const Index = () => {
             <Button 
               variant="hero" 
               size="xl" 
-              onClick={() => navigate(user ? '/learn' : '/auth')}
+              onClick={() => navigate(user ? '/courses' : '/auth')}
               className="text-lg"
             >
               {user ? 'تابع التعلم' : 'ابدأ مجاناً'}
