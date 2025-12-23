@@ -191,6 +191,42 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          sender_name: string
+          target_type: string
+          target_value: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          sender_name?: string
+          target_type?: string
+          target_value?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          sender_name?: string
+          target_type?: string
+          target_value?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       placement_tests: {
         Row: {
           answers_json: Json
@@ -236,7 +272,9 @@ export type Database = {
           has_taken_placement: boolean | null
           id: string
           interests: string[] | null
+          is_founder: boolean | null
           is_premium: boolean | null
+          is_verified: boolean | null
           last_study_date: string | null
           level: Database["public"]["Enums"]["user_level"] | null
           month_start: string | null
@@ -264,7 +302,9 @@ export type Database = {
           has_taken_placement?: boolean | null
           id: string
           interests?: string[] | null
+          is_founder?: boolean | null
           is_premium?: boolean | null
+          is_verified?: boolean | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
           month_start?: string | null
@@ -292,7 +332,9 @@ export type Database = {
           has_taken_placement?: boolean | null
           id?: string
           interests?: string[] | null
+          is_founder?: boolean | null
           is_premium?: boolean | null
+          is_verified?: boolean | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
           month_start?: string | null

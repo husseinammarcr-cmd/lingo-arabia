@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Star, Crown, LogOut, ChevronLeft } from 'lucide-react';
+import { Moon, Sun, Star, Crown, LogOut, ChevronLeft, Shield } from 'lucide-react';
+import { NotificationBell } from '@/components/NotificationBell';
 import logo from '@/assets/logo.png';
 
 interface HeaderProps {
@@ -13,7 +14,7 @@ interface HeaderProps {
 
 const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false }: HeaderProps) => {
   const navigate = useNavigate();
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isAdmin } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -51,6 +52,12 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
           
           {showUserInfo && user && (
             <>
+              <NotificationBell />
+              {isAdmin && (
+                <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
+                  <Shield className="w-5 h-5" />
+                </Button>
+              )}
               <Button variant="ghost" size="icon" onClick={() => navigate('/profile')}>
                 <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
                   {profile?.name?.charAt(0) || 'U'}
