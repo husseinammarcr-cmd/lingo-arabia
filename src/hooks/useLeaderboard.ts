@@ -13,6 +13,8 @@ export interface LeaderboardEntry {
   streak_count: number;
   country_code: string | null;
   current_level: string | null;
+  is_founder?: boolean;
+  is_verified?: boolean;
   rank?: number;
 }
 
@@ -31,7 +33,7 @@ export const useLeaderboard = (
     queryFn: async () => {
       let query = supabase
         .from('profiles')
-        .select('id, name, display_name, avatar_url, xp, weekly_xp, monthly_xp, user_level, streak_count, country_code, current_level');
+        .select('id, name, display_name, avatar_url, xp, weekly_xp, monthly_xp, user_level, streak_count, country_code, current_level, is_founder, is_verified');
 
       // Filter by country for local leaderboard
       if (type === 'local' && countryCode) {
@@ -51,11 +53,28 @@ export const useLeaderboard = (
 
       if (error) throw error;
 
-      // Add rank to each entry
-      return (data || []).map((entry, index) => ({
+      // Add rank to each entry (founder doesn't affect ranking)
+      const entries = (data || []) as LeaderboardEntry[];
+      
+      // Separate founder and regular users
+      const founder = entries.find(e => e.is_founder);
+      const regularUsers = entries.filter(e => !e.is_founder);
+      
+      // Add ranks to regular users
+      const rankedUsers = regularUsers.map((entry, index) => ({
         ...entry,
         rank: index + 1
-      })) as LeaderboardEntry[];
+      }));
+
+      // If founder exists, add them at top with special rank (pinned)
+      if (founder) {
+        return [
+          { ...founder, rank: 0, is_founder: true, is_verified: true },
+          ...rankedUsers
+        ];
+      }
+
+      return rankedUsers;
     }
   });
 };

@@ -1,6 +1,7 @@
-import { Trophy, Medal, Award, Flame, Star } from 'lucide-react';
+import { Trophy, Medal, Award, Flame, Star, Pin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { cn } from '@/lib/utils';
 import type { LeaderboardEntry } from '@/hooks/useLeaderboard';
 
@@ -19,7 +20,10 @@ const getFlagEmoji = (countryCode: string | null) => {
   return String.fromCodePoint(...codePoints);
 };
 
-const getRankIcon = (rank: number) => {
+const getRankIcon = (rank: number, isFounder?: boolean) => {
+  if (isFounder || rank === 0) {
+    return <Pin className="w-6 h-6 text-blue-500 fill-blue-500" />;
+  }
   switch (rank) {
     case 1:
       return <Trophy className="w-6 h-6 text-yellow-500 fill-yellow-500" />;
@@ -32,7 +36,10 @@ const getRankIcon = (rank: number) => {
   }
 };
 
-const getRankBgClass = (rank: number) => {
+const getRankBgClass = (rank: number, isFounder?: boolean) => {
+  if (isFounder || rank === 0) {
+    return 'bg-gradient-to-r from-blue-500/20 to-blue-600/10 border-blue-500/30';
+  }
   switch (rank) {
     case 1:
       return 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border-yellow-500/30';
@@ -49,17 +56,20 @@ export const LeaderboardCard = ({ entry, timeFrame, isCurrentUser }: Leaderboard
   const xp = timeFrame === 'weekly' ? entry.weekly_xp : timeFrame === 'monthly' ? entry.monthly_xp : entry.xp;
   const displayName = entry.display_name || entry.name || 'Anonymous';
   const initials = displayName.slice(0, 2).toUpperCase();
+  const isFounder = entry.is_founder;
+  const isVerified = entry.is_verified || isFounder;
 
   return (
     <Card className={cn(
       "transition-all duration-200 hover:scale-[1.02]",
-      entry.rank && entry.rank <= 3 && getRankBgClass(entry.rank),
-      isCurrentUser && "ring-2 ring-primary"
+      (entry.rank && entry.rank <= 3 || isFounder) && getRankBgClass(entry.rank || 0, isFounder),
+      isCurrentUser && "ring-2 ring-primary",
+      isFounder && "ring-2 ring-blue-500"
     )}>
       <CardContent className="flex items-center gap-4 p-4">
         {/* Rank */}
         <div className="flex-shrink-0 w-8">
-          {getRankIcon(entry.rank || 0)}
+          {getRankIcon(entry.rank || 0, isFounder)}
         </div>
 
         {/* Avatar with country flag */}
@@ -79,6 +89,12 @@ export const LeaderboardCard = ({ entry, timeFrame, isCurrentUser }: Leaderboard
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold truncate">{displayName}</h3>
+            {isVerified && <VerifiedBadge size="sm" />}
+            {isFounder && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-500 font-medium">
+                Founder
+              </span>
+            )}
             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
               Lv.{entry.user_level}
             </span>
