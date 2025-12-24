@@ -1,17 +1,21 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLessonById } from '@/lib/curriculum';
 import { getLessonContent, VocabItem, SentenceItem } from '@/lib/a1-lessons';
 import { ExerciseRenderer } from '@/components/ExerciseRenderer';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { X, Heart, Star, ChevronRight, Trophy, Loader2, BookOpen, Dumbbell, ClipboardCheck, ChevronLeft } from 'lucide-react';
 import { AudioButton } from '@/components/AudioButton';
 import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 import { useEvaluateAchievements } from '@/hooks/useEvaluateAchievements';
+import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
+import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
+import { MiniConfetti } from '@/components/animations/MiniConfetti';
+import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
@@ -59,12 +63,29 @@ const clearProgress = () => {
   }
 };
 
+// Animation variants
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 50 : -50,
+    opacity: 0
+  }),
+  center: {
+    x: 0,
+    opacity: 1
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 50 : -50,
+    opacity: 0
+  })
+};
+
 const LessonPlayer = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { user, isLoading, refreshProfile } = useAuth();
   const updateProgress = useUpdateProgress();
   const { evaluateAchievements } = useEvaluateAchievements();
+  const prefersReducedMotion = usePrefersReducedMotion();
   
   // Use refs to track initialization
   const initializedRef = useRef(false);
@@ -85,6 +106,8 @@ const LessonPlayer = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [hasSaved, setHasSaved] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [slideDirection, setSlideDirection] = useState(1);
 
   const lessonData = getLessonById(lessonId || '');
   const lessonContent = getLessonContent(lessonId || '');
@@ -144,7 +167,6 @@ const LessonPlayer = () => {
     if (isComplete && lessonId && lessonData && !isSaving && !hasSaved) {
       const passed = calculatePassed();
       
-      // Only save completion if user passed
       if (!passed) {
         clearProgress();
         return;
@@ -153,12 +175,13 @@ const LessonPlayer = () => {
       setIsSaving(true);
       setSaveError(false);
       clearProgress();
+      setShowConfetti(true);
       
       const totalXp = xpEarned + lessonData.lesson.xpReward;
       const saveTimeout = setTimeout(() => {
         setIsSaving(false);
         setSaveError(true);
-      }, 10000); // 10 second timeout
+      }, 10000);
       
       updateProgress.mutate({
         lessonId,
@@ -172,9 +195,7 @@ const LessonPlayer = () => {
           setHasSaved(true);
           setIsSaving(false);
           
-          // Refresh profile to get updated XP values, then evaluate achievements
           await refreshProfile();
-          console.log('[LessonPlayer] Evaluating achievements after lesson completion');
           await evaluateAchievements();
         },
         onError: () => {
@@ -189,7 +210,13 @@ const LessonPlayer = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-primary text-xl">جاري التحميل...</div>
+        <motion.div 
+          className="text-primary text-xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          جاري التحميل...
+        </motion.div>
       </div>
     );
   }
@@ -212,9 +239,14 @@ const LessonPlayer = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center" dir="rtl">
         <div className="text-center max-w-md mx-auto px-4">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+          <motion.div 
+            className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring' }}
+          >
             <Star className="w-10 h-10 text-primary" />
-          </div>
+          </motion.div>
           <h2 className="text-2xl font-bold text-foreground mb-2">{lessonData.lesson.titleAr}</h2>
           <p className="text-muted-foreground mb-6">هذا الدرس قيد الإعداد. سيتم إضافة المحتوى قريباً!</p>
           <Button type="button" onClick={() => navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`)}>
@@ -253,7 +285,6 @@ const LessonPlayer = () => {
   };
 
   const handleRetry = () => {
-    // Reset quiz state for retry
     setQuizIndex(0);
     setQuizScore(0);
     setHearts(5);
@@ -271,11 +302,11 @@ const LessonPlayer = () => {
   const handleRetrySave = () => {
     setSaveError(false);
     setHasSaved(false);
-    // Trigger save again by toggling states
     setIsSaving(false);
   };
 
   const handleLearnNext = () => {
+    setSlideDirection(1);
     const totalLearnItems = lessonContent.vocab.length + lessonContent.sentences.length;
     if (learnIndex < totalLearnItems - 1) {
       setLearnIndex(prev => prev + 1);
@@ -293,6 +324,7 @@ const LessonPlayer = () => {
       setHearts(prev => Math.max(0, prev - 1));
     }
 
+    setSlideDirection(1);
     setTimeout(() => {
       if (practiceIndex < lessonContent.exercises.length - 1) {
         setPracticeIndex(prev => prev + 1);
@@ -312,6 +344,7 @@ const LessonPlayer = () => {
       setHearts(prev => Math.max(0, prev - 1));
     }
 
+    setSlideDirection(1);
     setTimeout(() => {
       if (quizIndex < lessonContent.quiz.length - 1) {
         setQuizIndex(prev => prev + 1);
@@ -332,14 +365,26 @@ const LessonPlayer = () => {
     const scorePercent = quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 0;
     
     return (
-      <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center" dir="rtl">
-        <div className="text-center max-w-md mx-auto px-4">
-          <div className={cn(
-            "w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center animate-bounce-in",
-            passed ? "bg-gradient-primary" : "bg-destructive/20"
-          )}>
+      <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center relative" dir="rtl">
+        <MiniConfetti trigger={showConfetti && passed} onComplete={() => setShowConfetti(false)} />
+        
+        <motion.div 
+          className="text-center max-w-md mx-auto px-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div 
+            className={cn(
+              "w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center",
+              passed ? "bg-gradient-primary" : "bg-destructive/20"
+            )}
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+          >
             <Trophy className={cn("w-12 h-12", passed ? "text-primary-foreground" : "text-destructive")} />
-          </div>
+          </motion.div>
           <h2 className="text-3xl font-bold text-foreground mb-2">
             {passed ? 'أحسنت!' : 'حاول مرة أخرى'}
           </h2>
@@ -352,7 +397,12 @@ const LessonPlayer = () => {
           <Card className="mb-6">
             <CardContent className="p-6">
               <div className="flex justify-around">
-                <div className="text-center">
+                <motion.div 
+                  className="text-center"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
                   <div className={cn(
                     "flex items-center justify-center gap-1 text-2xl font-bold",
                     passed ? "text-xp" : "text-muted-foreground"
@@ -361,8 +411,13 @@ const LessonPlayer = () => {
                     <span>{passed ? `+${totalXp}` : '0'}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">نقاط XP</p>
-                </div>
-                <div className="text-center">
+                </motion.div>
+                <motion.div 
+                  className="text-center"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
                   <div className={cn(
                     "flex items-center justify-center gap-1 text-2xl font-bold",
                     passed ? "text-primary" : "text-destructive"
@@ -371,79 +426,61 @@ const LessonPlayer = () => {
                     <span>{scorePercent}%</span>
                   </div>
                   <p className="text-sm text-muted-foreground">نتيجة الاختبار</p>
-                </div>
-                <div className="text-center">
+                </motion.div>
+                <motion.div 
+                  className="text-center"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
                   <div className="flex items-center justify-center gap-1 text-hearts text-2xl font-bold">
                     <Heart className="w-6 h-6 fill-current" />
                     <span>{hearts}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">قلوب متبقية</p>
-                </div>
+                </motion.div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Error state */}
           {saveError && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
+            <motion.div 
+              className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
               حدث خطأ في حفظ التقدم
-            </div>
+            </motion.div>
           )}
 
-          {/* Buttons based on state */}
-          <div className="space-y-3">
+          <motion.div 
+            className="space-y-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+          >
             {passed ? (
               <>
                 {saveError ? (
                   <div className="flex gap-2">
-                    <Button 
-                      type="button"
-                      variant="outline" 
-                      size="lg" 
-                      onClick={handleRetrySave}
-                      className="flex-1"
-                    >
+                    <Button type="button" variant="outline" size="lg" onClick={handleRetrySave} className="flex-1">
                       إعادة المحاولة
                     </Button>
-                    <Button 
-                      type="button"
-                      variant="hero" 
-                      size="lg" 
-                      onClick={handleBackToLessons}
-                      className="flex-1"
-                    >
+                    <Button type="button" variant="hero" size="lg" onClick={handleBackToLessons} className="flex-1">
                       متابعة
                     </Button>
                   </div>
                 ) : isSaving ? (
-                  <Button 
-                    type="button"
-                    variant="hero" 
-                    size="xl" 
-                    className="w-full"
-                    disabled
-                  >
+                  <Button type="button" variant="hero" size="xl" className="w-full" disabled>
                     <Loader2 className="w-4 h-4 ml-2 animate-spin" />
                     جاري الحفظ...
                   </Button>
                 ) : (
                   <>
-                    <Button 
-                      type="button"
-                      variant="hero" 
-                      size="xl" 
-                      className="w-full"
-                      onClick={handleBackToLessons}
-                    >
+                    <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleBackToLessons}>
                       العودة إلى الدروس
                     </Button>
-                    <Button 
-                      type="button"
-                      variant="outline" 
-                      size="lg" 
-                      className="w-full"
-                      onClick={handleNextLesson}
-                    >
+                    <Button type="button" variant="outline" size="lg" className="w-full" onClick={handleNextLesson}>
                       ابدأ الدرس التالي
                     </Button>
                   </>
@@ -451,28 +488,16 @@ const LessonPlayer = () => {
               </>
             ) : (
               <>
-                <Button 
-                  type="button"
-                  variant="hero" 
-                  size="xl" 
-                  className="w-full"
-                  onClick={handleRetry}
-                >
+                <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleRetry}>
                   حاول مرة أخرى
                 </Button>
-                <Button 
-                  type="button"
-                  variant="outline" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={handleBackToUnit}
-                >
+                <Button type="button" variant="outline" size="lg" className="w-full" onClick={handleBackToUnit}>
                   العودة للوحدة
                 </Button>
               </>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     );
   }
@@ -481,34 +506,38 @@ const LessonPlayer = () => {
   const practiceExerciseKey = `${lessonId}-practice-${practiceIndex}`;
   const quizExerciseKey = `${lessonId}-quiz-${quizIndex}`;
 
-  // Section tabs
+  // Animated section tabs
   const renderSectionTabs = () => (
     <div className="flex gap-2 mb-4 justify-center">
-      <div className={cn(
-        "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
-        section === 'learn' ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-      )}>
-        <BookOpen className="w-4 h-4" />
-        <span>تعلم</span>
-      </div>
-      <div className={cn(
-        "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
-        section === 'practice' ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-      )}>
-        <Dumbbell className="w-4 h-4" />
-        <span>تدريب</span>
-      </div>
-      <div className={cn(
-        "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
-        section === 'quiz' ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-      )}>
-        <ClipboardCheck className="w-4 h-4" />
-        <span>اختبار</span>
-      </div>
+      {[
+        { key: 'learn', icon: BookOpen, label: 'تعلم' },
+        { key: 'practice', icon: Dumbbell, label: 'تدريب' },
+        { key: 'quiz', icon: ClipboardCheck, label: 'اختبار' }
+      ].map((tab, index) => (
+        <motion.div 
+          key={tab.key}
+          className={cn(
+            "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors relative",
+            section === tab.key ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+          )}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <tab.icon className="w-4 h-4" />
+          <span>{tab.label}</span>
+          {section === tab.key && (
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-foreground/30 rounded-full"
+              layoutId="activeTab"
+            />
+          )}
+        </motion.div>
+      ))}
     </div>
   );
 
-  // Learn section content
+  // Learn section content with animations
   const renderLearnSection = () => {
     const isVocab = learnIndex < lessonContent.vocab.length;
     const item = isVocab 
@@ -517,63 +546,82 @@ const LessonPlayer = () => {
 
     return (
       <div className="space-y-6">
-        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-          <CardContent className="p-8 text-center">
-            {isVocab ? (
-              <>
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <p className="text-4xl font-bold text-primary ltr-text">
-                    {(item as VocabItem).english}
-                  </p>
-                  <AudioButton 
-                    text={(item as VocabItem).english} 
-                    size="lg"
-                    variant="secondary"
-                    className="text-primary"
-                  />
-                </div>
-                <p className="text-2xl text-foreground mb-4">{(item as VocabItem).arabic}</p>
-                {(item as VocabItem).example && (
-                  <div className="mt-6 p-4 bg-background/50 rounded-lg">
-                    <div className="flex items-center justify-center gap-2">
-                      <p className="text-lg text-muted-foreground ltr-text">{(item as VocabItem).example}</p>
+        <AnimatePresence mode="wait" custom={slideDirection}>
+          <motion.div
+            key={learnIndex}
+            custom={slideDirection}
+            variants={prefersReducedMotion ? {} : slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+              <CardContent className="p-8 text-center">
+                {isVocab ? (
+                  <>
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <p className="text-4xl font-bold text-primary ltr-text">
+                        {(item as VocabItem).english}
+                      </p>
                       <AudioButton 
-                        text={(item as VocabItem).example || ''} 
-                        size="sm"
-                        className="text-muted-foreground"
+                        text={(item as VocabItem).english} 
+                        size="lg"
+                        variant="secondary"
+                        className="text-primary"
                       />
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">{(item as VocabItem).exampleAr}</p>
-                  </div>
+                    <p className="text-2xl text-foreground mb-4">{(item as VocabItem).arabic}</p>
+                    {(item as VocabItem).example && (
+                      <motion.div 
+                        className="mt-6 p-4 bg-background/50 rounded-lg"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          <p className="text-lg text-muted-foreground ltr-text">{(item as VocabItem).example}</p>
+                          <AudioButton 
+                            text={(item as VocabItem).example || ''} 
+                            size="sm"
+                            className="text-muted-foreground"
+                          />
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">{(item as VocabItem).exampleAr}</p>
+                      </motion.div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <p className="text-2xl font-bold text-primary ltr-text">
+                        {(item as SentenceItem).english}
+                      </p>
+                      <AudioButton 
+                        text={(item as SentenceItem).english} 
+                        size="lg"
+                        variant="secondary"
+                        className="text-primary"
+                      />
+                    </div>
+                    <p className="text-xl text-foreground">{(item as SentenceItem).arabic}</p>
+                  </>
                 )}
-              </>
-            ) : (
-              <>
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <p className="text-2xl font-bold text-primary ltr-text">
-                    {(item as SentenceItem).english}
-                  </p>
-                  <AudioButton 
-                    text={(item as SentenceItem).english} 
-                    size="lg"
-                    variant="secondary"
-                    className="text-primary"
-                  />
-                </div>
-                <p className="text-xl text-foreground">{(item as SentenceItem).arabic}</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
         
         <div className="text-center text-sm text-muted-foreground">
           {learnIndex + 1} / {lessonContent.vocab.length + lessonContent.sentences.length}
         </div>
 
-        <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleLearnNext}>
-          {learnIndex < lessonContent.vocab.length + lessonContent.sentences.length - 1 ? 'التالي' : 'ابدأ التدريب'}
-          <ChevronLeft className="w-5 h-5 mr-2" />
-        </Button>
+        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleLearnNext}>
+            {learnIndex < lessonContent.vocab.length + lessonContent.sentences.length - 1 ? 'التالي' : 'ابدأ التدريب'}
+            <ChevronLeft className="w-5 h-5 mr-2" />
+          </Button>
+        </motion.div>
       </div>
     );
   };
@@ -582,23 +630,32 @@ const LessonPlayer = () => {
   const renderPracticeSection = () => {
     const exercise = lessonContent.exercises[practiceIndex];
     return (
-      <ExerciseRenderer
-        key={practiceExerciseKey}
-        type={exercise.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
-        promptAr={exercise.promptAr}
-        promptEn={exercise.promptEn}
-        data={{
-          options: exercise.data.options,
-          correct: exercise.data.correct,
-          answer: exercise.data.answer,
-          alternatives: exercise.data.alternatives,
-          words: exercise.data.words,
-          correct_order: exercise.data.correctOrder,
-          hint_ar: exercise.data.hint,
-          pairs: exercise.data.pairs,
-        }}
-        onAnswer={handlePracticeAnswer}
-      />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={practiceExerciseKey}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ExerciseRenderer
+            type={exercise.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
+            promptAr={exercise.promptAr}
+            promptEn={exercise.promptEn}
+            data={{
+              options: exercise.data.options,
+              correct: exercise.data.correct,
+              answer: exercise.data.answer,
+              alternatives: exercise.data.alternatives,
+              words: exercise.data.words,
+              correct_order: exercise.data.correctOrder,
+              hint_ar: exercise.data.hint,
+              pairs: exercise.data.pairs,
+            }}
+            onAnswer={handlePracticeAnswer}
+          />
+        </motion.div>
+      </AnimatePresence>
     );
   };
 
@@ -606,41 +663,58 @@ const LessonPlayer = () => {
   const renderQuizSection = () => {
     const quiz = lessonContent.quiz[quizIndex];
     return (
-      <ExerciseRenderer
-        key={quizExerciseKey}
-        type={quiz.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
-        promptAr={quiz.promptAr}
-        promptEn={quiz.promptEn}
-        data={{
-          options: quiz.data.options,
-          correct: quiz.data.correct,
-          answer: quiz.data.answer,
-          alternatives: quiz.data.alternatives,
-          words: quiz.data.words,
-          correct_order: quiz.data.correctOrder,
-          hint_ar: quiz.data.hint,
-          pairs: quiz.data.pairs,
-        }}
-        onAnswer={handleQuizAnswer}
-      />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={quizExerciseKey}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ExerciseRenderer
+            type={quiz.type as 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching'}
+            promptAr={quiz.promptAr}
+            promptEn={quiz.promptEn}
+            data={{
+              options: quiz.data.options,
+              correct: quiz.data.correct,
+              answer: quiz.data.answer,
+              alternatives: quiz.data.alternatives,
+              words: quiz.data.words,
+              correct_order: quiz.data.correctOrder,
+              hint_ar: quiz.data.hint,
+              pairs: quiz.data.pairs,
+            }}
+            onAnswer={handleQuizAnswer}
+          />
+        </motion.div>
+      </AnimatePresence>
     );
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col" dir="rtl">
-      {/* Header */}
+      {/* Header with animated progress */}
       <header className="sticky top-0 z-50 bg-background border-b border-border px-4 py-3">
         <div className="flex items-center gap-4 max-w-2xl mx-auto">
-          <Button type="button" variant="ghost" size="icon" onClick={handleClose}>
-            <X className="w-5 h-5" />
-          </Button>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button type="button" variant="ghost" size="icon" onClick={handleClose}>
+              <X className="w-5 h-5" />
+            </Button>
+          </motion.div>
           
-          <Progress value={getSectionProgress()} className="flex-1 h-3" />
+          <div className="flex-1">
+            <AnimatedProgress value={getSectionProgress()} className="h-3" />
+          </div>
           
-          <div className="flex items-center gap-1 text-hearts font-bold">
+          <motion.div 
+            className="flex items-center gap-1 text-hearts font-bold"
+            animate={hearts < 3 ? { scale: [1, 1.1, 1] } : {}}
+            transition={{ duration: 0.3 }}
+          >
             <Heart className={cn("w-5 h-5", hearts > 0 && "fill-current")} />
             <span>{hearts}</span>
-          </div>
+          </motion.div>
         </div>
       </header>
 
