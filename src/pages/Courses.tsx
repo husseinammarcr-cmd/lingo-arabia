@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { CURRICULUM, getTotalLessonsCount } from '@/lib/curriculum';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { 
   ChevronLeft, 
   BookOpen,
@@ -14,6 +14,10 @@ import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
+import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
+import { TiltCard } from '@/components/animations/TiltCard';
+import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
+import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 
 const levelIcons: Record<string, React.ElementType> = {
   'A1': BookOpen,
@@ -32,6 +36,7 @@ const levelColors: Record<string, string> = {
 const Courses = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading } = useAuth();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -42,7 +47,13 @@ const Courses = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-primary text-xl">جاري التحميل...</div>
+        <motion.div 
+          className="text-primary text-xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          جاري التحميل...
+        </motion.div>
       </div>
     );
   }
@@ -58,33 +69,49 @@ const Courses = () => {
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Placement Test Banner */}
         {!profile?.has_taken_placement && (
-          <Card className="mb-6 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/placement-test')}>
-            <CardContent className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-                  <GraduationCap className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <div className="font-bold text-foreground">اختبار تحديد المستوى</div>
-                  <div className="text-sm text-muted-foreground">اكتشف مستواك وابدأ من المكان المناسب</div>
-                </div>
-              </div>
-              <ChevronLeft className="w-5 h-5 text-primary" />
-            </CardContent>
-          </Card>
+          <FadeUp>
+            <motion.div
+              whileHover={prefersReducedMotion ? {} : { scale: 1.02 }}
+              whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+            >
+              <Card 
+                className="mb-6 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 cursor-pointer hover:shadow-lg transition-shadow" 
+                onClick={() => navigate('/placement-test')}
+              >
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <motion.div 
+                      className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center"
+                      animate={prefersReducedMotion ? {} : { rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                    >
+                      <GraduationCap className="w-6 h-6 text-primary" />
+                    </motion.div>
+                    <div>
+                      <div className="font-bold text-foreground">اختبار تحديد المستوى</div>
+                      <div className="text-sm text-muted-foreground">اكتشف مستواك وابدأ من المكان المناسب</div>
+                    </div>
+                  </div>
+                  <ChevronLeft className="w-5 h-5 text-primary" />
+                </CardContent>
+              </Card>
+            </motion.div>
+          </FadeUp>
         )}
 
         {/* Page Title */}
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-2">مستويات التعلم</h2>
-          <p className="text-muted-foreground">
-            {totalLessons} درس في 4 مستويات - من المبتدئ إلى المتقدم
-          </p>
-        </div>
+        <FadeUp delay={0.1}>
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-foreground mb-2">مستويات التعلم</h2>
+            <p className="text-muted-foreground">
+              {totalLessons} درس في 4 مستويات - من المبتدئ إلى المتقدم
+            </p>
+          </div>
+        </FadeUp>
 
         {/* Levels Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {CURRICULUM.map((level) => {
+        <StaggerContainer className="grid gap-6 md:grid-cols-2">
+          {CURRICULUM.map((level, index) => {
             const IconComponent = levelIcons[level.code] || BookOpen;
             const totalUnits = level.units.length;
             const totalLevelLessons = level.units.reduce((sum, unit) => sum + unit.lessons.length, 0);
@@ -92,51 +119,71 @@ const Courses = () => {
             const progress = 0;
 
             return (
-              <Card
-                key={level.id}
-                onClick={() => navigate(`/courses/${level.code.toLowerCase()}`)}
-                className="group cursor-pointer overflow-hidden hover:shadow-elevated hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Gradient Header */}
-                <div className={cn("h-24 bg-gradient-to-br flex items-center justify-center", levelColors[level.code])}>
-                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <IconComponent className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-
-                <CardContent className="p-5">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={cn(
-                          "text-xs font-bold px-2 py-0.5 rounded-full",
-                          level.code === 'A1' && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-                          level.code === 'A2' && "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
-                          level.code === 'B1' && "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
-                          level.code === 'B2' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-                        )}>
-                          {level.code}
-                        </span>
-                        <h3 className="text-lg font-bold text-foreground">{level.titleAr}</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground ltr-text">{level.titleEn}</p>
+              <StaggerItem key={level.id}>
+                <TiltCard
+                  onClick={() => navigate(`/courses/${level.code.toLowerCase()}`)}
+                  className="h-full"
+                >
+                  <Card className="group cursor-pointer overflow-hidden hover:shadow-elevated transition-all duration-300 h-full">
+                    {/* Gradient Header */}
+                    <div className={cn("h-24 bg-gradient-to-br flex items-center justify-center relative overflow-hidden", levelColors[level.code])}>
+                      <motion.div 
+                        className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                        whileHover={prefersReducedMotion ? {} : { scale: 1.1, rotate: 5 }}
+                        transition={{ type: 'spring', stiffness: 300 }}
+                      >
+                        <IconComponent className="w-8 h-8 text-white" />
+                      </motion.div>
+                      
+                      {/* Shine effect */}
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                        initial={{ x: '-100%' }}
+                        whileHover={prefersReducedMotion ? {} : { x: '100%' }}
+                        transition={{ duration: 0.6 }}
+                      />
                     </div>
-                    <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
 
-                  <p className="text-sm text-muted-foreground mb-4">{level.descriptionAr}</p>
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={cn(
+                              "text-xs font-bold px-2 py-0.5 rounded-full",
+                              level.code === 'A1' && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+                              level.code === 'A2' && "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+                              level.code === 'B1' && "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+                              level.code === 'B2' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+                            )}>
+                              {level.code}
+                            </span>
+                            <h3 className="text-lg font-bold text-foreground">{level.titleAr}</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground ltr-text">{level.titleEn}</p>
+                        </div>
+                        <motion.div
+                          whileHover={prefersReducedMotion ? {} : { x: -4 }}
+                          transition={{ type: 'spring', stiffness: 300 }}
+                        >
+                          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </motion.div>
+                      </div>
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                    <span>{totalUnits} وحدات</span>
-                    <span>{totalLevelLessons} درس</span>
-                  </div>
+                      <p className="text-sm text-muted-foreground mb-4">{level.descriptionAr}</p>
 
-                  <Progress value={progress} className="h-2" />
-                </CardContent>
-              </Card>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                        <span>{totalUnits} وحدات</span>
+                        <span>{totalLevelLessons} درس</span>
+                      </div>
+
+                      <AnimatedProgress value={progress} />
+                    </CardContent>
+                  </Card>
+                </TiltCard>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </main>
       </div>
     </PageBackground>
