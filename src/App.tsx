@@ -22,6 +22,7 @@ import LeaderboardPage from "./pages/LeaderboardPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import Notifications from "./pages/Notifications";
 import Admin from "./pages/Admin";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/challenges" element={<ChallengesPage />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
