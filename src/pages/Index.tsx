@@ -1,9 +1,11 @@
+import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
+import { motion } from 'framer-motion';
 
 // Import feature illustrations
 import featureLessons from '@/assets/feature-lessons.png';
@@ -18,27 +20,36 @@ interface FeatureCardProps {
   delay: number;
 }
 
-const FeatureCard = ({ image, titleAr, titleEn, delay }: FeatureCardProps) => (
-  <div 
-    className="group relative bg-gradient-to-b from-[hsl(195_85%_97%)] to-[hsl(195_80%_92%)] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 animate-slide-up"
-    style={{ animationDelay: `${delay}ms` }}
-  >
-    {/* Card content */}
-    <div className="p-6 pb-0">
-      <h3 className="text-xl font-bold text-foreground mb-1">{titleAr}</h3>
-      <p className="text-sm text-muted-foreground ltr-text">{titleEn}</p>
-    </div>
-    
-    {/* Illustration container */}
-    <div className="relative h-48 md:h-56 flex items-end justify-center overflow-hidden">
-      <img 
-        src={image} 
-        alt={titleEn}
-        className="w-full h-full object-contain object-bottom transform group-hover:scale-105 transition-transform duration-300"
-      />
-    </div>
-  </div>
+const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
+  ({ image, titleAr, titleEn, delay }, ref) => (
+    <motion.div 
+      ref={ref}
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group relative bg-gradient-to-b from-[hsl(195_85%_97%)] to-[hsl(195_80%_92%)] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+    >
+      {/* Card content */}
+      <div className="p-6 pb-0">
+        <h3 className="text-xl font-bold text-foreground mb-1">{titleAr}</h3>
+        <p className="text-sm text-muted-foreground ltr-text">{titleEn}</p>
+      </div>
+      
+      {/* Illustration container */}
+      <div className="relative h-48 md:h-56 flex items-end justify-center overflow-hidden">
+        <img 
+          src={image} 
+          alt={titleEn}
+          className="w-full h-full object-contain object-bottom transform group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+    </motion.div>
+  )
 );
+
+FeatureCard.displayName = 'FeatureCard';
 
 const Index = () => {
   const navigate = useNavigate();

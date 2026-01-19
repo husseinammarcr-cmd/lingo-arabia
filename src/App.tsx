@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AnimatedCursor } from "@/components/animations/AnimatedCursor";
+import { useLenis } from "@/hooks/useLenis";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Learn from "./pages/Learn";
@@ -27,38 +29,47 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Smooth scroll wrapper
+const SmoothScrollProvider = ({ children }: { children: React.ReactNode }) => {
+  useLenis();
+  return <>{children}</>;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AuthProvider>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/learn" element={<Navigate to="/courses" replace />} />
-              <Route path="/units" element={<Navigate to="/courses" replace />} />
-              <Route path="/learning" element={<Navigate to="/courses" replace />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/courses/:level" element={<CourseLevel />} />
-              <Route path="/courses/:level/:unit" element={<CourseUnit />} />
-              <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
-              <Route path="/placement-test" element={<PlacementTest />} />
-              <Route path="/placement-test/start" element={<PlacementTestStart />} />
-              <Route path="/placement-test/result" element={<PlacementTestResult />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/premium" element={<Premium />} />
-              <Route path="/leaderboard" element={<LeaderboardPage />} />
-              <Route path="/challenges" element={<ChallengesPage />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <SmoothScrollProvider>
+            <AnimatedCursor />
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/learn" element={<Navigate to="/courses" replace />} />
+                <Route path="/units" element={<Navigate to="/courses" replace />} />
+                <Route path="/learning" element={<Navigate to="/courses" replace />} />
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:level" element={<CourseLevel />} />
+                <Route path="/courses/:level/:unit" element={<CourseUnit />} />
+                <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
+                <Route path="/placement-test" element={<PlacementTest />} />
+                <Route path="/placement-test/start" element={<PlacementTestStart />} />
+                <Route path="/placement-test/result" element={<PlacementTestResult />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/premium" element={<Premium />} />
+                <Route path="/leaderboard" element={<LeaderboardPage />} />
+                <Route path="/challenges" element={<ChallengesPage />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </SmoothScrollProvider>
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>
