@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { motion } from 'framer-motion';
+import { ThreeBackground } from '@/components/animations/ThreeBackground';
 
 // Import feature illustrations
 import featureLessons from '@/assets/feature-lessons.png';
@@ -80,7 +81,10 @@ const Index = () => {
 
   return (
     <PageBackground>
-      <div dir="rtl">
+      {/* 3D Particles Background */}
+      <ThreeBackground variant="particles" intensity="medium" />
+      
+      <div dir="rtl" className="relative z-10">
         {/* Header */}
         <Header showAuthButton />
 
