@@ -5,8 +5,9 @@ import { StreakWidget } from '@/components/StreakWidget';
 import { UserLevelBadge } from '@/components/UserLevelBadge';
 import { AchievementsGrid } from '@/components/AchievementsGrid';
 import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Crown, Trophy, Target, Star, Flame, BookOpen, Settings } from 'lucide-react';
+import { Trophy, Target, Star, Flame, BookOpen, Settings } from 'lucide-react';
 import Header from '@/components/Header';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
@@ -40,15 +41,18 @@ const Profile = () => {
             <CardContent className="p-6 relative">
               <div className="flex items-start gap-4">
                 {/* Avatar with animation */}
-                <motion.div 
+                <motion.div
                   className="relative flex-shrink-0"
                   initial={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 >
-                  <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center text-3xl font-bold text-primary-foreground">
-                    {profile?.display_name?.charAt(0) || profile?.name?.charAt(0) || 'U'}
-                  </div>
+                  <Avatar className="w-20 h-20 border-4 border-primary/20">
+                    <AvatarImage src={profile?.avatar_url || ''} alt="صورة المستخدم" />
+                    <AvatarFallback className="bg-gradient-primary text-3xl font-bold text-primary-foreground">
+                      {profile?.display_name?.charAt(0) || profile?.name?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
                   <span className="absolute -bottom-1 -right-1 text-2xl">
                     {getFlagEmoji(profile?.country_code || null)}
                   </span>
@@ -70,18 +74,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              {!profile?.is_premium && (
-                <MagneticButton className="w-full mt-4">
-                  <Button 
-                    variant="default" 
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600" 
-                    onClick={() => navigate('/premium')}
-                  >
-                    <Crown className="w-4 h-4 ml-2" /> 
-                    ترقية إلى Premium
-                  </Button>
-                </MagneticButton>
-              )}
+
             </CardContent>
           </Card>
         </FadeUp>
