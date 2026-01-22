@@ -1108,6 +1108,17 @@ export const A1_LESSONS_CONTENT: Record<string, LessonContent> = {
   'A1-u05-l05': A1_U5_L5,
 };
 
+// Import A2 and B1 lessons for unified access
+import { A2_LESSONS_CONTENT } from './a2-lessons';
+import { B1_LESSONS_CONTENT } from './b1-lessons';
+
+// Unified lesson content registry
+export const ALL_LESSONS_CONTENT: Record<string, LessonContent> = {
+  ...A1_LESSONS_CONTENT,
+  ...A2_LESSONS_CONTENT,
+  ...B1_LESSONS_CONTENT,
+};
+
 export function getLessonContent(lessonId: string): LessonContent | undefined {
-  return A1_LESSONS_CONTENT[lessonId];
+  return ALL_LESSONS_CONTENT[lessonId];
 }

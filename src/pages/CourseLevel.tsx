@@ -112,15 +112,20 @@ const CourseLevel = () => {
       .map(p => p.lesson_id);
   }, [progressData]);
 
-  // Compute unit progress for this level
+  // Compute unit progress for this level with placement level awareness
   const unitProgressMap = useMemo(() => {
     if (!levelParam) return {};
-    const progressList = getUnitProgress(levelParam, completedLessonIds);
+    const progressList = getUnitProgress(
+      levelParam, 
+      completedLessonIds,
+      profile?.placement_level,
+      profile?.current_level
+    );
     return progressList.reduce((acc, up) => {
       acc[up.unitId] = up;
       return acc;
     }, {} as Record<string, ReturnType<typeof getUnitProgress>[0]>);
-  }, [levelParam, completedLessonIds]);
+  }, [levelParam, completedLessonIds, profile?.placement_level, profile?.current_level]);
 
   useEffect(() => {
     if (!isLoading && !user) {
