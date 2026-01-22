@@ -12,7 +12,8 @@ import {
   MessageSquare,
   FileText,
   LayoutDashboard, 
-  User, 
+  User,
+  Settings, 
   LogOut, 
   LogIn, 
   UserPlus 
@@ -42,6 +43,7 @@ const navItems: NavItem[] = [
 const authNavItems: NavItem[] = [
   { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
   { label: 'Profile', labelAr: 'الملف الشخصي', href: '/profile', icon: <User className="w-5 h-5" />, requiresAuth: true },
+  { label: 'Settings', labelAr: 'الإعدادات', href: '/settings', icon: <Settings className="w-5 h-5" />, requiresAuth: true },
 ];
 
 const guestNavItems: NavItem[] = [
