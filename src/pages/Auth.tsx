@@ -58,7 +58,7 @@ const Auth = () => {
           title: 'تم إنشاء الحساب بنجاح! ✉️', 
           description: 'يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك' 
         });
-        navigate('/onboarding');
+        navigate('/email-verification');
       } else if (view === 'forgot-password') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
