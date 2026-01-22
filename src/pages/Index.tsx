@@ -54,7 +54,14 @@ FeatureCard.displayName = 'FeatureCard';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile, isLoading } = useAuth();
+
+  // Redirect to onboarding if user hasn't completed it (e.g., Google sign-in users)
+  React.useEffect(() => {
+    if (!isLoading && user && profile && !profile.onboarding_completed) {
+      navigate('/onboarding');
+    }
+  }, [user, profile, isLoading, navigate]);
 
   const features = [
     { 
