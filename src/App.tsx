@@ -7,7 +7,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AnimatedCursor } from "@/components/animations/AnimatedCursor";
 import { useLenis } from "@/hooks/useLenis";
-import RequireOnboarding from "./components/RequireOnboarding";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Learn from "./pages/Learn";
@@ -27,7 +26,6 @@ import ChallengesPage from "./pages/ChallengesPage";
 import Notifications from "./pages/Notifications";
 import Admin from "./pages/Admin";
 import ResetPassword from "./pages/ResetPassword";
-import EmailVerification from "./pages/EmailVerification";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
@@ -59,11 +57,26 @@ const App = () => (
             <BrowserRouter>
               <SidebarNav />
               <Routes>
-                {/* Public pages - no onboarding required */}
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/learn" element={<Navigate to="/courses" replace />} />
+                <Route path="/units" element={<Navigate to="/courses" replace />} />
+                <Route path="/learning" element={<Navigate to="/courses" replace />} />
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:level" element={<CourseLevel />} />
+                <Route path="/courses/:level/:unit" element={<CourseUnit />} />
+                <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
+                <Route path="/placement-test" element={<PlacementTest />} />
+                <Route path="/placement-test/start" element={<PlacementTestStart />} />
+                <Route path="/placement-test/result" element={<PlacementTestResult />} />
                 <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/email-verification" element={<EmailVerification />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+                
+                <Route path="/leaderboard" element={<LeaderboardPage />} />
+                <Route path="/challenges" element={<ChallengesPage />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/faq" element={<FAQ />} />
@@ -73,25 +86,6 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsAndConditions />} />
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
-                
-                {/* Protected pages - require onboarding completion */}
-                <Route path="/learn" element={<RequireOnboarding><Navigate to="/courses" replace /></RequireOnboarding>} />
-                <Route path="/units" element={<RequireOnboarding><Navigate to="/courses" replace /></RequireOnboarding>} />
-                <Route path="/learning" element={<RequireOnboarding><Navigate to="/courses" replace /></RequireOnboarding>} />
-                <Route path="/courses" element={<RequireOnboarding><Courses /></RequireOnboarding>} />
-                <Route path="/courses/:level" element={<RequireOnboarding><CourseLevel /></RequireOnboarding>} />
-                <Route path="/courses/:level/:unit" element={<RequireOnboarding><CourseUnit /></RequireOnboarding>} />
-                <Route path="/lesson/:lessonId" element={<RequireOnboarding><LessonPlayer /></RequireOnboarding>} />
-                <Route path="/placement-test" element={<RequireOnboarding><PlacementTest /></RequireOnboarding>} />
-                <Route path="/placement-test/start" element={<RequireOnboarding><PlacementTestStart /></RequireOnboarding>} />
-                <Route path="/placement-test/result" element={<RequireOnboarding><PlacementTestResult /></RequireOnboarding>} />
-                <Route path="/profile" element={<RequireOnboarding><Profile /></RequireOnboarding>} />
-                <Route path="/settings" element={<RequireOnboarding><Settings /></RequireOnboarding>} />
-                <Route path="/leaderboard" element={<RequireOnboarding><LeaderboardPage /></RequireOnboarding>} />
-                <Route path="/challenges" element={<RequireOnboarding><ChallengesPage /></RequireOnboarding>} />
-                <Route path="/notifications" element={<RequireOnboarding><Notifications /></RequireOnboarding>} />
-                <Route path="/admin" element={<RequireOnboarding><Admin /></RequireOnboarding>} />
-                
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

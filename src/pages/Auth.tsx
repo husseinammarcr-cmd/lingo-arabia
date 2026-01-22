@@ -58,7 +58,7 @@ const Auth = () => {
           title: 'تم إنشاء الحساب بنجاح! ✉️', 
           description: 'يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك' 
         });
-        navigate('/email-verification');
+        navigate('/onboarding');
       } else if (view === 'forgot-password') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
@@ -72,21 +72,11 @@ const Auth = () => {
       }
     } catch (error: any) {
       let errorMessage = error.message;
-      const lowerMessage = error.message?.toLowerCase() || '';
-      
-      if (lowerMessage.includes('user already registered')) {
+      if (error.message.includes('User already registered')) {
         errorMessage = 'هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول بدلاً من ذلك.';
-      } else if (lowerMessage.includes('invalid login credentials')) {
+      } else if (error.message.includes('Invalid login credentials')) {
         errorMessage = 'بيانات الدخول غير صحيحة. تحقق من البريد الإلكتروني وكلمة المرور.';
-      } else if (lowerMessage.includes('email rate limit') || lowerMessage.includes('email link')) {
-        errorMessage = 'تم تجاوز حد إرسال البريد الإلكتروني. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.';
-      } else if (lowerMessage.includes('rate limit') || lowerMessage.includes('too many requests')) {
-        errorMessage = 'تم تجاوز الحد المسموح للمحاولات. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.';
-      } else if (lowerMessage.includes('network') || lowerMessage.includes('fetch')) {
-        errorMessage = 'خطأ في الاتصال. يرجى التحقق من اتصالك بالإنترنت.';
       }
-      
-      console.error('Auth error:', error.message);
       toast({ title: 'خطأ', description: errorMessage, variant: 'destructive' });
     } finally {
       setLoading(false);
