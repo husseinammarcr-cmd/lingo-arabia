@@ -6,9 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { 
   ChevronLeft, 
   BookOpen,
-  Trophy,
-  GraduationCap,
-  Rocket
+  GraduationCap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
@@ -19,18 +17,24 @@ import { TiltCard } from '@/components/animations/TiltCard';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 
-const levelIcons: Record<string, React.ElementType> = {
-  'A1': BookOpen,
-  'A2': Trophy,
-  'B1': GraduationCap,
-  'B2': Rocket,
-};
+// Import level illustrations
+import levelA1Books from '@/assets/level-a1-books.jpeg';
+import levelA2Books from '@/assets/level-a2-books.jpeg';
+import levelB1Books from '@/assets/level-b1-books.jpeg';
+import levelB2Books from '@/assets/level-b2-books.jpeg';
 
 const levelColors: Record<string, string> = {
   'A1': 'from-emerald-500 to-emerald-600',
   'A2': 'from-sky-500 to-sky-600',
   'B1': 'from-violet-500 to-violet-600',
   'B2': 'from-amber-500 to-amber-600',
+};
+
+const levelImages: Record<string, string> = {
+  'A1': levelA1Books,
+  'A2': levelA2Books,
+  'B1': levelB1Books,
+  'B2': levelB2Books,
 };
 
 const Courses = () => {
@@ -112,11 +116,11 @@ const Courses = () => {
         {/* Levels Grid */}
         <StaggerContainer className="grid gap-6 md:grid-cols-2">
           {CURRICULUM.map((level, index) => {
-            const IconComponent = levelIcons[level.code] || BookOpen;
             const totalUnits = level.units.length;
             const totalLevelLessons = level.units.reduce((sum, unit) => sum + unit.lessons.length, 0);
             // Placeholder progress - would come from user data
             const progress = 0;
+            const levelImage = levelImages[level.code];
 
             return (
               <StaggerItem key={level.id}>
@@ -125,15 +129,24 @@ const Courses = () => {
                   className="h-full"
                 >
                   <Card className="group cursor-pointer overflow-hidden hover:shadow-elevated transition-all duration-300 h-full">
-                    {/* Gradient Header */}
-                    <div className={cn("h-24 bg-gradient-to-br flex items-center justify-center relative overflow-hidden", levelColors[level.code])}>
-                      <motion.div 
-                        className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
-                        whileHover={prefersReducedMotion ? {} : { scale: 1.1, rotate: 5 }}
-                        transition={{ type: 'spring', stiffness: 300 }}
-                      >
-                        <IconComponent className="w-8 h-8 text-white" />
-                      </motion.div>
+                    {/* Gradient Header with Illustration */}
+                    <div className={cn("h-28 sm:h-32 bg-gradient-to-br relative overflow-hidden", levelColors[level.code])}>
+                      {/* Background Image */}
+                      <img 
+                        src={levelImage} 
+                        alt={`${level.code} illustration`}
+                        className="absolute inset-0 w-full h-full object-cover opacity-90"
+                      />
+                      
+                      {/* Overlay for better blending */}
+                      <div className={cn("absolute inset-0 bg-gradient-to-t from-black/10 to-transparent")} />
+                      
+                      {/* Level Badge */}
+                      <div className="absolute top-3 right-3">
+                        <span className="text-sm font-bold px-3 py-1 rounded-full bg-white/90 text-foreground shadow-sm">
+                          {level.code}
+                        </span>
+                      </div>
                       
                       {/* Shine effect */}
                       <motion.div 
@@ -148,15 +161,6 @@ const Courses = () => {
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={cn(
-                              "text-xs font-bold px-2 py-0.5 rounded-full",
-                              level.code === 'A1' && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-                              level.code === 'A2' && "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
-                              level.code === 'B1' && "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
-                              level.code === 'B2' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-                            )}>
-                              {level.code}
-                            </span>
                             <h3 className="text-lg font-bold text-foreground">{level.titleAr}</h3>
                           </div>
                           <p className="text-sm text-muted-foreground ltr-text">{level.titleEn}</p>
