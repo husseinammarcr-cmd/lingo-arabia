@@ -1071,6 +1071,11 @@ export const A1_U2_L5: LessonContent = {
   ]
 };
 
+// Import additional units
+import { A1_U3_L1, A1_U3_L2, A1_U3_L3, A1_U3_L4, A1_U3_L5 } from './a1-lessons-unit3';
+import { A1_U4_L1, A1_U4_L2, A1_U4_L3, A1_U4_L4, A1_U4_L5 } from './a1-lessons-unit4';
+import { A1_U5_L1, A1_U5_L2, A1_U5_L3, A1_U5_L4, A1_U5_L5 } from './a1-lessons-unit5';
+
 // Export all lessons in a map for easy access
 export const A1_LESSONS_CONTENT: Record<string, LessonContent> = {
   'A1-u01-l01': A1_U1_L1,
@@ -1083,6 +1088,24 @@ export const A1_LESSONS_CONTENT: Record<string, LessonContent> = {
   'A1-u02-l03': A1_U2_L3,
   'A1-u02-l04': A1_U2_L4,
   'A1-u02-l05': A1_U2_L5,
+  // Unit 3: Family & Home
+  'A1-u03-l01': A1_U3_L1,
+  'A1-u03-l02': A1_U3_L2,
+  'A1-u03-l03': A1_U3_L3,
+  'A1-u03-l04': A1_U3_L4,
+  'A1-u03-l05': A1_U3_L5,
+  // Unit 4: School & Work
+  'A1-u04-l01': A1_U4_L1,
+  'A1-u04-l02': A1_U4_L2,
+  'A1-u04-l03': A1_U4_L3,
+  'A1-u04-l04': A1_U4_L4,
+  'A1-u04-l05': A1_U4_L5,
+  // Unit 5: Food & Drinks
+  'A1-u05-l01': A1_U5_L1,
+  'A1-u05-l02': A1_U5_L2,
+  'A1-u05-l03': A1_U5_L3,
+  'A1-u05-l04': A1_U5_L4,
+  'A1-u05-l05': A1_U5_L5,
 };
 
 export function getLessonContent(lessonId: string): LessonContent | undefined {
