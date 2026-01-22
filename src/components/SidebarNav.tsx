@@ -9,6 +9,7 @@ import {
   Layers, 
   Info, 
   HelpCircle,
+  MessageSquare,
   LayoutDashboard, 
   User, 
   LogOut, 
@@ -33,6 +34,7 @@ const navItems: NavItem[] = [
   { label: 'Levels', labelAr: 'المستويات', href: '/learn', icon: <Layers className="w-5 h-5" /> },
   { label: 'About', labelAr: 'من نحن', href: '/about', icon: <Info className="w-5 h-5" /> },
   { label: 'FAQ', labelAr: 'الأسئلة الشائعة', href: '/faq', icon: <HelpCircle className="w-5 h-5" /> },
+  { label: 'Contact', labelAr: 'تواصل معنا', href: '/contact', icon: <MessageSquare className="w-5 h-5" /> },
 ];
 
 const authNavItems: NavItem[] = [
