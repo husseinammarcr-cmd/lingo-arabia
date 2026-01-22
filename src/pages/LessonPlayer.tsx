@@ -156,10 +156,11 @@ const LessonPlayer = () => {
     }
   }, [user, isLoading, navigate]);
 
-  // Calculate pass status
+  // Calculate pass status - passing threshold is 50%
   const calculatePassed = useCallback(() => {
     if (!lessonContent || quizTotal === 0) return true;
-    return (quizScore / quizTotal) * 100 >= lessonContent.passingScore;
+    const passingThreshold = 50; // Fixed at 50% for all lessons
+    return (quizScore / quizTotal) * 100 >= passingThreshold;
   }, [lessonContent, quizScore, quizTotal]);
 
   // Save to DB when lesson completes (only if passed)
