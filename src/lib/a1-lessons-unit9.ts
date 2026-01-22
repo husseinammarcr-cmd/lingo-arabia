@@ -1,675 +1,220 @@
 // A1 Unit 9: Shopping - التسوق
 import { LessonContent } from './a1-lessons';
 
-const unit9Lesson1: LessonContent = {
-  id: 'A1-u09-l01',
-  unitId: 'A1-u09',
-  title_en: 'At the Store',
-  title_ar: 'في المتجر',
-  vocabulary: [
-    { en: 'store', ar: 'متجر' },
-    { en: 'shop', ar: 'محل' },
-    { en: 'buy', ar: 'يشتري' },
-    { en: 'sell', ar: 'يبيع' },
-    { en: 'price', ar: 'سعر' },
-    { en: 'cheap', ar: 'رخيص' },
-    { en: 'expensive', ar: 'غالي' },
-    { en: 'discount', ar: 'خصم' },
-    { en: 'sale', ar: 'تخفيضات' },
-    { en: 'cashier', ar: 'أمين الصندوق' }
+export const A1_U9_L1: LessonContent = {
+  lessonId: 'A1-u09-l01',
+  passingScore: 70,
+  vocab: [
+    { english: 'Store', arabic: 'متجر', example: 'I go to the store.', exampleAr: 'أذهب إلى المتجر.' },
+    { english: 'Shop', arabic: 'محل', example: 'This is a nice shop.', exampleAr: 'هذا محل جميل.' },
+    { english: 'Buy', arabic: 'يشتري', example: 'I want to buy a shirt.', exampleAr: 'أريد أن أشتري قميصاً.' },
+    { english: 'Sell', arabic: 'يبيع', example: 'They sell clothes.', exampleAr: 'يبيعون ملابس.' },
+    { english: 'Price', arabic: 'سعر', example: 'What is the price?', exampleAr: 'ما السعر؟' },
+    { english: 'Cheap', arabic: 'رخيص', example: 'This is cheap.', exampleAr: 'هذا رخيص.' },
+    { english: 'Expensive', arabic: 'غالي', example: 'This is too expensive.', exampleAr: 'هذا غالي جداً.' },
+    { english: 'Discount', arabic: 'خصم', example: 'Can I get a discount?', exampleAr: 'هل يمكنني الحصول على خصم؟' },
+    { english: 'Sale', arabic: 'تخفيضات', example: 'There is a big sale.', exampleAr: 'هناك تخفيضات كبيرة.' },
+    { english: 'Cashier', arabic: 'أمين الصندوق', example: 'Pay at the cashier.', exampleAr: 'ادفع عند أمين الصندوق.' },
   ],
   sentences: [
-    { en: 'I go to the store every week.', ar: 'أذهب إلى المتجر كل أسبوع.' },
-    { en: 'I want to buy a new shirt.', ar: 'أريد أن أشتري قميصاً جديداً.' },
-    { en: 'What is the price of this?', ar: 'ما سعر هذا؟' },
-    { en: 'This is too expensive.', ar: 'هذا غالي جداً.' },
-    { en: 'There is a big sale today.', ar: 'هناك تخفيضات كبيرة اليوم.' },
-    { en: 'Can I get a discount?', ar: 'هل يمكنني الحصول على خصم؟' }
+    { english: 'I go to the store every week.', arabic: 'أذهب إلى المتجر كل أسبوع.' },
+    { english: 'I want to buy a new shirt.', arabic: 'أريد أن أشتري قميصاً جديداً.' },
+    { english: 'What is the price of this?', arabic: 'ما سعر هذا؟' },
+    { english: 'This is too expensive.', arabic: 'هذا غالي جداً.' },
+    { english: 'There is a big sale today.', arabic: 'هناك تخفيضات كبيرة اليوم.' },
+    { english: 'Can I get a discount?', arabic: 'هل يمكنني الحصول على خصم؟' },
   ],
   exercises: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "store" in Arabic?',
-      prompt_ar: 'ما هي "store" بالعربية؟',
-      options: ['سوق', 'متجر', 'مطعم', 'بنك'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "يشتري" in English?',
-      prompt_ar: 'ما هي "يشتري" بالإنجليزية؟',
-      options: ['sell', 'buy', 'pay', 'take'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'I want to ___ a new shirt. (buy)',
-      prompt_ar: 'أريد أن ___ قميصاً جديداً.',
-      answer: 'buy'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the shopping words',
-      prompt_ar: 'طابق كلمات التسوق',
-      pairs: [
-        { en: 'price', ar: 'سعر' },
-        { en: 'cheap', ar: 'رخيص' },
-        { en: 'expensive', ar: 'غالي' },
-        { en: 'discount', ar: 'خصم' }
-      ]
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: is / the / What / this / price / of',
-      prompt_ar: 'رتب الكلمات',
-      words: ['is', 'the', 'What', 'this', 'price', 'of'],
-      correctOrder: ['What', 'is', 'the', 'price', 'of', 'this']
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is the opposite of "cheap"?',
-      prompt_ar: 'ما عكس "رخيص"؟',
-      options: ['expensive', 'new', 'big', 'small'],
-      correctIndex: 0
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'This is too ___. (expensive)',
-      prompt_ar: 'هذا ___ جداً.',
-      answer: 'expensive'
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "تخفيضات" in English?',
-      prompt_ar: 'ما هي "تخفيضات" بالإنجليزية؟',
-      options: ['discount', 'sale', 'price', 'shop'],
-      correctIndex: 1
-    }
+    { type: 'mcq', promptAr: 'ما معنى "store"؟', data: { options: ['سوق', 'متجر', 'مطعم', 'بنك'], correct: 1 } },
+    { type: 'mcq', promptAr: 'كيف تقول "يشتري" بالإنجليزية؟', data: { options: ['sell', 'buy', 'pay', 'take'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: I want to ___ a new shirt. (أشتري)', data: { answer: 'buy' } },
+    { type: 'matching', promptAr: 'طابق كلمات التسوق', data: { pairs: [{ english: 'price', arabic: 'سعر' }, { english: 'cheap', arabic: 'رخيص' }, { english: 'expensive', arabic: 'غالي' }, { english: 'discount', arabic: 'خصم' }] } },
+    { type: 'reorder', promptAr: 'رتب: is / the / What / this / price / of', data: { words: ['What', 'is', 'the', 'price', 'of', 'this'], correctOrder: [0, 1, 2, 3, 4, 5] } },
+    { type: 'mcq', promptAr: 'ما عكس "cheap"؟', data: { options: ['expensive', 'new', 'big', 'small'], correct: 0 } },
+    { type: 'fill_blank', promptAr: 'أكمل: This is too ___. (غالي)', data: { answer: 'expensive' } },
+    { type: 'translation', promptAr: 'ترجم: هناك تخفيضات كبيرة اليوم', data: { answer: 'There is a big sale today', alternatives: ['there is a big sale today'] } },
   ],
   quiz: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "buy" in Arabic?',
-      prompt_ar: 'ما هي "buy" بالعربية؟',
-      options: ['يبيع', 'يشتري', 'يدفع', 'يأخذ'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "سعر" in English?',
-      prompt_ar: 'ما هي "سعر" بالإنجليزية؟',
-      options: ['sale', 'discount', 'price', 'money'],
-      correctIndex: 2
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'Can I get a ___? (discount)',
-      prompt_ar: 'هل يمكنني الحصول على ___؟',
-      answer: 'discount'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the words',
-      prompt_ar: 'طابق الكلمات',
-      pairs: [
-        { en: 'sell', ar: 'يبيع' },
-        { en: 'shop', ar: 'محل' },
-        { en: 'cashier', ar: 'أمين الصندوق' }
-      ]
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "رخيص" in English?',
-      prompt_ar: 'ما هي "رخيص" بالإنجليزية؟',
-      options: ['expensive', 'cheap', 'new', 'old'],
-      correctIndex: 1
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: today / sale / is / big / There / a',
-      prompt_ar: 'رتب الكلمات',
-      words: ['today', 'sale', 'is', 'big', 'There', 'a'],
-      correctOrder: ['There', 'is', 'a', 'big', 'sale', 'today']
-    }
+    { type: 'mcq', promptAr: 'ما معنى "buy"؟', data: { options: ['يبيع', 'يشتري', 'يدفع', 'يأخذ'], correct: 1 }, points: 15 },
+    { type: 'mcq', promptAr: 'كيف تقول "سعر" بالإنجليزية؟', data: { options: ['sale', 'discount', 'price', 'money'], correct: 2 }, points: 15 },
+    { type: 'fill_blank', promptAr: 'أكمل: Can I get a ___? (خصم)', data: { answer: 'discount' }, points: 20 },
+    { type: 'matching', promptAr: 'طابق الكلمات', data: { pairs: [{ english: 'sell', arabic: 'يبيع' }, { english: 'shop', arabic: 'محل' }, { english: 'cashier', arabic: 'أمين الصندوق' }] }, points: 25 },
+    { type: 'translation', promptAr: 'ترجم: أذهب إلى المتجر كل أسبوع', data: { answer: 'I go to the store every week', alternatives: ['i go to the store every week'] }, points: 25 },
   ]
 };
 
-const unit9Lesson2: LessonContent = {
-  id: 'A1-u09-l02',
-  unitId: 'A1-u09',
-  title_en: 'Clothes Shopping',
-  title_ar: 'شراء الملابس',
-  vocabulary: [
-    { en: 'clothes', ar: 'ملابس' },
-    { en: 'shirt', ar: 'قميص' },
-    { en: 'pants', ar: 'بنطال' },
-    { en: 'dress', ar: 'فستان' },
-    { en: 'shoes', ar: 'حذاء' },
-    { en: 'size', ar: 'مقاس' },
-    { en: 'try on', ar: 'يجرب' },
-    { en: 'fit', ar: 'يناسب' },
-    { en: 'color', ar: 'لون' },
-    { en: 'fitting room', ar: 'غرفة القياس' }
+export const A1_U9_L2: LessonContent = {
+  lessonId: 'A1-u09-l02',
+  passingScore: 70,
+  vocab: [
+    { english: 'Clothes', arabic: 'ملابس', example: 'I need new clothes.', exampleAr: 'أحتاج ملابس جديدة.' },
+    { english: 'Shirt', arabic: 'قميص', example: 'This shirt is nice.', exampleAr: 'هذا القميص جميل.' },
+    { english: 'Pants', arabic: 'بنطال', example: 'These pants fit well.', exampleAr: 'هذا البنطال مناسب.' },
+    { english: 'Dress', arabic: 'فستان', example: 'She bought a dress.', exampleAr: 'اشترت فستاناً.' },
+    { english: 'Shoes', arabic: 'حذاء', example: 'I need new shoes.', exampleAr: 'أحتاج حذاءً جديداً.' },
+    { english: 'Size', arabic: 'مقاس', example: 'What size do you wear?', exampleAr: 'ما مقاسك؟' },
+    { english: 'Try on', arabic: 'يجرب', example: 'Can I try this on?', exampleAr: 'هل يمكنني تجربة هذا؟' },
+    { english: 'Fit', arabic: 'يناسب', example: 'This fits perfectly.', exampleAr: 'هذا يناسبني تماماً.' },
+    { english: 'Color', arabic: 'لون', example: 'I like this color.', exampleAr: 'أحب هذا اللون.' },
+    { english: 'Fitting room', arabic: 'غرفة القياس', example: 'Where is the fitting room?', exampleAr: 'أين غرفة القياس؟' },
   ],
   sentences: [
-    { en: 'I need new clothes.', ar: 'أحتاج ملابس جديدة.' },
-    { en: 'Can I try this on?', ar: 'هل يمكنني تجربة هذا؟' },
-    { en: 'What size do you wear?', ar: 'ما مقاسك؟' },
-    { en: 'This shirt fits perfectly.', ar: 'هذا القميص يناسبني تماماً.' },
-    { en: 'Where is the fitting room?', ar: 'أين غرفة القياس؟' },
-    { en: 'I like this color.', ar: 'أحب هذا اللون.' }
+    { english: 'I need new clothes.', arabic: 'أحتاج ملابس جديدة.' },
+    { english: 'Can I try this on?', arabic: 'هل يمكنني تجربة هذا؟' },
+    { english: 'What size do you wear?', arabic: 'ما مقاسك؟' },
+    { english: 'This shirt fits perfectly.', arabic: 'هذا القميص يناسبني تماماً.' },
+    { english: 'Where is the fitting room?', arabic: 'أين غرفة القياس؟' },
+    { english: 'I like this color.', arabic: 'أحب هذا اللون.' },
   ],
   exercises: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "clothes" in Arabic?',
-      prompt_ar: 'ما هي "clothes" بالعربية؟',
-      options: ['حذاء', 'ملابس', 'قميص', 'فستان'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "مقاس" in English?',
-      prompt_ar: 'ما هي "مقاس" بالإنجليزية؟',
-      options: ['color', 'price', 'size', 'fit'],
-      correctIndex: 2
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'I need new ___. (clothes)',
-      prompt_ar: 'أحتاج ___ جديدة.',
-      answer: 'clothes'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the clothes',
-      prompt_ar: 'طابق الملابس',
-      pairs: [
-        { en: 'shirt', ar: 'قميص' },
-        { en: 'pants', ar: 'بنطال' },
-        { en: 'dress', ar: 'فستان' },
-        { en: 'shoes', ar: 'حذاء' }
-      ]
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: on / try / this / I / Can',
-      prompt_ar: 'رتب الكلمات',
-      words: ['on', 'try', 'this', 'I', 'Can'],
-      correctOrder: ['Can', 'I', 'try', 'this', 'on']
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'Where do you try on clothes?',
-      prompt_ar: 'أين تجرب الملابس؟',
-      options: ['cashier', 'fitting room', 'entrance', 'exit'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'This shirt ___ perfectly. (fits)',
-      prompt_ar: 'هذا القميص ___ تماماً.',
-      answer: 'fits'
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "لون" in English?',
-      prompt_ar: 'ما هي "لون" بالإنجليزية؟',
-      options: ['size', 'color', 'fit', 'price'],
-      correctIndex: 1
-    }
+    { type: 'mcq', promptAr: 'ما معنى "clothes"؟', data: { options: ['حذاء', 'ملابس', 'قميص', 'فستان'], correct: 1 } },
+    { type: 'mcq', promptAr: 'كيف تقول "مقاس" بالإنجليزية؟', data: { options: ['color', 'price', 'size', 'fit'], correct: 2 } },
+    { type: 'fill_blank', promptAr: 'أكمل: I need new ___. (ملابس)', data: { answer: 'clothes' } },
+    { type: 'matching', promptAr: 'طابق الملابس', data: { pairs: [{ english: 'shirt', arabic: 'قميص' }, { english: 'pants', arabic: 'بنطال' }, { english: 'dress', arabic: 'فستان' }, { english: 'shoes', arabic: 'حذاء' }] } },
+    { type: 'reorder', promptAr: 'رتب: on / try / this / I / Can', data: { words: ['Can', 'I', 'try', 'this', 'on'], correctOrder: [0, 1, 2, 3, 4] } },
+    { type: 'mcq', promptAr: 'أين تجرب الملابس؟', data: { options: ['cashier', 'fitting room', 'entrance', 'exit'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: This shirt ___ perfectly. (يناسب)', data: { answer: 'fits' } },
+    { type: 'translation', promptAr: 'ترجم: أحب هذا اللون', data: { answer: 'I like this color', alternatives: ['i like this color'] } },
   ],
   quiz: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "shoes" in Arabic?',
-      prompt_ar: 'ما هي "shoes" بالعربية؟',
-      options: ['قميص', 'بنطال', 'حذاء', 'فستان'],
-      correctIndex: 2
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "يجرب" in English?',
-      prompt_ar: 'ما هي "يجرب" بالإنجليزية؟',
-      options: ['buy', 'try on', 'fit', 'wear'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'What ___ do you wear? (size)',
-      prompt_ar: 'ما ___؟',
-      answer: 'size'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the words',
-      prompt_ar: 'طابق الكلمات',
-      pairs: [
-        { en: 'fit', ar: 'يناسب' },
-        { en: 'color', ar: 'لون' },
-        { en: 'fitting room', ar: 'غرفة القياس' }
-      ]
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "فستان" in English?',
-      prompt_ar: 'ما هي "فستان" بالإنجليزية؟',
-      options: ['shirt', 'pants', 'dress', 'shoes'],
-      correctIndex: 2
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: color / like / this / I',
-      prompt_ar: 'رتب الكلمات',
-      words: ['color', 'like', 'this', 'I'],
-      correctOrder: ['I', 'like', 'this', 'color']
-    }
+    { type: 'mcq', promptAr: 'ما معنى "shoes"؟', data: { options: ['قميص', 'بنطال', 'حذاء', 'فستان'], correct: 2 }, points: 15 },
+    { type: 'mcq', promptAr: 'كيف تقول "يجرب" بالإنجليزية؟', data: { options: ['buy', 'try on', 'fit', 'wear'], correct: 1 }, points: 15 },
+    { type: 'fill_blank', promptAr: 'أكمل: What ___ do you wear? (مقاس)', data: { answer: 'size' }, points: 20 },
+    { type: 'matching', promptAr: 'طابق الكلمات', data: { pairs: [{ english: 'fit', arabic: 'يناسب' }, { english: 'color', arabic: 'لون' }, { english: 'fitting room', arabic: 'غرفة القياس' }] }, points: 25 },
+    { type: 'translation', promptAr: 'ترجم: أحتاج ملابس جديدة', data: { answer: 'I need new clothes', alternatives: ['i need new clothes'] }, points: 25 },
   ]
 };
 
-const unit9Lesson3: LessonContent = {
-  id: 'A1-u09-l03',
-  unitId: 'A1-u09',
-  title_en: 'Paying and Money',
-  title_ar: 'الدفع والمال',
-  vocabulary: [
-    { en: 'pay', ar: 'يدفع' },
-    { en: 'money', ar: 'مال' },
-    { en: 'cash', ar: 'نقد' },
-    { en: 'credit card', ar: 'بطاقة ائتمان' },
-    { en: 'receipt', ar: 'إيصال' },
-    { en: 'change', ar: 'باقي' },
-    { en: 'total', ar: 'المجموع' },
-    { en: 'wallet', ar: 'محفظة' },
-    { en: 'bill', ar: 'فاتورة' },
-    { en: 'ATM', ar: 'صراف آلي' }
+export const A1_U9_L3: LessonContent = {
+  lessonId: 'A1-u09-l03',
+  passingScore: 70,
+  vocab: [
+    { english: 'Pay', arabic: 'يدفع', example: 'How much do I pay?', exampleAr: 'كم أدفع؟' },
+    { english: 'Money', arabic: 'مال', example: 'I have money.', exampleAr: 'لدي مال.' },
+    { english: 'Cash', arabic: 'نقد', example: 'I pay in cash.', exampleAr: 'أدفع نقداً.' },
+    { english: 'Credit card', arabic: 'بطاقة ائتمان', example: 'I pay by credit card.', exampleAr: 'أدفع بالبطاقة الائتمانية.' },
+    { english: 'Receipt', arabic: 'إيصال', example: 'Here is your receipt.', exampleAr: 'هذا إيصالك.' },
+    { english: 'Change', arabic: 'باقي', example: 'Keep the change.', exampleAr: 'احتفظ بالباقي.' },
+    { english: 'Total', arabic: 'المجموع', example: 'The total is $50.', exampleAr: 'المجموع 50 دولار.' },
+    { english: 'Wallet', arabic: 'محفظة', example: 'My wallet is here.', exampleAr: 'محفظتي هنا.' },
+    { english: 'Bill', arabic: 'فاتورة', example: 'Here is the bill.', exampleAr: 'هذه الفاتورة.' },
+    { english: 'ATM', arabic: 'صراف آلي', example: 'I need an ATM.', exampleAr: 'أحتاج صرافاً آلياً.' },
   ],
   sentences: [
-    { en: 'How much do I pay?', ar: 'كم أدفع؟' },
-    { en: 'I will pay by credit card.', ar: 'سأدفع بالبطاقة الائتمانية.' },
-    { en: 'Can I pay in cash?', ar: 'هل يمكنني الدفع نقداً؟' },
-    { en: 'Here is your receipt.', ar: 'هذا إيصالك.' },
-    { en: 'The total is $50.', ar: 'المجموع 50 دولار.' },
-    { en: 'Keep the change.', ar: 'احتفظ بالباقي.' }
+    { english: 'How much do I pay?', arabic: 'كم أدفع؟' },
+    { english: 'I will pay by credit card.', arabic: 'سأدفع بالبطاقة الائتمانية.' },
+    { english: 'Can I pay in cash?', arabic: 'هل يمكنني الدفع نقداً؟' },
+    { english: 'Here is your receipt.', arabic: 'هذا إيصالك.' },
+    { english: 'The total is $50.', arabic: 'المجموع 50 دولار.' },
+    { english: 'Keep the change.', arabic: 'احتفظ بالباقي.' },
   ],
   exercises: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "pay" in Arabic?',
-      prompt_ar: 'ما هي "pay" بالعربية؟',
-      options: ['يشتري', 'يبيع', 'يدفع', 'يأخذ'],
-      correctIndex: 2
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "مال" in English?',
-      prompt_ar: 'ما هي "مال" بالإنجليزية؟',
-      options: ['cash', 'money', 'card', 'wallet'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'How much do I ___? (pay)',
-      prompt_ar: 'كم ___؟',
-      answer: 'pay'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the money words',
-      prompt_ar: 'طابق كلمات المال',
-      pairs: [
-        { en: 'cash', ar: 'نقد' },
-        { en: 'credit card', ar: 'بطاقة ائتمان' },
-        { en: 'receipt', ar: 'إيصال' },
-        { en: 'wallet', ar: 'محفظة' }
-      ]
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: card / pay / credit / will / I / by',
-      prompt_ar: 'رتب الكلمات',
-      words: ['card', 'pay', 'credit', 'will', 'I', 'by'],
-      correctOrder: ['I', 'will', 'pay', 'by', 'credit', 'card']
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What do you get after paying?',
-      prompt_ar: 'ماذا تحصل عليه بعد الدفع؟',
-      options: ['wallet', 'money', 'receipt', 'card'],
-      correctIndex: 2
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'The ___ is $50. (total)',
-      prompt_ar: '___ 50 دولار.',
-      answer: 'total'
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "باقي" in English?',
-      prompt_ar: 'ما هي "باقي" بالإنجليزية؟',
-      options: ['total', 'change', 'bill', 'receipt'],
-      correctIndex: 1
-    }
+    { type: 'mcq', promptAr: 'ما معنى "pay"؟', data: { options: ['يشتري', 'يبيع', 'يدفع', 'يأخذ'], correct: 2 } },
+    { type: 'mcq', promptAr: 'كيف تقول "مال" بالإنجليزية؟', data: { options: ['cash', 'money', 'card', 'wallet'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: How much do I ___? (أدفع)', data: { answer: 'pay' } },
+    { type: 'matching', promptAr: 'طابق كلمات المال', data: { pairs: [{ english: 'cash', arabic: 'نقد' }, { english: 'credit card', arabic: 'بطاقة ائتمان' }, { english: 'receipt', arabic: 'إيصال' }, { english: 'wallet', arabic: 'محفظة' }] } },
+    { type: 'reorder', promptAr: 'رتب: card / pay / credit / will / I / by', data: { words: ['I', 'will', 'pay', 'by', 'credit', 'card'], correctOrder: [0, 1, 2, 3, 4, 5] } },
+    { type: 'mcq', promptAr: 'ماذا تحصل عليه بعد الدفع؟', data: { options: ['wallet', 'money', 'receipt', 'card'], correct: 2 } },
+    { type: 'fill_blank', promptAr: 'أكمل: The ___ is $50. (المجموع)', data: { answer: 'total' } },
+    { type: 'translation', promptAr: 'ترجم: هذا إيصالك', data: { answer: 'Here is your receipt', alternatives: ['here is your receipt'] } },
   ],
   quiz: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "money" in Arabic?',
-      prompt_ar: 'ما هي "money" بالعربية؟',
-      options: ['نقد', 'مال', 'محفظة', 'بطاقة'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "نقد" in English?',
-      prompt_ar: 'ما هي "نقد" بالإنجليزية؟',
-      options: ['money', 'cash', 'card', 'change'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'Can I pay in ___? (cash)',
-      prompt_ar: 'هل يمكنني الدفع ___؟',
-      answer: 'cash'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the words',
-      prompt_ar: 'طابق الكلمات',
-      pairs: [
-        { en: 'change', ar: 'باقي' },
-        { en: 'total', ar: 'المجموع' },
-        { en: 'ATM', ar: 'صراف آلي' }
-      ]
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "فاتورة" in English?',
-      prompt_ar: 'ما هي "فاتورة" بالإنجليزية؟',
-      options: ['receipt', 'bill', 'change', 'total'],
-      correctIndex: 1
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: receipt / Here / your / is',
-      prompt_ar: 'رتب الكلمات',
-      words: ['receipt', 'Here', 'your', 'is'],
-      correctOrder: ['Here', 'is', 'your', 'receipt']
-    }
+    { type: 'mcq', promptAr: 'ما معنى "money"؟', data: { options: ['نقد', 'مال', 'محفظة', 'بطاقة'], correct: 1 }, points: 15 },
+    { type: 'mcq', promptAr: 'كيف تقول "نقد" بالإنجليزية؟', data: { options: ['money', 'cash', 'card', 'change'], correct: 1 }, points: 15 },
+    { type: 'fill_blank', promptAr: 'أكمل: Can I pay in ___? (نقد)', data: { answer: 'cash' }, points: 20 },
+    { type: 'matching', promptAr: 'طابق الكلمات', data: { pairs: [{ english: 'change', arabic: 'باقي' }, { english: 'total', arabic: 'المجموع' }, { english: 'ATM', arabic: 'صراف آلي' }] }, points: 25 },
+    { type: 'translation', promptAr: 'ترجم: سأدفع بالبطاقة الائتمانية', data: { answer: 'I will pay by credit card', alternatives: ['i will pay by credit card'] }, points: 25 },
   ]
 };
 
-const unit9Lesson4: LessonContent = {
-  id: 'A1-u09-l04',
-  unitId: 'A1-u09',
-  title_en: 'At the Supermarket',
-  title_ar: 'في السوبرماركت',
-  vocabulary: [
-    { en: 'cart', ar: 'عربة تسوق' },
-    { en: 'basket', ar: 'سلة' },
-    { en: 'aisle', ar: 'ممر' },
-    { en: 'shelf', ar: 'رف' },
-    { en: 'checkout', ar: 'كاشير' },
-    { en: 'bag', ar: 'كيس' },
-    { en: 'fresh', ar: 'طازج' },
-    { en: 'frozen', ar: 'مجمد' },
-    { en: 'organic', ar: 'عضوي' },
-    { en: 'list', ar: 'قائمة' }
+export const A1_U9_L4: LessonContent = {
+  lessonId: 'A1-u09-l04',
+  passingScore: 70,
+  vocab: [
+    { english: 'Cart', arabic: 'عربة تسوق', example: 'I need a shopping cart.', exampleAr: 'أحتاج عربة تسوق.' },
+    { english: 'Basket', arabic: 'سلة', example: 'I use a basket.', exampleAr: 'أستخدم سلة.' },
+    { english: 'Aisle', arabic: 'ممر', example: 'The fruits are in aisle 3.', exampleAr: 'الفواكه في الممر 3.' },
+    { english: 'Shelf', arabic: 'رف', example: 'It is on the shelf.', exampleAr: 'إنه على الرف.' },
+    { english: 'Checkout', arabic: 'كاشير', example: 'Where is the checkout?', exampleAr: 'أين الكاشير؟' },
+    { english: 'Bag', arabic: 'كيس', example: 'I need a bag.', exampleAr: 'أحتاج كيساً.' },
+    { english: 'Fresh', arabic: 'طازج', example: 'I buy fresh vegetables.', exampleAr: 'أشتري خضروات طازجة.' },
+    { english: 'Frozen', arabic: 'مجمد', example: 'The frozen food is here.', exampleAr: 'الطعام المجمد هنا.' },
+    { english: 'Organic', arabic: 'عضوي', example: 'I prefer organic food.', exampleAr: 'أفضل الطعام العضوي.' },
+    { english: 'List', arabic: 'قائمة', example: 'I have a shopping list.', exampleAr: 'لدي قائمة تسوق.' },
   ],
   sentences: [
-    { en: 'I need a shopping cart.', ar: 'أحتاج عربة تسوق.' },
-    { en: 'The fruits are in aisle 3.', ar: 'الفواكه في الممر 3.' },
-    { en: 'I always buy fresh vegetables.', ar: 'أشتري دائماً خضروات طازجة.' },
-    { en: 'Where is the checkout?', ar: 'أين الكاشير؟' },
-    { en: 'Do you have a shopping list?', ar: 'هل لديك قائمة تسوق؟' },
-    { en: 'I prefer organic food.', ar: 'أفضل الطعام العضوي.' }
+    { english: 'I need a shopping cart.', arabic: 'أحتاج عربة تسوق.' },
+    { english: 'The fruits are in aisle 3.', arabic: 'الفواكه في الممر 3.' },
+    { english: 'I always buy fresh vegetables.', arabic: 'أشتري دائماً خضروات طازجة.' },
+    { english: 'Where is the checkout?', arabic: 'أين الكاشير؟' },
+    { english: 'Do you have a shopping list?', arabic: 'هل لديك قائمة تسوق؟' },
+    { english: 'I prefer organic food.', arabic: 'أفضل الطعام العضوي.' },
   ],
   exercises: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "cart" in Arabic?',
-      prompt_ar: 'ما هي "cart" بالعربية؟',
-      options: ['سلة', 'كيس', 'عربة تسوق', 'رف'],
-      correctIndex: 2
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "طازج" in English?',
-      prompt_ar: 'ما هي "طازج" بالإنجليزية؟',
-      options: ['frozen', 'fresh', 'organic', 'old'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'I need a shopping ___. (cart)',
-      prompt_ar: 'أحتاج ___ تسوق.',
-      answer: 'cart'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the supermarket words',
-      prompt_ar: 'طابق كلمات السوبرماركت',
-      pairs: [
-        { en: 'basket', ar: 'سلة' },
-        { en: 'aisle', ar: 'ممر' },
-        { en: 'shelf', ar: 'رف' },
-        { en: 'checkout', ar: 'كاشير' }
-      ]
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: 3 / are / The / in / fruits / aisle',
-      prompt_ar: 'رتب الكلمات',
-      words: ['3', 'are', 'The', 'in', 'fruits', 'aisle'],
-      correctOrder: ['The', 'fruits', 'are', 'in', 'aisle', '3']
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is the opposite of "fresh"?',
-      prompt_ar: 'ما عكس "طازج"؟',
-      options: ['organic', 'frozen', 'new', 'good'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'I prefer ___ food. (organic)',
-      prompt_ar: 'أفضل الطعام ال___.',
-      answer: 'organic'
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "قائمة" in English?',
-      prompt_ar: 'ما هي "قائمة" بالإنجليزية؟',
-      options: ['bag', 'list', 'cart', 'aisle'],
-      correctIndex: 1
-    }
+    { type: 'mcq', promptAr: 'ما معنى "cart"؟', data: { options: ['سلة', 'كيس', 'عربة تسوق', 'رف'], correct: 2 } },
+    { type: 'mcq', promptAr: 'كيف تقول "طازج" بالإنجليزية؟', data: { options: ['frozen', 'fresh', 'organic', 'old'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: I need a shopping ___. (عربة)', data: { answer: 'cart' } },
+    { type: 'matching', promptAr: 'طابق كلمات السوبرماركت', data: { pairs: [{ english: 'basket', arabic: 'سلة' }, { english: 'aisle', arabic: 'ممر' }, { english: 'shelf', arabic: 'رف' }, { english: 'checkout', arabic: 'كاشير' }] } },
+    { type: 'reorder', promptAr: 'رتب: 3 / are / The / in / fruits / aisle', data: { words: ['The', 'fruits', 'are', 'in', 'aisle', '3'], correctOrder: [0, 1, 2, 3, 4, 5] } },
+    { type: 'mcq', promptAr: 'ما عكس "fresh"؟', data: { options: ['organic', 'frozen', 'new', 'good'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: I prefer ___ food. (عضوي)', data: { answer: 'organic' } },
+    { type: 'translation', promptAr: 'ترجم: أشتري دائماً خضروات طازجة', data: { answer: 'I always buy fresh vegetables', alternatives: ['i always buy fresh vegetables'] } },
   ],
   quiz: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "basket" in Arabic?',
-      prompt_ar: 'ما هي "basket" بالعربية؟',
-      options: ['عربة', 'سلة', 'كيس', 'رف'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "مجمد" in English?',
-      prompt_ar: 'ما هي "مجمد" بالإنجليزية؟',
-      options: ['fresh', 'frozen', 'organic', 'cold'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'Where is the ___? (checkout)',
-      prompt_ar: 'أين ال___؟',
-      answer: 'checkout'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the words',
-      prompt_ar: 'طابق الكلمات',
-      pairs: [
-        { en: 'bag', ar: 'كيس' },
-        { en: 'list', ar: 'قائمة' },
-        { en: 'fresh', ar: 'طازج' }
-      ]
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "ممر" in English?',
-      prompt_ar: 'ما هي "ممر" بالإنجليزية؟',
-      options: ['shelf', 'aisle', 'checkout', 'cart'],
-      correctIndex: 1
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: vegetables / always / I / fresh / buy',
-      prompt_ar: 'رتب الكلمات',
-      words: ['vegetables', 'always', 'I', 'fresh', 'buy'],
-      correctOrder: ['I', 'always', 'buy', 'fresh', 'vegetables']
-    }
+    { type: 'mcq', promptAr: 'ما معنى "basket"؟', data: { options: ['عربة', 'سلة', 'كيس', 'رف'], correct: 1 }, points: 15 },
+    { type: 'mcq', promptAr: 'كيف تقول "مجمد" بالإنجليزية؟', data: { options: ['fresh', 'frozen', 'organic', 'cold'], correct: 1 }, points: 15 },
+    { type: 'fill_blank', promptAr: 'أكمل: Where is the ___? (الكاشير)', data: { answer: 'checkout' }, points: 20 },
+    { type: 'matching', promptAr: 'طابق الكلمات', data: { pairs: [{ english: 'bag', arabic: 'كيس' }, { english: 'list', arabic: 'قائمة' }, { english: 'fresh', arabic: 'طازج' }] }, points: 25 },
+    { type: 'translation', promptAr: 'ترجم: أحتاج عربة تسوق', data: { answer: 'I need a shopping cart', alternatives: ['i need a shopping cart'] }, points: 25 },
   ]
 };
 
-const unit9Lesson5: LessonContent = {
-  id: 'A1-u09-l05',
-  unitId: 'A1-u09',
-  title_en: 'Online Shopping',
-  title_ar: 'التسوق عبر الإنترنت',
-  vocabulary: [
-    { en: 'online', ar: 'عبر الإنترنت' },
-    { en: 'website', ar: 'موقع إلكتروني' },
-    { en: 'order', ar: 'طلب' },
-    { en: 'delivery', ar: 'توصيل' },
-    { en: 'shipping', ar: 'شحن' },
-    { en: 'free shipping', ar: 'شحن مجاني' },
-    { en: 'return', ar: 'إرجاع' },
-    { en: 'review', ar: 'تقييم' },
-    { en: 'add to cart', ar: 'أضف للسلة' },
-    { en: 'checkout', ar: 'إتمام الشراء' }
+export const A1_U9_L5: LessonContent = {
+  lessonId: 'A1-u09-l05',
+  passingScore: 70,
+  vocab: [
+    { english: 'Online', arabic: 'عبر الإنترنت', example: 'I shop online.', exampleAr: 'أتسوق عبر الإنترنت.' },
+    { english: 'Website', arabic: 'موقع إلكتروني', example: 'This is a good website.', exampleAr: 'هذا موقع جيد.' },
+    { english: 'Order', arabic: 'طلب', example: 'I ordered a book.', exampleAr: 'طلبت كتاباً.' },
+    { english: 'Delivery', arabic: 'توصيل', example: 'Delivery is in 3 days.', exampleAr: 'التوصيل خلال 3 أيام.' },
+    { english: 'Shipping', arabic: 'شحن', example: 'Shipping is free.', exampleAr: 'الشحن مجاني.' },
+    { english: 'Free shipping', arabic: 'شحن مجاني', example: 'This website has free shipping.', exampleAr: 'هذا الموقع فيه شحن مجاني.' },
+    { english: 'Return', arabic: 'إرجاع', example: 'I want to return this.', exampleAr: 'أريد إرجاع هذا.' },
+    { english: 'Review', arabic: 'تقييم', example: 'The reviews are good.', exampleAr: 'التقييمات جيدة.' },
+    { english: 'Add to cart', arabic: 'أضف للسلة', example: 'Add to cart and pay.', exampleAr: 'أضف للسلة وادفع.' },
+    { english: 'Checkout', arabic: 'إتمام الشراء', example: 'Proceed to checkout.', exampleAr: 'انتقل لإتمام الشراء.' },
   ],
   sentences: [
-    { en: 'I prefer online shopping.', ar: 'أفضل التسوق عبر الإنترنت.' },
-    { en: 'I ordered a book online.', ar: 'طلبت كتاباً عبر الإنترنت.' },
-    { en: 'Delivery is in 3 days.', ar: 'التوصيل خلال 3 أيام.' },
-    { en: 'This website has free shipping.', ar: 'هذا الموقع فيه شحن مجاني.' },
-    { en: 'I want to return this item.', ar: 'أريد إرجاع هذا المنتج.' },
-    { en: 'The reviews are very good.', ar: 'التقييمات جيدة جداً.' }
+    { english: 'I prefer online shopping.', arabic: 'أفضل التسوق عبر الإنترنت.' },
+    { english: 'I ordered a book online.', arabic: 'طلبت كتاباً عبر الإنترنت.' },
+    { english: 'Delivery is in 3 days.', arabic: 'التوصيل خلال 3 أيام.' },
+    { english: 'This website has free shipping.', arabic: 'هذا الموقع فيه شحن مجاني.' },
+    { english: 'I want to return this item.', arabic: 'أريد إرجاع هذا المنتج.' },
+    { english: 'The reviews are very good.', arabic: 'التقييمات جيدة جداً.' },
   ],
   exercises: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "online" in Arabic?',
-      prompt_ar: 'ما هي "online" بالعربية؟',
-      options: ['موقع', 'عبر الإنترنت', 'توصيل', 'شحن'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "توصيل" in English?',
-      prompt_ar: 'ما هي "توصيل" بالإنجليزية؟',
-      options: ['shipping', 'delivery', 'order', 'return'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'I prefer ___ shopping. (online)',
-      prompt_ar: 'أفضل التسوق ___.',
-      answer: 'online'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the online shopping words',
-      prompt_ar: 'طابق كلمات التسوق الإلكتروني',
-      pairs: [
-        { en: 'website', ar: 'موقع إلكتروني' },
-        { en: 'order', ar: 'طلب' },
-        { en: 'shipping', ar: 'شحن' },
-        { en: 'review', ar: 'تقييم' }
-      ]
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: online / book / ordered / I / a',
-      prompt_ar: 'رتب الكلمات',
-      words: ['online', 'book', 'ordered', 'I', 'a'],
-      correctOrder: ['I', 'ordered', 'a', 'book', 'online']
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What do you do if you do not like a product?',
-      prompt_ar: 'ماذا تفعل إذا لم يعجبك المنتج؟',
-      options: ['order', 'return', 'review', 'ship'],
-      correctIndex: 1
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: '___ is in 3 days. (Delivery)',
-      prompt_ar: 'ال___ خلال 3 أيام.',
-      answer: 'Delivery'
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "شحن مجاني" in English?',
-      prompt_ar: 'ما هي "شحن مجاني" بالإنجليزية؟',
-      options: ['fast shipping', 'free shipping', 'delivery', 'order'],
-      correctIndex: 1
-    }
+    { type: 'mcq', promptAr: 'ما معنى "online"؟', data: { options: ['موقع', 'عبر الإنترنت', 'توصيل', 'شحن'], correct: 1 } },
+    { type: 'mcq', promptAr: 'كيف تقول "توصيل" بالإنجليزية؟', data: { options: ['shipping', 'delivery', 'order', 'return'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: I prefer ___ shopping. (عبر الإنترنت)', data: { answer: 'online' } },
+    { type: 'matching', promptAr: 'طابق كلمات التسوق الإلكتروني', data: { pairs: [{ english: 'website', arabic: 'موقع إلكتروني' }, { english: 'order', arabic: 'طلب' }, { english: 'shipping', arabic: 'شحن' }, { english: 'review', arabic: 'تقييم' }] } },
+    { type: 'reorder', promptAr: 'رتب: online / book / ordered / I / a', data: { words: ['I', 'ordered', 'a', 'book', 'online'], correctOrder: [0, 1, 2, 3, 4] } },
+    { type: 'mcq', promptAr: 'ماذا تفعل إذا لم يعجبك المنتج؟', data: { options: ['order', 'return', 'review', 'ship'], correct: 1 } },
+    { type: 'fill_blank', promptAr: 'أكمل: ___ is in 3 days. (التوصيل)', data: { answer: 'Delivery' } },
+    { type: 'translation', promptAr: 'ترجم: التقييمات جيدة جداً', data: { answer: 'The reviews are very good', alternatives: ['the reviews are very good'] } },
   ],
   quiz: [
-    {
-      type: 'mcq',
-      prompt_en: 'What is "order" in Arabic?',
-      prompt_ar: 'ما هي "order" بالعربية؟',
-      options: ['توصيل', 'طلب', 'شحن', 'إرجاع'],
-      correctIndex: 1
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "إرجاع" in English?',
-      prompt_ar: 'ما هي "إرجاع" بالإنجليزية؟',
-      options: ['order', 'delivery', 'return', 'review'],
-      correctIndex: 2
-    },
-    {
-      type: 'fill_blank',
-      prompt_en: 'This website has free ___. (shipping)',
-      prompt_ar: 'هذا الموقع فيه ___ مجاني.',
-      answer: 'shipping'
-    },
-    {
-      type: 'matching',
-      prompt_en: 'Match the words',
-      prompt_ar: 'طابق الكلمات',
-      pairs: [
-        { en: 'add to cart', ar: 'أضف للسلة' },
-        { en: 'checkout', ar: 'إتمام الشراء' },
-        { en: 'free shipping', ar: 'شحن مجاني' }
-      ]
-    },
-    {
-      type: 'mcq',
-      prompt_en: 'What is "تقييم" in English?',
-      prompt_ar: 'ما هي "تقييم" بالإنجليزية؟',
-      options: ['order', 'return', 'review', 'website'],
-      correctIndex: 2
-    },
-    {
-      type: 'reorder',
-      prompt_en: 'Arrange: good / reviews / very / The / are',
-      prompt_ar: 'رتب الكلمات',
-      words: ['good', 'reviews', 'very', 'The', 'are'],
-      correctOrder: ['The', 'reviews', 'are', 'very', 'good']
-    }
+    { type: 'mcq', promptAr: 'ما معنى "order"؟', data: { options: ['توصيل', 'طلب', 'شحن', 'إرجاع'], correct: 1 }, points: 15 },
+    { type: 'mcq', promptAr: 'كيف تقول "إرجاع" بالإنجليزية؟', data: { options: ['order', 'delivery', 'return', 'review'], correct: 2 }, points: 15 },
+    { type: 'fill_blank', promptAr: 'أكمل: This website has free ___. (شحن)', data: { answer: 'shipping' }, points: 20 },
+    { type: 'matching', promptAr: 'طابق الكلمات', data: { pairs: [{ english: 'add to cart', arabic: 'أضف للسلة' }, { english: 'checkout', arabic: 'إتمام الشراء' }, { english: 'free shipping', arabic: 'شحن مجاني' }] }, points: 25 },
+    { type: 'translation', promptAr: 'ترجم: أفضل التسوق عبر الإنترنت', data: { answer: 'I prefer online shopping', alternatives: ['i prefer online shopping'] }, points: 25 },
   ]
 };
 
 export const a1Unit9Lessons: Record<string, LessonContent> = {
-  'A1-u09-l01': unit9Lesson1,
-  'A1-u09-l02': unit9Lesson2,
-  'A1-u09-l03': unit9Lesson3,
-  'A1-u09-l04': unit9Lesson4,
-  'A1-u09-l05': unit9Lesson5,
+  'A1-u09-l01': A1_U9_L1,
+  'A1-u09-l02': A1_U9_L2,
+  'A1-u09-l03': A1_U9_L3,
+  'A1-u09-l04': A1_U9_L4,
+  'A1-u09-l05': A1_U9_L5,
 };
