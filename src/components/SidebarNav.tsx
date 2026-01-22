@@ -8,6 +8,7 @@ import {
   BookOpen, 
   Layers, 
   Info, 
+  HelpCircle,
   LayoutDashboard, 
   User, 
   LogOut, 
@@ -31,6 +32,7 @@ const navItems: NavItem[] = [
   { label: 'Courses', labelAr: 'الدورات', href: '/courses', icon: <BookOpen className="w-5 h-5" /> },
   { label: 'Levels', labelAr: 'المستويات', href: '/learn', icon: <Layers className="w-5 h-5" /> },
   { label: 'About', labelAr: 'من نحن', href: '/about', icon: <Info className="w-5 h-5" /> },
+  { label: 'FAQ', labelAr: 'الأسئلة الشائعة', href: '/faq', icon: <HelpCircle className="w-5 h-5" /> },
 ];
 
 const authNavItems: NavItem[] = [

@@ -27,6 +27,7 @@ import Admin from "./pages/Admin";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
+import FAQ from "./pages/FAQ";
 import SidebarNav from "./components/SidebarNav";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/faq" element={<FAQ />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
