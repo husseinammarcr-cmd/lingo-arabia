@@ -172,8 +172,18 @@ const Index = () => {
 
         {/* Footer */}
         <footer className="border-t border-border/50 py-8 bg-background/50 backdrop-blur-sm">
-          <div className="container mx-auto px-4 text-center text-muted-foreground">
-            <p>© 2024 LingoArab. جميع الحقوق محفوظة.</p>
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-muted-foreground">
+                © {new Date().getFullYear()} LingoArab. جميع الحقوق محفوظة.
+              </p>
+              <a 
+                href="/privacy-policy" 
+                className="text-muted-foreground hover:text-primary transition-colors text-sm"
+              >
+                سياسة الخصوصية
+              </a>
+            </div>
           </div>
         </footer>
       </div>
