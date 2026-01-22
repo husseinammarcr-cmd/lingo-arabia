@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2 } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
+import BlogManager from '@/components/admin/BlogManager';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -154,6 +155,10 @@ const Admin = () => {
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
               المستخدمين
+            </TabsTrigger>
+            <TabsTrigger value="blog" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              المدونة
             </TabsTrigger>
           </TabsList>
 
@@ -329,6 +334,10 @@ const Admin = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="blog">
+            <BlogManager />
           </TabsContent>
         </Tabs>
       </main>
