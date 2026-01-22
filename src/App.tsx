@@ -33,6 +33,7 @@ import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import CookiePolicy from "./pages/CookiePolicy";
 import SidebarNav from "./components/SidebarNav";
 
 const queryClient = new QueryClient();
@@ -82,6 +83,7 @@ const App = () => (
                 <Route path="/blog/:slug" element={<BlogArticle />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsAndConditions />} />
+                <Route path="/cookie-policy" element={<CookiePolicy />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
