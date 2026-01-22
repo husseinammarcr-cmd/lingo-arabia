@@ -53,6 +53,101 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_articles: {
+        Row: {
+          author_id: string | null
+          author_name: string
+          category_id: string | null
+          content_ar: string
+          content_en: string
+          created_at: string | null
+          excerpt_ar: string
+          excerpt_en: string
+          featured_image: string | null
+          id: string
+          is_published: boolean | null
+          published_at: string | null
+          slug: string
+          title_ar: string
+          title_en: string
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string
+          category_id?: string | null
+          content_ar: string
+          content_en: string
+          created_at?: string | null
+          excerpt_ar: string
+          excerpt_en: string
+          featured_image?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          slug: string
+          title_ar: string
+          title_en: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string
+          category_id?: string | null
+          content_ar?: string
+          content_en?: string
+          created_at?: string | null
+          excerpt_ar?: string
+          excerpt_en?: string
+          featured_image?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          title_ar?: string
+          title_en?: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_categories: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          slug: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          slug: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           challenge_type: string
