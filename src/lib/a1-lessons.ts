@@ -1075,6 +1075,11 @@ export const A1_U2_L5: LessonContent = {
 import { A1_U3_L1, A1_U3_L2, A1_U3_L3, A1_U3_L4, A1_U3_L5 } from './a1-lessons-unit3';
 import { A1_U4_L1, A1_U4_L2, A1_U4_L3, A1_U4_L4, A1_U4_L5 } from './a1-lessons-unit4';
 import { A1_U5_L1, A1_U5_L2, A1_U5_L3, A1_U5_L4, A1_U5_L5 } from './a1-lessons-unit5';
+import { a1Unit6Lessons } from './a1-lessons-unit6';
+import { a1Unit7Lessons } from './a1-lessons-unit7';
+import { a1Unit8Lessons } from './a1-lessons-unit8';
+import { a1Unit9Lessons } from './a1-lessons-unit9';
+import { a1Unit10Lessons } from './a1-lessons-unit10';
 
 // Export all lessons in a map for easy access
 export const A1_LESSONS_CONTENT: Record<string, LessonContent> = {
@@ -1106,6 +1111,12 @@ export const A1_LESSONS_CONTENT: Record<string, LessonContent> = {
   'A1-u05-l03': A1_U5_L3,
   'A1-u05-l04': A1_U5_L4,
   'A1-u05-l05': A1_U5_L5,
+  // Units 6-10
+  ...a1Unit6Lessons,
+  ...a1Unit7Lessons,
+  ...a1Unit8Lessons,
+  ...a1Unit9Lessons,
+  ...a1Unit10Lessons,
 };
 
 // Import A2 and B1 lessons for unified access
