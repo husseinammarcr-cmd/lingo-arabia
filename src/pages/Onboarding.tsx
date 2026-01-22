@@ -79,7 +79,7 @@ const QUICK_QUESTIONS: QuickQuestion[] = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const { updateProfile, user, profile, isLoading, refreshProfile } = useAuth();
+  const { updateProfile, user, refreshProfile } = useAuth();
   const [step, setStep] = useState(0); // 0: goal, 1: test intro, 2: test, 3: result
   const [dailyGoal, setDailyGoal] = useState<'5' | '10' | '15'>('10');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -87,24 +87,6 @@ const Onboarding = () => {
   const [answers, setAnswers] = useState<{ questionId: number; isCorrect: boolean; level: string }[]>([]);
   const [calculatedLevel, setCalculatedLevel] = useState<'A1' | 'A2' | 'B1' | 'B2'>('A1');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isEmailVerified = user?.email_confirmed_at != null;
-  // Check if user is a Google OAuth user (no email confirmation needed)
-  const isGoogleUser = user?.app_metadata?.provider === 'google';
-
-  // Redirect to verify-email if email not verified (except for Google users)
-  useEffect(() => {
-    if (!isLoading && user && !isEmailVerified && !isGoogleUser) {
-      navigate('/verify-email');
-    }
-  }, [user, isEmailVerified, isGoogleUser, isLoading, navigate]);
-
-  // Redirect to courses if already onboarded
-  useEffect(() => {
-    if (!isLoading && profile?.onboarding_completed) {
-      navigate('/courses');
-    }
-  }, [profile, isLoading, navigate]);
 
   const goals = [
     { value: '5' as const, titleAr: '5 دقائق', desc: 'مشغول جداً', icon: '⚡' },

@@ -26,7 +26,6 @@ import ChallengesPage from "./pages/ChallengesPage";
 import Notifications from "./pages/Notifications";
 import Admin from "./pages/Admin";
 import ResetPassword from "./pages/ResetPassword";
-import VerifyEmail from "./pages/VerifyEmail";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
@@ -79,7 +78,6 @@ const App = () => (
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/contact" element={<Contact />} />
