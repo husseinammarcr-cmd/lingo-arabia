@@ -36,6 +36,12 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
               className="h-16 sm:h-14 md:h-10 w-auto -my-3 md:-my-1"
             />
           </a>
+          <a 
+            href="/about" 
+            className="text-muted-foreground hover:text-foreground transition-colors font-medium hidden sm:block"
+          >
+            من نحن
+          </a>
         </div>
         
         <div className="flex items-center gap-3">
