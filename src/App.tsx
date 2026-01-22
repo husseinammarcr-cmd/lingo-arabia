@@ -17,7 +17,7 @@ import LessonPlayer from "./pages/LessonPlayer";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
-import Premium from "./pages/Premium";
+
 import PlacementTest from "./pages/PlacementTest";
 import PlacementTestStart from "./pages/PlacementTestStart";
 import PlacementTestResult from "./pages/PlacementTestResult";
@@ -72,7 +72,7 @@ const App = () => (
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/premium" element={<Premium />} />
+                
                 <Route path="/leaderboard" element={<LeaderboardPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
                 <Route path="/notifications" element={<Notifications />} />
