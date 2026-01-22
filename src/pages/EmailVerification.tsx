@@ -56,9 +56,13 @@ const EmailVerification = () => {
         description: 'يرجى التحقق من بريدك الإلكتروني',
       });
     } catch (error: any) {
+      let errorMessage = error.message;
+      if (error.message.includes('rate limit') || error.message.includes('Rate limit') || error.message.includes('Email rate limit exceeded')) {
+        errorMessage = 'تم تجاوز حد إرسال البريد الإلكتروني. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.';
+      }
       toast({
         title: 'خطأ',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
