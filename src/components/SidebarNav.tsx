@@ -84,18 +84,18 @@ const SidebarNav = () => {
 
   return (
     <>
-      {/* Floating Menu Button */}
+      {/* Floating Menu Button - Fixed top-right (logo area in RTL) */}
       <motion.button
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
+        transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
         onClick={() => setIsOpen(true)}
         className={cn(
-          "fixed z-50 p-3 rounded-full bg-primary text-primary-foreground shadow-lg",
+          "fixed z-[60] p-3 rounded-full bg-primary text-primary-foreground shadow-lg",
           "hover:bg-primary/90 transition-all duration-300",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-          // Mobile: top-right, Desktop: bottom-right
-          "top-4 right-4 md:top-auto md:bottom-6 md:right-6"
+          // Fixed top-right for all screen sizes
+          "top-4 right-4"
         )}
         aria-label="Open navigation menu"
       >
