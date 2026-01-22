@@ -161,10 +161,10 @@ const Index = () => {
               <Button 
                 variant="accent" 
                 size="xl"
-                onClick={() => navigate('/auth')}
+                onClick={() => navigate(user ? '/courses' : '/auth')}
                 className="shadow-lg hover:shadow-xl"
               >
-                سجّل الآن مجاناً
+                {user ? 'تابع التعلم' : 'سجّل الآن مجاناً'}
               </Button>
             </div>
           </div>
