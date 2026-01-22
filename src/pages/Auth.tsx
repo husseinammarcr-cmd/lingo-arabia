@@ -9,7 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, Lock, User, ArrowRight, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
-
+import { motion } from 'framer-motion';
+import AuthBackground from '@/components/animations/AuthBackground';
 const emailSchema = z.string().email('البريد الإلكتروني غير صالح');
 const passwordSchema = z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
 
@@ -107,14 +108,35 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4" dir="rtl">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <Link to="/" className="inline-block">
-            <CardTitle className="text-2xl font-bold text-primary">LingoArab</CardTitle>
-          </Link>
-          <p className="text-muted-foreground mt-2">{renderTitle()}</p>
-        </CardHeader>
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4 relative overflow-hidden" dir="rtl">
+      {/* Animated Background */}
+      <AuthBackground />
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md relative z-10"
+      >
+        <Card className="backdrop-blur-sm bg-card/95 border-border/50 shadow-2xl">
+          <CardHeader className="text-center">
+            <Link to="/" className="inline-block">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <CardTitle className="text-2xl font-bold text-primary">LingoArab</CardTitle>
+              </motion.div>
+            </Link>
+            <motion.p 
+              key={view}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-muted-foreground mt-2"
+            >
+              {renderTitle()}
+            </motion.p>
+          </CardHeader>
         <CardContent>
           {view === 'forgot-password' && (
             <Button 
@@ -237,6 +259,7 @@ const Auth = () => {
           )}
         </CardContent>
       </Card>
+      </motion.div>
     </div>
   );
 };
