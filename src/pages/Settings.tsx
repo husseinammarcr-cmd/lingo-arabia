@@ -47,29 +47,18 @@ import { FadeUp } from '@/components/animations/AnimatedContainers';
 import AuthBackground from '@/components/animations/AuthBackground';
 import { useToast } from '@/hooks/use-toast';
 
-// Import cartoon avatars
-import avatar1 from '@/assets/avatars/avatar-1.png';
-import avatar2 from '@/assets/avatars/avatar-2.png';
-import avatar3 from '@/assets/avatars/avatar-3.png';
-import avatar4 from '@/assets/avatars/avatar-4.png';
-import avatar5 from '@/assets/avatars/avatar-5.png';
-import avatar6 from '@/assets/avatars/avatar-6.png';
-import avatar7 from '@/assets/avatars/avatar-7.png';
-import avatar8 from '@/assets/avatars/avatar-8.png';
-import avatar9 from '@/assets/avatars/avatar-9.png';
-import avatar10 from '@/assets/avatars/avatar-10.png';
-
+// Cartoon avatars are served from /public for a stable URL (no hashed build paths)
 const CARTOON_AVATARS = [
-  { id: 1, src: avatar1, name: 'طالب' },
-  { id: 2, src: avatar2, name: 'بومة' },
-  { id: 3, src: avatar3, name: 'قطة' },
-  { id: 4, src: avatar4, name: 'روبوت' },
-  { id: 5, src: avatar5, name: 'شمس' },
-  { id: 6, src: avatar6, name: 'باندا' },
-  { id: 7, src: avatar7, name: 'ثعلب' },
-  { id: 8, src: avatar8, name: 'بطريق' },
-  { id: 9, src: avatar9, name: 'رائد فضاء' },
-  { id: 10, src: avatar10, name: 'أسد' },
+  { id: 1, src: '/avatars/avatar-1.png', name: 'طالب' },
+  { id: 2, src: '/avatars/avatar-2.png', name: 'بومة' },
+  { id: 3, src: '/avatars/avatar-3.png', name: 'قطة' },
+  { id: 4, src: '/avatars/avatar-4.png', name: 'روبوت' },
+  { id: 5, src: '/avatars/avatar-5.png', name: 'شمس' },
+  { id: 6, src: '/avatars/avatar-6.png', name: 'باندا' },
+  { id: 7, src: '/avatars/avatar-7.png', name: 'ثعلب' },
+  { id: 8, src: '/avatars/avatar-8.png', name: 'بطريق' },
+  { id: 9, src: '/avatars/avatar-9.png', name: 'رائد فضاء' },
+  { id: 10, src: '/avatars/avatar-10.png', name: 'أسد' },
 ];
 
 const Settings = () => {
@@ -80,7 +69,7 @@ const Settings = () => {
   // Account Info State
   const [displayName, setDisplayName] = useState(profile?.display_name || profile?.name || '');
   const [username, setUsername] = useState(profile?.username || '');
-  const [selectedAvatar, setSelectedAvatar] = useState<string>(profile?.avatar_url || avatar1);
+  const [selectedAvatar, setSelectedAvatar] = useState<string>(profile?.avatar_url || CARTOON_AVATARS[0].src);
   const [isSavingAccount, setIsSavingAccount] = useState(false);
 
   // Security State
@@ -113,7 +102,7 @@ const Settings = () => {
       setUsername(profile.username || '');
       // Check if current avatar is one of our cartoon avatars or set default
       const isCartoonAvatar = CARTOON_AVATARS.some(a => profile.avatar_url === a.src);
-      setSelectedAvatar(isCartoonAvatar ? profile.avatar_url! : avatar1);
+      setSelectedAvatar(isCartoonAvatar ? (profile.avatar_url as string) : CARTOON_AVATARS[0].src);
       setNotifyCourseUpdates(profile.notify_course_updates ?? true);
       setNotifyReminders(profile.notify_reminders ?? true);
       setNotifyAchievements(profile.notify_achievements ?? true);
