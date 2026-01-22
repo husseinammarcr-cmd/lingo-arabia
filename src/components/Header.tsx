@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Star, Crown, LogOut, ChevronLeft, Shield } from 'lucide-react';
+import { Moon, Sun, Star, LogOut, ChevronLeft, Shield } from 'lucide-react';
 import { NotificationBell } from '@/components/NotificationBell';
 import EmailVerificationBanner from '@/components/EmailVerificationBanner';
 import logo from '@/assets/logo.png';
@@ -51,7 +51,7 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
                 <Star className="w-4 h-4 fill-current" />
                 <span>{profile.xp || 0}</span>
               </div>
-              {profile.is_premium && <Crown className="w-5 h-5 text-accent fill-accent" />}
+              
             </>
           )}
           

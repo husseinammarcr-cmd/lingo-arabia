@@ -241,16 +241,20 @@ export const useUpdateProgress = () => {
         const newXp = (profile.xp || 0) + xpEarned;
         const newWeeklyXp = (profile.weekly_xp || 0) + xpEarned;
         const newMonthlyXp = (profile.monthly_xp || 0) + xpEarned;
+        
+        // Calculate new user level based on XP (every 500 XP = 1 level)
+        const newUserLevel = Math.max(1, Math.floor(newXp / 500) + 1);
 
         await updateProfile({
           xp: newXp,
           weekly_xp: newWeeklyXp,
           monthly_xp: newMonthlyXp,
           streak_count: newStreakCount,
-          last_study_date: today
+          last_study_date: today,
+          user_level: newUserLevel
         });
 
-        console.log('Profile updated:', { newXp, newWeeklyXp, newMonthlyXp, newStreakCount, lastStudyDate: today });
+        console.log('Profile updated:', { newXp, newWeeklyXp, newMonthlyXp, newStreakCount, newUserLevel, lastStudyDate: today });
       }
 
       return { success: true, wasAlreadyCompleted };

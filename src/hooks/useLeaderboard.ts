@@ -33,7 +33,7 @@ export const useLeaderboard = (
     queryFn: async () => {
       let query = supabase
         .from('profiles')
-        .select('id, name, display_name, avatar_url, xp, weekly_xp, monthly_xp, user_level, streak_count, country_code, current_level, is_founder, is_verified');
+        .select('id, name, display_name, avatar_url, xp, weekly_xp, monthly_xp, user_level, streak_count, country_code, current_level, is_founder, is_verified, privacy_show_progress');
 
       // Filter by country for local leaderboard
       if (type === 'local' && countryCode) {
@@ -44,6 +44,9 @@ export const useLeaderboard = (
       if (type === 'level' && courseLevel) {
         query = query.eq('current_level', courseLevel);
       }
+
+      // Filter out users who have privacy_show_progress disabled (except founders)
+      query = query.or('privacy_show_progress.eq.true,is_founder.eq.true');
 
       // Order by appropriate XP field based on timeframe
       const orderField = timeFrame === 'weekly' ? 'weekly_xp' : timeFrame === 'monthly' ? 'monthly_xp' : 'xp';

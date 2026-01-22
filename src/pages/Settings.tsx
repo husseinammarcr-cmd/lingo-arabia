@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +28,6 @@ import {
   Lock,
   Trash2,
   LogOut,
-  Camera,
   Save,
   Eye,
   EyeOff,
@@ -48,18 +47,40 @@ import { FadeUp } from '@/components/animations/AnimatedContainers';
 import AuthBackground from '@/components/animations/AuthBackground';
 import { useToast } from '@/hooks/use-toast';
 
+// Import cartoon avatars
+import avatar1 from '@/assets/avatars/avatar-1.png';
+import avatar2 from '@/assets/avatars/avatar-2.png';
+import avatar3 from '@/assets/avatars/avatar-3.png';
+import avatar4 from '@/assets/avatars/avatar-4.png';
+import avatar5 from '@/assets/avatars/avatar-5.png';
+import avatar6 from '@/assets/avatars/avatar-6.png';
+import avatar7 from '@/assets/avatars/avatar-7.png';
+import avatar8 from '@/assets/avatars/avatar-8.png';
+import avatar9 from '@/assets/avatars/avatar-9.png';
+import avatar10 from '@/assets/avatars/avatar-10.png';
+
+const CARTOON_AVATARS = [
+  { id: 1, src: avatar1, name: 'طالب' },
+  { id: 2, src: avatar2, name: 'بومة' },
+  { id: 3, src: avatar3, name: 'قطة' },
+  { id: 4, src: avatar4, name: 'روبوت' },
+  { id: 5, src: avatar5, name: 'شمس' },
+  { id: 6, src: avatar6, name: 'باندا' },
+  { id: 7, src: avatar7, name: 'ثعلب' },
+  { id: 8, src: avatar8, name: 'بطريق' },
+  { id: 9, src: avatar9, name: 'رائد فضاء' },
+  { id: 10, src: avatar10, name: 'أسد' },
+];
+
 const Settings = () => {
   const navigate = useNavigate();
-  const { user, profile, signOut, updateProfile, refreshProfile } = useAuth();
+  const { user, profile, signOut, refreshProfile } = useAuth();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Account Info State
   const [displayName, setDisplayName] = useState(profile?.display_name || profile?.name || '');
   const [username, setUsername] = useState(profile?.username || '');
-  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState<string>(profile?.avatar_url || avatar1);
   const [isSavingAccount, setIsSavingAccount] = useState(false);
 
   // Security State
@@ -90,7 +111,9 @@ const Settings = () => {
     if (profile) {
       setDisplayName(profile.display_name || profile.name || '');
       setUsername(profile.username || '');
-      setAvatarUrl(profile.avatar_url || '');
+      // Check if current avatar is one of our cartoon avatars or set default
+      const isCartoonAvatar = CARTOON_AVATARS.some(a => profile.avatar_url === a.src);
+      setSelectedAvatar(isCartoonAvatar ? profile.avatar_url! : avatar1);
       setNotifyCourseUpdates(profile.notify_course_updates ?? true);
       setNotifyReminders(profile.notify_reminders ?? true);
       setNotifyAchievements(profile.notify_achievements ?? true);
@@ -108,76 +131,6 @@ const Settings = () => {
     }
   }, [user, navigate]);
 
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: 'خطأ',
-        description: 'يرجى اختيار ملف صورة صالح',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      toast({
-        title: 'خطأ',
-        description: 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setAvatarPreview(event.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // Upload to storage
-    setIsUploadingAvatar(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${user?.id}/${Date.now()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      setAvatarUrl(publicUrl);
-      
-      toast({
-        title: 'تم رفع الصورة',
-        description: 'تم رفع صورة الملف الشخصي بنجاح',
-      });
-    } catch (error: any) {
-      console.error('Error uploading avatar:', error);
-      toast({
-        title: 'خطأ',
-        description: 'فشل رفع الصورة',
-        variant: 'destructive',
-      });
-      setAvatarPreview(null);
-    } finally {
-      setIsUploadingAvatar(false);
-    }
-  };
-
   const handleSaveAccountInfo = async () => {
     setIsSavingAccount(true);
     try {
@@ -186,7 +139,7 @@ const Settings = () => {
         .update({
           display_name: displayName,
           username: username || null,
-          avatar_url: avatarUrl,
+          avatar_url: selectedAvatar,
         })
         .eq('id', user?.id);
 
@@ -203,7 +156,6 @@ const Settings = () => {
       }
 
       await refreshProfile?.();
-      setAvatarPreview(null);
       
       toast({
         title: 'تم الحفظ',
@@ -379,11 +331,6 @@ const Settings = () => {
     }
   };
 
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   const formatLastLogin = (date: string | null) => {
     if (!date) return 'غير متوفر';
     return new Date(date).toLocaleDateString('ar-SA', {
@@ -419,31 +366,43 @@ const Settings = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Avatar Upload */}
+              {/* Avatar Selection */}
               <div className="flex flex-col items-center gap-4">
-                <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
-                  <Avatar className="w-24 h-24 border-4 border-primary/20">
-                    <AvatarImage src={avatarPreview || avatarUrl} />
-                    <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                      {displayName?.charAt(0) || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    {isUploadingAvatar ? (
-                      <Loader2 className="w-6 h-6 text-white animate-spin" />
-                    ) : (
-                      <Camera className="w-6 h-6 text-white" />
-                    )}
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                  />
+                <Avatar className="w-24 h-24 border-4 border-primary/20">
+                  <AvatarImage src={selectedAvatar} />
+                  <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+                    {displayName?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="text-sm text-muted-foreground">اختر صورة رمزية</p>
+                
+                {/* Avatar Grid */}
+                <div className="grid grid-cols-5 gap-3 w-full max-w-md">
+                  {CARTOON_AVATARS.map((avatar) => (
+                    <motion.button
+                      key={avatar.id}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setSelectedAvatar(avatar.src)}
+                      className={`relative rounded-full overflow-hidden border-2 transition-all ${
+                        selectedAvatar === avatar.src
+                          ? 'border-primary ring-2 ring-primary/30'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <img
+                        src={avatar.src}
+                        alt={avatar.name}
+                        className="w-full aspect-square object-cover"
+                      />
+                      {selectedAvatar === avatar.src && (
+                        <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                          <Check className="w-6 h-6 text-primary" />
+                        </div>
+                      )}
+                    </motion.button>
+                  ))}
                 </div>
-                <p className="text-sm text-muted-foreground">انقر لتغيير الصورة</p>
               </div>
 
               <Separator />
@@ -736,8 +695,8 @@ const Settings = () => {
                 <div className="flex items-center gap-3">
                   <ChartBar className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">إظهار تقدم التعلم للآخرين</p>
-                    <p className="text-sm text-muted-foreground">مشاركة إحصائيات التقدم</p>
+                    <p className="font-medium">الظهور في قائمة المتصدرين</p>
+                    <p className="text-sm text-muted-foreground">إظهار تقدمك في لوحة المتصدرين</p>
                   </div>
                 </div>
                 <Switch
