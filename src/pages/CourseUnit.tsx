@@ -153,7 +153,12 @@ const CourseUnit = () => {
           {unit.lessons.map((lesson, index) => {
             const IconComponent = lessonIcons[lesson.titleAr] || BookOpen;
             const isCompleted = completedLessons.includes(lesson.id);
-            const isUnlocked = isLessonUnlocked(lesson.id, completedLessons);
+            const isUnlocked = isLessonUnlocked(
+              lesson.id, 
+              completedLessons,
+              profile?.placement_level,
+              profile?.current_level
+            );
             const hasExercises = lesson.hasRealExercises;
             const isLocked = !isUnlocked && !hasExercises;
             const isShaking = shakingLessonId === lesson.id;

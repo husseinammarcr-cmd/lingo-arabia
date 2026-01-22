@@ -6,16 +6,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { 
   ChevronLeft, 
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  Lock,
+  CheckCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
 import { TiltCard } from '@/components/animations/TiltCard';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
+import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
 
 // Import level illustrations
 import levelA1Books from '@/assets/level-a1-books.jpeg';
@@ -41,6 +44,42 @@ const Courses = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { data: progressData } = useUserProgress();
+
+  // Get completed lesson IDs
+  const completedLessonIds = useMemo(() => {
+    if (!progressData) return [];
+    return progressData
+      .filter(p => p.completed)
+      .map(p => p.lesson_id);
+  }, [progressData]);
+
+  // Calculate progress for each level
+  const levelProgressMap = useMemo(() => {
+    const map: Record<string, { completed: number; total: number; progress: number }> = {};
+    
+    for (const level of CURRICULUM) {
+      let completed = 0;
+      let total = 0;
+      
+      for (const unit of level.units) {
+        for (const lesson of unit.lessons) {
+          total++;
+          if (completedLessonIds.includes(lesson.id)) {
+            completed++;
+          }
+        }
+      }
+      
+      map[level.code] = {
+        completed,
+        total,
+        progress: total > 0 ? Math.round((completed / total) * 100) : 0
+      };
+    }
+    
+    return map;
+  }, [completedLessonIds]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -118,34 +157,53 @@ const Courses = () => {
           {CURRICULUM.map((level, index) => {
             const totalUnits = level.units.length;
             const totalLevelLessons = level.units.reduce((sum, unit) => sum + unit.lessons.length, 0);
-            // Placeholder progress - would come from user data
-            const progress = 0;
+            const levelProgress = levelProgressMap[level.code];
+            const progress = levelProgress?.progress ?? 0;
+            const isUnlocked = isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level);
             const levelImage = levelImages[level.code];
+            const isCompleted = levelProgress?.completed === levelProgress?.total && levelProgress?.total > 0;
 
             return (
               <StaggerItem key={level.id}>
                 <TiltCard
-                  onClick={() => navigate(`/courses/${level.code.toLowerCase()}`)}
-                  className="h-full"
+                  onClick={isUnlocked ? () => navigate(`/courses/${level.code.toLowerCase()}`) : undefined}
+                  className={cn("h-full", !isUnlocked && "opacity-60 cursor-not-allowed")}
                 >
-                  <Card className="group cursor-pointer overflow-hidden hover:shadow-elevated transition-all duration-300 h-full">
+                  <Card className={cn(
+                    "group overflow-hidden transition-all duration-300 h-full",
+                    isUnlocked && "cursor-pointer hover:shadow-elevated",
+                    isCompleted && "ring-2 ring-success"
+                  )}>
                     {/* Gradient Header with Illustration */}
                     <div className={cn("h-28 sm:h-32 bg-gradient-to-br relative overflow-hidden", levelColors[level.code])}>
                       {/* Background Image */}
                       <img 
                         src={levelImage} 
                         alt={`${level.code} illustration`}
-                        className="absolute inset-0 w-full h-full object-cover opacity-90"
+                        className={cn(
+                          "absolute inset-0 w-full h-full object-cover",
+                          isUnlocked ? "opacity-90" : "opacity-50 grayscale"
+                        )}
                       />
                       
                       {/* Overlay for better blending */}
                       <div className={cn("absolute inset-0 bg-gradient-to-t from-black/10 to-transparent")} />
                       
                       {/* Level Badge */}
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-3 right-3 flex items-center gap-2">
                         <span className="text-sm font-bold px-3 py-1 rounded-full bg-white/90 text-foreground shadow-sm">
                           {level.code}
                         </span>
+                        {!isUnlocked && (
+                          <span className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
+                            <Lock className="w-4 h-4 text-muted-foreground" />
+                          </span>
+                        )}
+                        {isCompleted && (
+                          <span className="w-8 h-8 rounded-full bg-success/90 flex items-center justify-center shadow-sm">
+                            <CheckCircle className="w-4 h-4 text-white" />
+                          </span>
+                        )}
                       </div>
                       
                       {/* Shine effect */}
@@ -162,14 +220,27 @@ const Courses = () => {
                         <div>
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-lg font-bold text-foreground">{level.titleAr}</h3>
+                            {!isUnlocked && (
+                              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
+                                مقفل
+                              </span>
+                            )}
+                            {isCompleted && (
+                              <span className="text-xs bg-success/10 text-success px-2 py-0.5 rounded-full">
+                                مكتمل
+                              </span>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground ltr-text">{level.titleEn}</p>
                         </div>
                         <motion.div
-                          whileHover={prefersReducedMotion ? {} : { x: -4 }}
+                          whileHover={isUnlocked && !prefersReducedMotion ? { x: -4 } : {}}
                           transition={{ type: 'spring', stiffness: 300 }}
                         >
-                          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <ChevronLeft className={cn(
+                            "w-5 h-5 transition-colors",
+                            isUnlocked ? "text-muted-foreground group-hover:text-primary" : "text-muted-foreground/50"
+                          )} />
                         </motion.div>
                       </div>
 
@@ -177,7 +248,7 @@ const Courses = () => {
 
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                         <span>{totalUnits} وحدات</span>
-                        <span>{totalLevelLessons} درس</span>
+                        <span>{levelProgress?.completed ?? 0} / {totalLevelLessons} درس</span>
                       </div>
 
                       <AnimatedProgress value={progress} />

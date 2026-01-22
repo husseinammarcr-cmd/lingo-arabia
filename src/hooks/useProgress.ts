@@ -14,6 +14,49 @@ export interface Progress {
   updated_at: string;
 }
 
+// Helper to get level order index
+const LEVEL_ORDER: Record<string, number> = {
+  'A1': 0,
+  'A2': 1,
+  'B1': 2,
+  'B2': 3,
+};
+
+export function getLevelIndex(levelCode: string): number {
+  return LEVEL_ORDER[levelCode.toUpperCase()] ?? 0;
+}
+
+// Check if a level is unlocked based on user's placement/current level
+export function isLevelUnlocked(levelCode: string, userPlacementLevel: string | null, userCurrentLevel: string | null): boolean {
+  const targetLevelIndex = getLevelIndex(levelCode);
+  
+  // Use the higher of placement_level or current_level
+  const placementIndex = getLevelIndex(userPlacementLevel || 'A1');
+  const currentIndex = getLevelIndex(userCurrentLevel || 'A1');
+  const userMaxLevelIndex = Math.max(placementIndex, currentIndex);
+  
+  // Level is unlocked if it's at or below the user's max level
+  return targetLevelIndex <= userMaxLevelIndex;
+}
+
+// Get all lesson IDs for levels up to and including the specified level
+export function getLessonIdsUpToLevel(maxLevelCode: string): string[] {
+  const maxIndex = getLevelIndex(maxLevelCode);
+  const lessonIds: string[] = [];
+  
+  for (const level of CURRICULUM) {
+    if (getLevelIndex(level.code) <= maxIndex) {
+      for (const unit of level.units) {
+        for (const lesson of unit.lessons) {
+          lessonIds.push(lesson.id);
+        }
+      }
+    }
+  }
+  
+  return lessonIds;
+}
+
 export const useUserProgress = () => {
   const { user } = useAuth();
 
@@ -84,9 +127,36 @@ export function getNextLesson(currentLessonId: string): string | null {
   return null;
 }
 
-// Check if a lesson is unlocked based on progress
-export function isLessonUnlocked(lessonId: string, completedLessons: string[]): boolean {
-  // First lesson of first unit is always unlocked
+// Check if a lesson is unlocked based on progress and user's placement level
+export function isLessonUnlocked(
+  lessonId: string, 
+  completedLessons: string[],
+  userPlacementLevel?: string | null,
+  userCurrentLevel?: string | null
+): boolean {
+  // Extract level code from lesson ID (e.g., "A1-u01-l01" -> "A1")
+  const lessonLevelCode = lessonId.split('-')[0].toUpperCase();
+  const lessonLevelIndex = getLevelIndex(lessonLevelCode);
+  
+  // Get user's max unlocked level
+  const placementIndex = getLevelIndex(userPlacementLevel || 'A1');
+  const currentIndex = getLevelIndex(userCurrentLevel || 'A1');
+  const userMaxLevelIndex = Math.max(placementIndex, currentIndex);
+  
+  // If the lesson is in a level BELOW the user's max level, it's always unlocked
+  if (lessonLevelIndex < userMaxLevelIndex) {
+    return true;
+  }
+  
+  // If the lesson is in the user's current/placement level
+  if (lessonLevelIndex === userMaxLevelIndex) {
+    // First lesson of the level is always unlocked
+    const level = CURRICULUM.find(l => l.code.toUpperCase() === lessonLevelCode);
+    const firstLessonOfLevel = level?.units[0]?.lessons[0];
+    if (firstLessonOfLevel?.id === lessonId) return true;
+  }
+
+  // First lesson of first unit of A1 is always unlocked
   const firstLesson = CURRICULUM[0]?.units[0]?.lessons[0];
   if (firstLesson?.id === lessonId) return true;
 
@@ -132,10 +202,23 @@ export interface UnitProgress {
 
 export function getUnitProgress(
   levelCode: string,
-  completedLessonIds: string[]
+  completedLessonIds: string[],
+  userPlacementLevel?: string | null,
+  userCurrentLevel?: string | null
 ): UnitProgress[] {
   const level = CURRICULUM.find(l => l.code.toLowerCase() === levelCode.toLowerCase());
   if (!level) return [];
+
+  // Check if this entire level is unlocked based on placement
+  const levelIndex = getLevelIndex(levelCode);
+  const placementIndex = getLevelIndex(userPlacementLevel || 'A1');
+  const currentIndex = getLevelIndex(userCurrentLevel || 'A1');
+  const userMaxLevelIndex = Math.max(placementIndex, currentIndex);
+  
+  // If user's level is HIGHER than this level, all units in this level are unlocked
+  const isLevelBelowUser = levelIndex < userMaxLevelIndex;
+  // If user's level is EQUAL to this level, use sequential unlock within the level
+  const isLevelAtUser = levelIndex === userMaxLevelIndex;
 
   const unitProgressList: UnitProgress[] = [];
   let previousUnitCompleted = true; // First unit is always unlocked
@@ -145,22 +228,83 @@ export function getUnitProgress(
     const completedCount = lessonIds.filter(id => completedLessonIds.includes(id)).length;
     const isCompleted = completedCount === lessonIds.length && lessonIds.length > 0;
     
+    // Determine if unit is unlocked
+    let isUnlocked = false;
+    if (isLevelBelowUser) {
+      // All units in levels below user's level are unlocked
+      isUnlocked = true;
+    } else if (isLevelAtUser) {
+      // In user's current level, use sequential unlock OR first unit is unlocked
+      isUnlocked = previousUnitCompleted;
+    } else {
+      // Levels above user's level are locked
+      isUnlocked = previousUnitCompleted;
+    }
+    
     unitProgressList.push({
       unitId: unit.id,
       completedLessons: completedCount,
       totalLessons: lessonIds.length,
       isCompleted,
-      isUnlocked: previousUnitCompleted
+      isUnlocked
     });
 
     // Debug log
-    console.log(`Unit ${unit.id}: ${completedCount}/${lessonIds.length} lessons, unlocked: ${previousUnitCompleted}`);
+    console.log(`Unit ${unit.id}: ${completedCount}/${lessonIds.length} lessons, unlocked: ${isUnlocked}, levelBelowUser: ${isLevelBelowUser}`);
 
     // Next unit is unlocked if current unit is completed
     previousUnitCompleted = isCompleted;
   }
 
   return unitProgressList;
+}
+
+// Get lesson progress within a unit
+export function getLessonProgress(
+  levelCode: string,
+  unitId: string,
+  completedLessonIds: string[],
+  userPlacementLevel?: string | null,
+  userCurrentLevel?: string | null
+): { lessonId: string; isCompleted: boolean; isUnlocked: boolean }[] {
+  const level = CURRICULUM.find(l => l.code.toLowerCase() === levelCode.toLowerCase());
+  if (!level) return [];
+  
+  const unit = level.units.find(u => u.id === unitId);
+  if (!unit) return [];
+
+  const levelIndex = getLevelIndex(levelCode);
+  const placementIndex = getLevelIndex(userPlacementLevel || 'A1');
+  const currentIndex = getLevelIndex(userCurrentLevel || 'A1');
+  const userMaxLevelIndex = Math.max(placementIndex, currentIndex);
+  const isLevelBelowUser = levelIndex < userMaxLevelIndex;
+
+  const lessonProgressList: { lessonId: string; isCompleted: boolean; isUnlocked: boolean }[] = [];
+  let previousLessonCompleted = true; // First lesson is always unlocked
+
+  for (const lesson of unit.lessons) {
+    const isCompleted = completedLessonIds.includes(lesson.id);
+    
+    // Determine if lesson is unlocked
+    let isUnlocked = false;
+    if (isLevelBelowUser) {
+      // All lessons in levels below user's level are unlocked
+      isUnlocked = true;
+    } else {
+      // Sequential unlock
+      isUnlocked = previousLessonCompleted;
+    }
+
+    lessonProgressList.push({
+      lessonId: lesson.id,
+      isCompleted,
+      isUnlocked
+    });
+
+    previousLessonCompleted = isCompleted;
+  }
+
+  return lessonProgressList;
 }
 
 export const useUpdateProgress = () => {
