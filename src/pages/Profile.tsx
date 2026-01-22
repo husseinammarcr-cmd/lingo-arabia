@@ -6,7 +6,7 @@ import { UserLevelBadge } from '@/components/UserLevelBadge';
 import { AchievementsGrid } from '@/components/AchievementsGrid';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Crown, Trophy, Target, Star, Flame, BookOpen } from 'lucide-react';
+import { Crown, Trophy, Target, Star, Flame, BookOpen, Settings } from 'lucide-react';
 import Header from '@/components/Header';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
@@ -121,7 +121,7 @@ const Profile = () => {
 
         {/* Quick Actions */}
         <FadeUp delay={0.15}>
-          <StaggerContainer className="grid grid-cols-2 gap-3">
+          <StaggerContainer className="grid grid-cols-3 gap-3">
             <StaggerItem>
               <MagneticButton className="w-full">
                 <Button
@@ -132,7 +132,7 @@ const Profile = () => {
                   <BouncingIcon>
                     <Trophy className="w-6 h-6 text-xp" />
                   </BouncingIcon>
-                  <span>لوحة المتصدرين</span>
+                  <span className="text-xs">المتصدرين</span>
                 </Button>
               </MagneticButton>
             </StaggerItem>
@@ -146,7 +146,21 @@ const Profile = () => {
                   <BouncingIcon>
                     <Target className="w-6 h-6 text-primary" />
                   </BouncingIcon>
-                  <span>التحديات</span>
+                  <span className="text-xs">التحديات</span>
+                </Button>
+              </MagneticButton>
+            </StaggerItem>
+            <StaggerItem>
+              <MagneticButton className="w-full">
+                <Button
+                  variant="outline"
+                  className="h-auto py-4 flex-col gap-2 w-full"
+                  onClick={() => navigate('/settings')}
+                >
+                  <BouncingIcon>
+                    <Settings className="w-6 h-6 text-muted-foreground" />
+                  </BouncingIcon>
+                  <span className="text-xs">الإعدادات</span>
                 </Button>
               </MagneticButton>
             </StaggerItem>

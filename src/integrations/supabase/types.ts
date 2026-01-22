@@ -370,18 +370,27 @@ export type Database = {
           is_founder: boolean | null
           is_premium: boolean | null
           is_verified: boolean | null
+          last_login_at: string | null
           last_study_date: string | null
           level: Database["public"]["Enums"]["user_level"] | null
           month_start: string | null
           monthly_xp: number | null
           name: string | null
+          notify_achievements: boolean | null
+          notify_announcements: boolean | null
+          notify_course_updates: boolean | null
+          notify_reminders: boolean | null
           onboarding_completed: boolean | null
           placement_level: string | null
           placement_score: number | null
           placement_taken_at: string | null
+          privacy_marketing_emails: boolean | null
+          privacy_show_profile: boolean | null
+          privacy_show_progress: boolean | null
           streak_count: number | null
           updated_at: string | null
           user_level: number | null
+          username: string | null
           week_start: string | null
           weekly_xp: number | null
           xp: number | null
@@ -400,18 +409,27 @@ export type Database = {
           is_founder?: boolean | null
           is_premium?: boolean | null
           is_verified?: boolean | null
+          last_login_at?: string | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
           month_start?: string | null
           monthly_xp?: number | null
           name?: string | null
+          notify_achievements?: boolean | null
+          notify_announcements?: boolean | null
+          notify_course_updates?: boolean | null
+          notify_reminders?: boolean | null
           onboarding_completed?: boolean | null
           placement_level?: string | null
           placement_score?: number | null
           placement_taken_at?: string | null
+          privacy_marketing_emails?: boolean | null
+          privacy_show_profile?: boolean | null
+          privacy_show_progress?: boolean | null
           streak_count?: number | null
           updated_at?: string | null
           user_level?: number | null
+          username?: string | null
           week_start?: string | null
           weekly_xp?: number | null
           xp?: number | null
@@ -430,18 +448,27 @@ export type Database = {
           is_founder?: boolean | null
           is_premium?: boolean | null
           is_verified?: boolean | null
+          last_login_at?: string | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
           month_start?: string | null
           monthly_xp?: number | null
           name?: string | null
+          notify_achievements?: boolean | null
+          notify_announcements?: boolean | null
+          notify_course_updates?: boolean | null
+          notify_reminders?: boolean | null
           onboarding_completed?: boolean | null
           placement_level?: string | null
           placement_score?: number | null
           placement_taken_at?: string | null
+          privacy_marketing_emails?: boolean | null
+          privacy_show_profile?: boolean | null
+          privacy_show_progress?: boolean | null
           streak_count?: number | null
           updated_at?: string | null
           user_level?: number | null
+          username?: string | null
           week_start?: string | null
           weekly_xp?: number | null
           xp?: number | null

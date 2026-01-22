@@ -8,6 +8,7 @@ interface Profile {
   email: string | null;
   display_name: string | null;
   avatar_url: string | null;
+  username: string | null;
   level: 'beginner' | 'intermediate' | 'advanced';
   daily_goal: '5' | '10' | '15';
   xp: number;
@@ -16,6 +17,7 @@ interface Profile {
   user_level: number;
   streak_count: number;
   last_study_date: string | null;
+  last_login_at: string | null;
   is_premium: boolean;
   interests: string[] | null;
   onboarding_completed: boolean;
@@ -25,6 +27,18 @@ interface Profile {
   has_taken_placement: boolean;
   placement_taken_at: string | null;
   country_code: string | null;
+  // Notification preferences
+  notify_course_updates: boolean;
+  notify_reminders: boolean;
+  notify_achievements: boolean;
+  notify_announcements: boolean;
+  // Privacy settings
+  privacy_show_profile: boolean;
+  privacy_show_progress: boolean;
+  privacy_marketing_emails: boolean;
+  // Founder & Verified badges
+  is_founder: boolean;
+  is_verified: boolean;
 }
 
 interface AuthContextType {
