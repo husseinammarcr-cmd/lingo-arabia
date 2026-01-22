@@ -76,6 +76,10 @@ const Auth = () => {
         errorMessage = 'هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول بدلاً من ذلك.';
       } else if (error.message.includes('Invalid login credentials')) {
         errorMessage = 'بيانات الدخول غير صحيحة. تحقق من البريد الإلكتروني وكلمة المرور.';
+      } else if (error.message.includes('rate limit') || error.message.includes('Rate limit')) {
+        errorMessage = 'تم تجاوز الحد المسموح للمحاولات. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.';
+      } else if (error.message.includes('Email rate limit exceeded')) {
+        errorMessage = 'تم تجاوز حد إرسال البريد الإلكتروني. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.';
       }
       toast({ title: 'خطأ', description: errorMessage, variant: 'destructive' });
     } finally {
