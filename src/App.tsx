@@ -29,6 +29,7 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
+import Blog from "./pages/Blog";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import SidebarNav from "./components/SidebarNav";
@@ -76,6 +77,7 @@ const App = () => (
                 <Route path="/about" element={<About />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsAndConditions />} />
                 <Route path="*" element={<NotFound />} />
