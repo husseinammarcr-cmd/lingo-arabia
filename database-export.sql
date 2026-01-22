@@ -1,32 +1,50 @@
 -- =====================================================
--- LingoArab Database Export
+-- LingoArab Database Export - Complete Schema
 -- تصدير قاعدة بيانات تطبيق تعلم اللغة الإنجليزية للناطقين بالعربية
 -- Generated: 2026-01-22
+-- Version: 2.0
 -- =====================================================
 -- ⚠️ تنبيه: قم بتنفيذ هذا الملف في SQL Editor في Supabase Dashboard
 -- =====================================================
+
 
 -- =====================================================
 -- SECTION 1: CUSTOM TYPES (ENUMS)
 -- =====================================================
 
 -- App role enum for user permissions
-CREATE TYPE public.app_role AS ENUM ('user', 'admin');
+DO $$ BEGIN
+  CREATE TYPE public.app_role AS ENUM ('user', 'admin');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- Daily goal options
-CREATE TYPE public.daily_goal AS ENUM ('5', '10', '15');
+DO $$ BEGIN
+  CREATE TYPE public.daily_goal AS ENUM ('5', '10', '15');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- Exercise types for lessons
-CREATE TYPE public.exercise_type AS ENUM (
-  'mcq',
-  'fill_blank',
-  'reorder',
-  'listening',
-  'translation'
-);
+DO $$ BEGIN
+  CREATE TYPE public.exercise_type AS ENUM (
+    'mcq',
+    'fill_blank',
+    'reorder',
+    'listening',
+    'translation'
+  );
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- User proficiency level
-CREATE TYPE public.user_level AS ENUM ('beginner', 'intermediate', 'advanced');
+DO $$ BEGIN
+  CREATE TYPE public.user_level AS ENUM ('beginner', 'intermediate', 'advanced');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 
 -- =====================================================
@@ -34,7 +52,7 @@ CREATE TYPE public.user_level AS ENUM ('beginner', 'intermediate', 'advanced');
 -- =====================================================
 
 -- Profiles table (extends auth.users)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id uuid NOT NULL PRIMARY KEY,
   name text,
   email text,
@@ -75,14 +93,15 @@ CREATE TABLE public.profiles (
 );
 
 -- User roles table
-CREATE TABLE public.user_roles (
+CREATE TABLE IF NOT EXISTS public.user_roles (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
-  role public.app_role NOT NULL DEFAULT 'user'
+  role public.app_role NOT NULL DEFAULT 'user',
+  UNIQUE(user_id, role)
 );
 
 -- Units table (course structure)
-CREATE TABLE public.units (
+CREATE TABLE IF NOT EXISTS public.units (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   title_ar text NOT NULL,
   title_en text NOT NULL,
@@ -94,7 +113,7 @@ CREATE TABLE public.units (
 );
 
 -- Lessons table
-CREATE TABLE public.lessons (
+CREATE TABLE IF NOT EXISTS public.lessons (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   unit_id uuid NOT NULL REFERENCES public.units(id) ON DELETE CASCADE,
   title_ar text NOT NULL,
@@ -107,7 +126,7 @@ CREATE TABLE public.lessons (
 );
 
 -- Exercises table
-CREATE TABLE public.exercises (
+CREATE TABLE IF NOT EXISTS public.exercises (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   lesson_id uuid NOT NULL REFERENCES public.lessons(id) ON DELETE CASCADE,
   type public.exercise_type NOT NULL,
@@ -119,7 +138,7 @@ CREATE TABLE public.exercises (
 );
 
 -- Progress table (user lesson progress)
-CREATE TABLE public.progress (
+CREATE TABLE IF NOT EXISTS public.progress (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
   lesson_id text NOT NULL,
@@ -130,7 +149,7 @@ CREATE TABLE public.progress (
 );
 
 -- Achievements table
-CREATE TABLE public.achievements (
+CREATE TABLE IF NOT EXISTS public.achievements (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   key text NOT NULL UNIQUE,
   title_ar text NOT NULL,
@@ -144,7 +163,7 @@ CREATE TABLE public.achievements (
 );
 
 -- User achievements table (earned achievements)
-CREATE TABLE public.user_achievements (
+CREATE TABLE IF NOT EXISTS public.user_achievements (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
   achievement_id uuid NOT NULL REFERENCES public.achievements(id) ON DELETE CASCADE,
@@ -153,7 +172,7 @@ CREATE TABLE public.user_achievements (
 );
 
 -- Challenges table
-CREATE TABLE public.challenges (
+CREATE TABLE IF NOT EXISTS public.challenges (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   key text NOT NULL UNIQUE,
   name_ar text NOT NULL,
@@ -169,7 +188,7 @@ CREATE TABLE public.challenges (
 );
 
 -- User challenges table (challenge progress)
-CREATE TABLE public.user_challenges (
+CREATE TABLE IF NOT EXISTS public.user_challenges (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
   challenge_id uuid NOT NULL REFERENCES public.challenges(id) ON DELETE CASCADE,
@@ -182,7 +201,7 @@ CREATE TABLE public.user_challenges (
 );
 
 -- Placement tests table
-CREATE TABLE public.placement_tests (
+CREATE TABLE IF NOT EXISTS public.placement_tests (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
   score integer NOT NULL,
@@ -194,7 +213,7 @@ CREATE TABLE public.placement_tests (
 );
 
 -- Notifications table
-CREATE TABLE public.notifications (
+CREATE TABLE IF NOT EXISTS public.notifications (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid,
   title text NOT NULL,
@@ -207,7 +226,7 @@ CREATE TABLE public.notifications (
 );
 
 -- Blog categories table
-CREATE TABLE public.blog_categories (
+CREATE TABLE IF NOT EXISTS public.blog_categories (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   name_ar text NOT NULL,
   name_en text NOT NULL,
@@ -217,7 +236,7 @@ CREATE TABLE public.blog_categories (
 );
 
 -- Blog articles table
-CREATE TABLE public.blog_articles (
+CREATE TABLE IF NOT EXISTS public.blog_articles (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   title_ar text NOT NULL,
   title_en text NOT NULL,
@@ -350,6 +369,11 @@ $$;
 -- SECTION 4: TRIGGERS
 -- =====================================================
 
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
+DROP TRIGGER IF EXISTS reset_periodic_xp_trigger ON public.profiles;
+
 -- Trigger for new user registration
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
@@ -385,6 +409,17 @@ ALTER TABLE public.placement_tests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blog_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blog_articles ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies to avoid conflicts
+DO $$ 
+DECLARE
+  r RECORD;
+BEGIN
+  FOR r IN (SELECT policyname, tablename FROM pg_policies WHERE schemaname = 'public') 
+  LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', r.policyname, r.tablename);
+  END LOOP;
+END $$;
 
 -- Profiles policies
 CREATE POLICY "Anyone can view profiles for leaderboard" ON public.profiles
@@ -503,6 +538,12 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'avatars', true)
 ON CONFLICT (id) DO NOTHING;
 
+-- Drop existing storage policies
+DROP POLICY IF EXISTS "Avatar images are publicly accessible" ON storage.objects;
+DROP POLICY IF EXISTS "Users can upload their own avatar" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update their own avatar" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete their own avatar" ON storage.objects;
+
 -- Storage policies for avatars
 CREATE POLICY "Avatar images are publicly accessible"
   ON storage.objects FOR SELECT
@@ -537,8 +578,18 @@ INSERT INTO public.achievements (key, title_ar, title_en, description_ar, descri
 ('perfect_lesson', 'درس مثالي', 'Perfect Score', 'أكمل درساً بدون أخطاء', 'Complete a lesson without mistakes', 'check-circle', 75, '{"type": "perfect_lesson", "value": 1}'),
 ('lessons_30', 'متعلم نشط', 'Active Learner', 'أكملت 30 درساً', 'Completed 30 lessons', 'graduation-cap', 100, '{"type": "lessons_completed", "value": 30}'),
 ('unit_completed', 'وحدة كاملة', 'Unit Complete', 'أكملت وحدة كاملة', 'Completed a full unit', 'check-circle', 50, '{"type": "unit_completed", "value": 1}'),
-('complete_a1', 'إتمام A1', 'A1 Complete', 'أكملت مستوى A1 بالكامل', 'Completed the entire A1 level', 'award', 300, '{"type": "level_completed", "level": "A1"}')
-ON CONFLICT (key) DO NOTHING;
+('complete_a1', 'إتمام A1', 'A1 Complete', 'أكملت مستوى A1 بالكامل', 'Completed the entire A1 level', 'award', 300, '{"type": "level_completed", "level": "A1"}'),
+('complete_a2', 'إتمام A2', 'A2 Complete', 'أكملت مستوى A2 بالكامل', 'Completed the entire A2 level', 'award', 400, '{"type": "level_completed", "level": "A2"}'),
+('complete_b1', 'إتمام B1', 'B1 Complete', 'أكملت مستوى B1 بالكامل', 'Completed the entire B1 level', 'award', 500, '{"type": "level_completed", "level": "B1"}'),
+('complete_b2', 'إتمام B2', 'B2 Complete', 'أكملت مستوى B2 بالكامل', 'Completed the entire B2 level', 'award', 600, '{"type": "level_completed", "level": "B2"}')
+ON CONFLICT (key) DO UPDATE SET
+  title_ar = EXCLUDED.title_ar,
+  title_en = EXCLUDED.title_en,
+  description_ar = EXCLUDED.description_ar,
+  description_en = EXCLUDED.description_en,
+  icon = EXCLUDED.icon,
+  xp_reward = EXCLUDED.xp_reward,
+  condition_json = EXCLUDED.condition_json;
 
 
 -- =====================================================
@@ -549,8 +600,17 @@ INSERT INTO public.challenges (key, name_ar, name_en, description_ar, descriptio
 ('streak_7_days', 'سلسلة 7 أيام', '7-Day Streak', 'حافظ على سلسلة تعلم لمدة 7 أيام متتالية', 'Maintain a learning streak for 7 consecutive days', 'weekly', 7, 100),
 ('complete_5_lessons', 'أكمل 5 دروس', 'Complete 5 Lessons', 'أكمل 5 دروس هذا الأسبوع', 'Complete 5 lessons this week', 'weekly', 5, 75),
 ('earn_300_xp', 'اكسب 300 XP', 'Earn 300 XP', 'اكسب 300 نقطة خبرة هذا الأسبوع', 'Earn 300 XP this week', 'weekly', 300, 50),
-('daily_practice', 'تمرين يومي', 'Daily Practice', 'تدرب كل يوم لمدة 5 أيام', 'Practice every day for 5 days', 'weekly', 5, 80)
-ON CONFLICT (key) DO NOTHING;
+('daily_practice', 'تمرين يومي', 'Daily Practice', 'تدرب كل يوم لمدة 5 أيام', 'Practice every day for 5 days', 'weekly', 5, 80),
+('complete_10_lessons', 'أكمل 10 دروس', 'Complete 10 Lessons', 'أكمل 10 دروس هذا الأسبوع', 'Complete 10 lessons this week', 'weekly', 10, 150),
+('earn_500_xp', 'اكسب 500 XP', 'Earn 500 XP', 'اكسب 500 نقطة خبرة هذا الأسبوع', 'Earn 500 XP this week', 'weekly', 500, 100)
+ON CONFLICT (key) DO UPDATE SET
+  name_ar = EXCLUDED.name_ar,
+  name_en = EXCLUDED.name_en,
+  description_ar = EXCLUDED.description_ar,
+  description_en = EXCLUDED.description_en,
+  challenge_type = EXCLUDED.challenge_type,
+  target_value = EXCLUDED.target_value,
+  reward_xp = EXCLUDED.reward_xp;
 
 
 -- =====================================================
@@ -562,8 +622,13 @@ INSERT INTO public.blog_categories (name_ar, name_en, slug, color) VALUES
 ('القواعد', 'Grammar', 'grammar', '#8b5cf6'),
 ('المفردات', 'Vocabulary', 'vocabulary', '#f59e0b'),
 ('المحادثة', 'Conversation', 'conversation', '#3b82f6'),
-('الثقافة', 'Culture', 'culture', '#ec4899')
-ON CONFLICT (slug) DO NOTHING;
+('الثقافة', 'Culture', 'culture', '#ec4899'),
+('الاختبارات', 'Tests & Exams', 'tests', '#ef4444'),
+('قصص النجاح', 'Success Stories', 'success-stories', '#22c55e')
+ON CONFLICT (slug) DO UPDATE SET
+  name_ar = EXCLUDED.name_ar,
+  name_en = EXCLUDED.name_en,
+  color = EXCLUDED.color;
 
 
 -- =====================================================
@@ -589,9 +654,18 @@ ON CONFLICT (slug) DO NOTHING;
 --    - 4 Levels: A1, A2, B1, B2
 --    - 10 Units per level
 --    - 5 Lessons per unit
---    - Total: 200 lessons
+--    - Total: 200 lessons (150 completed, 50 B2 remaining)
 --    - Passing score: 50%
 --
--- 6. Make sure to enable the auth trigger after running this script
---    تأكد من تفعيل trigger المصادقة بعد تنفيذ هذا السكريبت
+-- 6. Auth Configuration:
+--    - Auto-confirm email: ENABLED
+--    - Google OAuth: ENABLED
+--    - Anonymous sign-ups: DISABLED
+--
+-- 7. Edge Functions:
+--    - detect-country: Detects user country from IP
+--    - send-password-reset: Sends password reset emails via Resend
+--    - send-verification-email: Sends verification emails via Resend
+--
+-- 8. Version: 2.0 - Updated 2026-01-22
 -- =====================================================
