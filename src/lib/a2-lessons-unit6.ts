@@ -20,13 +20,13 @@ export const A2_U6_L1: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "phone call"؟', data: { options: ['مكالمة هاتفية', 'رسالة نصية', 'بريد إلكتروني', 'فاكس'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Please ___ the phone.', data: { answer: 'answer', alternatives: ['Answer'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Please ___ the phone.', data: { answer: 'answer', alternatives: ['Answer'] } },
     { type: 'mcq', promptAr: 'كيف تقول "أغلق الخط"؟', data: { options: ['hang up', 'pick up', 'call up', 'dial up'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: you / Can / later / call / I / ?', data: { words: ['Can', 'I', 'call', 'you', 'later', '?'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'ما معنى "voicemail"؟', data: { options: ['بريد صوتي', 'بريد إلكتروني', 'رسالة نصية', 'فاكس'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: I\'ll send you a ___.', data: { answer: 'message', alternatives: ['text'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: I\'ll send you a ___.', data: { answer: 'message', alternatives: ['text'] }, points: 10 },
     { type: 'mcq', promptAr: 'ماذا تقول عندما تريد الانتظار؟', data: { options: ['Hold on a moment', 'Hang up now', 'Call me later', 'Send a text'], correct: 0 }, points: 10 },
   ],
 };
@@ -50,13 +50,13 @@ export const A2_U6_L2: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "attachment"؟', data: { options: ['مرفق', 'موضوع', 'رد', 'إرسال'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Check your ___.', data: { answer: 'inbox', alternatives: ['email'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Check your ___.', data: { answer: 'inbox', alternatives: ['email'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'reply', arabic: 'رد' }, { english: 'forward', arabic: 'إعادة إرسال' }, { english: 'subject', arabic: 'موضوع' }] } },
     { type: 'reorder', promptAr: 'رتب: email / my / get / you / Did / ?', data: { words: ['Did', 'you', 'get', 'my', 'email', '?'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "صندوق الوارد"؟', data: { options: ['inbox', 'outbox', 'mailbox', 'textbox'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: I\'ll ___ as soon as possible.', data: { answer: 'reply', alternatives: ['respond'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: I\'ll ___ as soon as possible.', data: { answer: 'reply', alternatives: ['respond'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: هل وصلك بريدي الإلكتروني؟', data: { answer: 'Did you get my email', alternatives: ['Did you receive my email'] }, points: 15 },
   ],
 };
@@ -80,13 +80,13 @@ export const A2_U6_L3: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "hold the line"؟', data: { options: ['ابق على الخط', 'أغلق الخط', 'اتصل مرة أخرى', 'اترك رسالة'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: The line is ___.', data: { answer: 'busy', alternatives: ['occupied'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: The line is ___.', data: { answer: 'busy', alternatives: ['occupied'] } },
     { type: 'mcq', promptAr: 'كيف تقول "تحويلة"؟', data: { options: ['extension', 'connection', 'reception', 'direction'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: you / through / put / I\'ll / to / him', data: { words: ['I\'ll', 'put', 'you', 'through', 'to', 'him'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'ماذا تقول عندما الخط مشغول؟', data: { options: ['The line is busy', 'The line is free', 'Hold on', 'Hang up'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: I\'ll give you a ___.', data: { answer: 'callback', alternatives: ['call'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: I\'ll give you a ___.', data: { answer: 'callback', alternatives: ['call'] }, points: 10 },
     { type: 'mcq', promptAr: 'ما معنى "put through"؟', data: { options: ['يحول المكالمة', 'يغلق الخط', 'يترك رسالة', 'يرسل رسالة'], correct: 0 }, points: 10 },
   ],
 };
@@ -110,13 +110,13 @@ export const A2_U6_L4: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "post"؟', data: { options: ['منشور', 'رسالة', 'بريد', 'تعليق'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: ___ me on Instagram.', data: { answer: 'Follow', alternatives: ['follow'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: ___ me on Instagram.', data: { answer: 'Follow', alternatives: ['follow'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'share', arabic: 'يشارك' }, { english: 'comment', arabic: 'تعليق' }, { english: 'like', arabic: 'إعجاب' }] } },
     { type: 'reorder', promptAr: 'رتب: post / my / see / you / Did / latest / ?', data: { words: ['Did', 'you', 'see', 'my', 'latest', 'post', '?'], correctOrder: [0, 1, 2, 3, 4, 5, 6] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "تعليق"؟', data: { options: ['comment', 'post', 'share', 'like'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Leave a ___.', data: { answer: 'comment', alternatives: ['message'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Leave a ___.', data: { answer: 'comment', alternatives: ['message'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: شكراً على الإعجاب!', data: { answer: 'Thanks for the like', alternatives: ['Thank you for the like'] }, points: 15 },
   ],
 };
@@ -140,13 +140,13 @@ export const A2_U6_L5: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "mute"؟', data: { options: ['كتم الصوت', 'رفع الصوت', 'تشغيل', 'إيقاف'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Can you see my ___?', data: { answer: 'screen', alternatives: ['camera'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Can you see my ___?', data: { answer: 'screen', alternatives: ['camera'] } },
     { type: 'mcq', promptAr: 'ماذا تقول عندما صوت شخص مكتوم؟', data: { options: ['You\'re on mute', 'Speak louder', 'Turn on camera', 'Share screen'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: camera / your / Turn / on', data: { words: ['Turn', 'on', 'your', 'camera'], correctOrder: [0, 1, 2, 3] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "مكالمة فيديو"؟', data: { options: ['video call', 'phone call', 'voice call', 'text message'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: The ___ is bad.', data: { answer: 'connection', alternatives: ['signal'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: The ___ is bad.', data: { answer: 'connection', alternatives: ['signal'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: كاميرتي لا تعمل', data: { answer: 'My camera isn\'t working', alternatives: ['My camera is not working'] }, points: 15 },
   ],
 };

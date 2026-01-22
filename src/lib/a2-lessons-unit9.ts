@@ -20,13 +20,13 @@ export const A2_U9_L1: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "tradition"؟', data: { options: ['تقليد', 'عادة', 'حفل', 'مهرجان'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: We ___ holidays together.', data: { answer: 'celebrate', alternatives: ['enjoy'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: We ___ holidays together.', data: { answer: 'celebrate', alternatives: ['enjoy'] } },
     { type: 'mcq', promptAr: 'كيف تقول "مهرجان"؟', data: { options: ['festival', 'ceremony', 'party', 'event'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: celebrate / Eid / you / do / How / ?', data: { words: ['How', 'do', 'you', 'celebrate', 'Eid', '?'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'ما معنى "ceremony"؟', data: { options: ['حفل', 'تقليد', 'عادة', 'مهرجان'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: It\'s a family ___.', data: { answer: 'tradition', alternatives: ['custom'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: It\'s a family ___.', data: { answer: 'tradition', alternatives: ['custom'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: من العادة إحضار هدية', data: { answer: 'It\'s customary to bring a gift', alternatives: ['It is customary to bring a gift'] }, points: 15 },
   ],
 };
@@ -50,13 +50,13 @@ export const A2_U9_L2: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "handshake"؟', data: { options: ['مصافحة', 'تحية', 'انحناء', 'عناق'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Be ___ to elders.', data: { answer: 'polite', alternatives: ['respectful'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Be ___ to elders.', data: { answer: 'polite', alternatives: ['respectful'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'greet', arabic: 'يحيي' }, { english: 'respect', arabic: 'احترام' }, { english: 'manners', arabic: 'آداب' }] } },
     { type: 'reorder', promptAr: 'رتب: culture / In / my / hands / shake / we', data: { words: ['In', 'my', 'culture', 'we', 'shake', 'hands'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "ينحني"؟', data: { options: ['bow', 'bend', 'kneel', 'sit'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Good table ___.', data: { answer: 'manners', alternatives: ['etiquette'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Good table ___.', data: { answer: 'manners', alternatives: ['etiquette'] }, points: 10 },
     { type: 'mcq', promptAr: 'ما معنى "polite"؟', data: { options: ['مهذب', 'وقح', 'سريع', 'بطيء'], correct: 0 }, points: 10 },
   ],
 };
@@ -80,13 +80,13 @@ export const A2_U9_L3: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "bride"؟', data: { options: ['عروس', 'عريس', 'ضيف', 'أهل'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: The ___ looks beautiful.', data: { answer: 'bride', alternatives: ['woman'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: The ___ looks beautiful.', data: { answer: 'bride', alternatives: ['woman'] } },
     { type: 'mcq', promptAr: 'ما هو "honeymoon"؟', data: { options: ['شهر العسل', 'الزفاف', 'الخطوبة', 'الحفل'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: wedding / going / Are / the / to / you / ?', data: { words: ['Are', 'you', 'going', 'to', 'the', 'wedding', '?'], correctOrder: [0, 1, 2, 3, 4, 5, 6] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "عريس"؟', data: { options: ['groom', 'bride', 'guest', 'host'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: We invited 200 ___.', data: { answer: 'guests', alternatives: ['people'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: We invited 200 ___.', data: { answer: 'guests', alternatives: ['people'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: هل وصلتك الدعوة؟', data: { answer: 'Did you get the invitation', alternatives: ['Did you receive the invitation'] }, points: 15 },
   ],
 };
@@ -110,13 +110,13 @@ export const A2_U9_L4: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "wrap"؟', data: { options: ['يغلف', 'يفتح', 'يرسل', 'يستلم'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Thank you for the ___.', data: { answer: 'gift', alternatives: ['present'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Thank you for the ___.', data: { answer: 'gift', alternatives: ['present'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'receive', arabic: 'يستلم' }, { english: 'exchange', arabic: 'يتبادل' }, { english: 'appreciate', arabic: 'يقدّر' }] } },
     { type: 'reorder', promptAr: 'رتب: is / you / This / for / gift', data: { words: ['This', 'gift', 'is', 'for', 'you'], correctOrder: [0, 1, 2, 3, 4] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "مناسبة"؟', data: { options: ['occasion', 'event', 'party', 'ceremony'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: I really ___ it.', data: { answer: 'appreciate', alternatives: ['like'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: I really ___ it.', data: { answer: 'appreciate', alternatives: ['like'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: ماذا يجب أن أحضر؟', data: { answer: 'What should I bring', alternatives: ['What do I bring'] }, points: 15 },
   ],
 };
@@ -140,13 +140,13 @@ export const A2_U9_L5: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "fireworks"؟', data: { options: ['ألعاب نارية', 'حفل', 'زينة', 'استعراض'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: There\'s a ___ today.', data: { answer: 'parade', alternatives: ['show'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: There\'s a ___ today.', data: { answer: 'parade', alternatives: ['show'] } },
     { type: 'mcq', promptAr: 'كيف تقول "يوم وطني"؟', data: { options: ['national day', 'holiday day', 'special day', 'big day'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: Year / celebrate / New / you / do / How / ?', data: { words: ['How', 'do', 'you', 'celebrate', 'New', 'Year', '?'], correctOrder: [0, 1, 2, 3, 4, 5, 6] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'ما معنى "decoration"؟', data: { options: ['زينة', 'هدية', 'حفل', 'طعام'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: It\'s a ___ holiday.', data: { answer: 'public', alternatives: ['national'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: It\'s a ___ holiday.', data: { answer: 'public', alternatives: ['national'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: الشوارع مليئة بالزينة', data: { answer: 'The streets are full of decorations', alternatives: ['The streets are decorated'] }, points: 15 },
   ],
 };
