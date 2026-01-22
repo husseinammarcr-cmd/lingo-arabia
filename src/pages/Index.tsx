@@ -177,7 +177,7 @@ const Index = () => {
               <p className="text-muted-foreground">
                 © {new Date().getFullYear()} LingoArab. جميع الحقوق محفوظة.
               </p>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
                 <a 
                   href="/privacy-policy" 
                   className="text-muted-foreground hover:text-primary transition-colors text-sm"
@@ -190,6 +190,13 @@ const Index = () => {
                   className="text-muted-foreground hover:text-primary transition-colors text-sm"
                 >
                   شروط الاستخدام
+                </a>
+                <span className="text-border">|</span>
+                <a 
+                  href="/cookie-policy" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
+                  سياسة ملفات الارتباط
                 </a>
               </div>
             </div>
