@@ -20,13 +20,13 @@ export const A2_U7_L1: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "menu"؟', data: { options: ['قائمة الطعام', 'فاتورة', 'طاولة', 'حجز'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Can I have the ___?', data: { answer: 'bill', alternatives: ['check'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Can I have the ___?', data: { answer: 'bill', alternatives: ['check'] } },
     { type: 'mcq', promptAr: 'كيف تقول "نادل"؟', data: { options: ['waiter', 'chef', 'manager', 'customer'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: recommend / you / do / What / ?', data: { words: ['What', 'do', 'you', 'recommend', '?'], correctOrder: [0, 1, 2, 3, 4] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'ما معنى "reservation"؟', data: { options: ['حجز', 'طلب', 'فاتورة', 'قائمة'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Leave a ___ for the waiter.', data: { answer: 'tip', alternatives: ['gratuity'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Leave a ___ for the waiter.', data: { answer: 'tip', alternatives: ['gratuity'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: أود أن أحجز طاولة', data: { answer: 'I\'d like to make a reservation', alternatives: ['I would like to make a reservation'] }, points: 15 },
   ],
 };
@@ -50,13 +50,13 @@ export const A2_U7_L2: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "appetizer"؟', data: { options: ['مقبلات', 'طبق رئيسي', 'حلوى', 'مشروب'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: What\'s today\'s ___?', data: { answer: 'special', alternatives: ['dish'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: What\'s today\'s ___?', data: { answer: 'special', alternatives: ['dish'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'dessert', arabic: 'حلوى' }, { english: 'beverage', arabic: 'مشروب' }, { english: 'main course', arabic: 'طبق رئيسي' }] } },
     { type: 'reorder', promptAr: 'رتب: soup / with / start / I\'ll / the', data: { words: ['I\'ll', 'start', 'with', 'the', 'soup'], correctOrder: [0, 1, 2, 3, 4] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "طبق جانبي"؟', data: { options: ['side dish', 'main dish', 'special dish', 'dessert'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Save room for ___.', data: { answer: 'dessert', alternatives: ['sweets'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Save room for ___.', data: { answer: 'dessert', alternatives: ['sweets'] }, points: 10 },
     { type: 'mcq', promptAr: 'ما معنى "beverage"؟', data: { options: ['مشروب', 'طعام', 'حلوى', 'مقبلات'], correct: 0 }, points: 10 },
   ],
 };
@@ -80,13 +80,13 @@ export const A2_U7_L3: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "well-done"؟', data: { options: ['ناضج تماماً', 'نيء', 'متوسط', 'حار'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: I have a nut ___.', data: { answer: 'allergy', alternatives: ['sensitivity'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: I have a nut ___.', data: { answer: 'allergy', alternatives: ['sensitivity'] } },
     { type: 'mcq', promptAr: 'عكس "spicy" هو:', data: { options: ['mild', 'hot', 'strong', 'bitter'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: steak / like / would / you / your / How / ?', data: { words: ['How', 'would', 'you', 'like', 'your', 'steak', '?'], correctOrder: [0, 1, 2, 3, 4, 5, 6] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "متوسط النضج"؟', data: { options: ['medium', 'rare', 'well-done', 'raw'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: I\'m ___ to seafood.', data: { answer: 'allergic', alternatives: ['sensitive'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: I\'m ___ to seafood.', data: { answer: 'allergic', alternatives: ['sensitive'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: هل هذا يحتوي على مكسرات؟', data: { answer: 'Does this contain nuts', alternatives: ['Does this have nuts'] }, points: 15 },
   ],
 };
@@ -110,13 +110,13 @@ export const A2_U7_L4: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "overcooked"؟', data: { options: ['مطبوخ زيادة', 'غير ناضج', 'بارد', 'حار'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: This is the ___ order.', data: { answer: 'wrong', alternatives: ['incorrect'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: This is the ___ order.', data: { answer: 'wrong', alternatives: ['incorrect'] } },
     { type: 'mcq', promptAr: 'عكس "overcooked" هو:', data: { options: ['undercooked', 'well-done', 'cold', 'hot'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: ordered / isn\'t / I / this / what', data: { words: ['this', 'isn\'t', 'what', 'I', 'ordered'], correctOrder: [0, 1, 2, 3, 4] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "استرداد"؟', data: { options: ['refund', 'return', 'replace', 'exchange'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: The soup is ___.', data: { answer: 'cold', alternatives: ['cool'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: The soup is ___.', data: { answer: 'cold', alternatives: ['cool'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: أود التحدث للمدير', data: { answer: 'I\'d like to speak to the manager', alternatives: ['I would like to speak to the manager'] }, points: 15 },
   ],
 };
@@ -140,13 +140,13 @@ export const A2_U7_L5: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "takeaway"؟', data: { options: ['طلب للخارج', 'تناول هنا', 'توصيل', 'حجز'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Do you have ___?', data: { answer: 'delivery', alternatives: ['takeout'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Do you have ___?', data: { answer: 'delivery', alternatives: ['takeout'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'dine in', arabic: 'تناول في المكان' }, { english: 'takeaway', arabic: 'طلب للخارج' }, { english: 'delivery', arabic: 'توصيل' }] } },
     { type: 'reorder', promptAr: 'رتب: go / to / or / here / for / Is / this / ?', data: { words: ['Is', 'this', 'for', 'here', 'or', 'to', 'go', '?'], correctOrder: [0, 1, 2, 3, 4, 5, 6, 7] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "تناول في المكان"؟', data: { options: ['dine in', 'take out', 'delivery', 'pick up'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Include ___, please.', data: { answer: 'cutlery', alternatives: ['utensils'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Include ___, please.', data: { answer: 'cutlery', alternatives: ['utensils'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: كم سيستغرق التوصيل؟', data: { answer: 'How long will delivery take', alternatives: ['How long does delivery take'] }, points: 15 },
   ],
 };

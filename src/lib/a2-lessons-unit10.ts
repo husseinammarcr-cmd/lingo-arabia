@@ -20,13 +20,13 @@ export const A2_U10_L1: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "yesterday"؟', data: { options: ['أمس', 'غداً', 'اليوم', 'الأسبوع'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: See you ___.', data: { answer: 'tomorrow', alternatives: ['later'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: See you ___.', data: { answer: 'tomorrow', alternatives: ['later'] } },
     { type: 'mcq', promptAr: 'عكس "yesterday" هو:', data: { options: ['tomorrow', 'today', 'now', 'later'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: do / yesterday / did / What / you / ?', data: { words: ['What', 'did', 'you', 'do', 'yesterday', '?'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "بالفعل"؟', data: { options: ['already', 'yet', 'still', 'just'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: I went there ___ week.', data: { answer: 'last', alternatives: ['past'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: I went there ___ week.', data: { answer: 'last', alternatives: ['past'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: هل انتهيت بعد؟', data: { answer: 'Have you finished yet', alternatives: ['Are you done yet'] }, points: 15 },
   ],
 };
@@ -50,13 +50,13 @@ export const A2_U10_L2: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "boarding pass"؟', data: { options: ['بطاقة صعود', 'جواز سفر', 'تأشيرة', 'تذكرة'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: Show your ___.', data: { answer: 'passport', alternatives: ['ID'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: Show your ___.', data: { answer: 'passport', alternatives: ['ID'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'departure', arabic: 'مغادرة' }, { english: 'arrival', arabic: 'وصول' }, { english: 'delay', arabic: 'تأخير' }] } },
     { type: 'reorder', promptAr: 'رتب: delayed / flight / is / My', data: { words: ['My', 'flight', 'is', 'delayed'], correctOrder: [0, 1, 2, 3] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "تأخير"؟', data: { options: ['delay', 'early', 'on time', 'cancel'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Collect your ___.', data: { answer: 'luggage', alternatives: ['bags'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Collect your ___.', data: { answer: 'luggage', alternatives: ['bags'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: أين بوابة المغادرة؟', data: { answer: 'Where is the departure gate', alternatives: ['Where\'s the departure gate'] }, points: 15 },
   ],
 };
@@ -80,13 +80,13 @@ export const A2_U10_L3: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "prescription"؟', data: { options: ['وصفة طبية', 'دواء', 'صيدلية', 'موعد'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: I have a ___.', data: { answer: 'headache', alternatives: ['pain'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: I have a ___.', data: { answer: 'headache', alternatives: ['pain'] } },
     { type: 'mcq', promptAr: 'أين تشتري الدواء؟', data: { options: ['pharmacy', 'hospital', 'clinic', 'store'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: doctor / see / need / I / to / a', data: { words: ['I', 'need', 'to', 'see', 'a', 'doctor'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "عرض مرضي"؟', data: { options: ['symptom', 'disease', 'pain', 'cure'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Take this ___.', data: { answer: 'medicine', alternatives: ['pill'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Take this ___.', data: { answer: 'medicine', alternatives: ['pill'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: لا أشعر أنني بخير', data: { answer: 'I don\'t feel well', alternatives: ['I am not feeling well'] }, points: 15 },
   ],
 };
@@ -110,13 +110,13 @@ export const A2_U10_L4: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "discount"؟', data: { options: ['خصم', 'سعر', 'زيادة', 'ضريبة'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: What\'s the ___?', data: { answer: 'price', alternatives: ['cost'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: What\'s the ___?', data: { answer: 'price', alternatives: ['cost'] } },
     { type: 'matching', promptAr: 'طابق الكلمات:', data: { pairs: [{ english: 'size', arabic: 'مقاس' }, { english: 'color', arabic: 'لون' }, { english: 'return', arabic: 'إرجاع' }] } },
     { type: 'reorder', promptAr: 'رتب: cost / does / How / much / this / ?', data: { words: ['How', 'much', 'does', 'this', 'cost', '?'], correctOrder: [0, 1, 2, 3, 4, 5] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "إيصال"؟', data: { options: ['receipt', 'recipe', 'bill', 'invoice'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Can I ___ this?', data: { answer: 'return', alternatives: ['exchange'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Can I ___ this?', data: { answer: 'return', alternatives: ['exchange'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: هل لديكم هذا بالأزرق؟', data: { answer: 'Do you have this in blue', alternatives: ['Is this available in blue'] }, points: 15 },
   ],
 };
@@ -140,13 +140,13 @@ export const A2_U10_L5: LessonContent = {
   ],
   exercises: [
     { type: 'mcq', promptAr: 'ما معنى "cheaper"؟', data: { options: ['أرخص', 'أغلى', 'أكبر', 'أصغر'], correct: 0 } },
-    { type: 'fillblank', promptAr: 'أكمل: I need a ___ size.', data: { answer: 'bigger', alternatives: ['larger'] } },
+    { type: 'fill_blank', promptAr: 'أكمل: I need a ___ size.', data: { answer: 'bigger', alternatives: ['larger'] } },
     { type: 'mcq', promptAr: 'عكس "better" هو:', data: { options: ['worse', 'good', 'best', 'more'], correct: 0 } },
     { type: 'reorder', promptAr: 'رتب: than / bigger / This / is / that', data: { words: ['This', 'is', 'bigger', 'than', 'that'], correctOrder: [0, 1, 2, 3, 4] } },
   ],
   quiz: [
     { type: 'mcq', promptAr: 'كيف تقول "أغلى"؟', data: { options: ['more expensive', 'cheaper', 'better', 'worse'], correct: 0 }, points: 10 },
-    { type: 'fillblank', promptAr: 'أكمل: Which one is ___?', data: { answer: 'cheaper', alternatives: ['better'] }, points: 10 },
+    { type: 'fill_blank', promptAr: 'أكمل: Which one is ___?', data: { answer: 'cheaper', alternatives: ['better'] }, points: 10 },
     { type: 'translation', promptAr: 'ترجم: هذا أكبر من ذاك', data: { answer: 'This is bigger than that', alternatives: ['This is larger than that'] }, points: 15 },
   ],
 };
