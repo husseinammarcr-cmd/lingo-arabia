@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { HelpCircle } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import {
   Accordion,
@@ -7,6 +9,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+
+const SITE_URL = 'https://lingoarab.com';
 
 interface FAQItem {
   question: string;
@@ -55,9 +59,76 @@ const faqItems: FAQItem[] = [
 ];
 
 const FAQ = () => {
+  // JSON-LD Schemas
+  const faqSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map((item) => ({
+      "@type": "Question",
+      "name": item.questionAr,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answerAr
+      }
+    }))
+  }), []);
+
+  const breadcrumbSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "الرئيسية",
+        "item": SITE_URL
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "الأسئلة الشائعة",
+        "item": `${SITE_URL}/faq`
+      }
+    ]
+  }), []);
+
+  const organizationSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "LingoArab",
+    "url": SITE_URL,
+    "logo": `${SITE_URL}/logo.png`,
+    "description": "منصة تعلم اللغة الإنجليزية للناطقين بالعربية"
+  }), []);
+      
+      <Header showBack showAuthButton />
   return (
     <div className="min-h-screen bg-background">
-      <Header showBack showAuthButton />
+      <Helmet>
+        <title>الأسئلة الشائعة - LingoArab | تعلم الإنجليزية للناطقين بالعربية</title>
+        <meta name="description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة LingoArab لتعلم اللغة الإنجليزية. تعرف على كيفية استخدام المنصة، المستويات المتاحة، وطرق التعلم." />
+        <link rel="canonical" href={`${SITE_URL}/faq`} />
+        
+        {/* OpenGraph */}
+        <meta property="og:title" content="الأسئلة الشائعة - LingoArab" />
+        <meta property="og:description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة LingoArab لتعلم اللغة الإنجليزية" />
+        <meta property="og:url" content={`${SITE_URL}/faq`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:locale" content="ar_SA" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="الأسئلة الشائعة - LingoArab" />
+        <meta name="twitter:description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة LingoArab لتعلم اللغة الإنجليزية" />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
+        
+        {/* JSON-LD Schemas */}
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      </Helmet>
       
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         {/* Header Section */}
