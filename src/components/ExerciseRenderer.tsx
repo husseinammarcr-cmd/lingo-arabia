@@ -412,16 +412,38 @@ export const ExerciseRenderer = ({
     }
   };
 
+  // Helper function to wrap English text in LTR isolation
+  const renderPromptWithLTR = (text: string) => {
+    // Match English sentences with blanks, punctuation, parentheses
+    const englishPattern = /([A-Za-z][A-Za-z0-9\s.,!?'"()_\-–—]+[A-Za-z0-9.!?'"()_]|___+|\([^)]+\))/g;
+    
+    const parts = text.split(englishPattern);
+    
+    return parts.map((part, index) => {
+      // Check if this part is English text
+      if (englishPattern.test(part) || /^[A-Za-z]/.test(part) || part.includes('___')) {
+        // Reset regex lastIndex
+        englishPattern.lastIndex = 0;
+        return (
+          <bdi key={index} dir="ltr" className="inline-block" style={{ unicodeBidi: 'isolate' }}>
+            {part}
+          </bdi>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Prompt */}
       <Card className="bg-secondary/30">
         <CardContent className="p-6">
-          <h2 className="text-xl font-bold mb-2">{promptAr}</h2>
+          <h2 className="text-xl font-bold mb-2">{renderPromptWithLTR(promptAr)}</h2>
           {promptEn && (
-            <div className="flex items-center gap-2 justify-end" dir="ltr">
+            <div className="flex items-center gap-2" dir="ltr">
               <AudioButton text={promptEn} size="sm" className="text-muted-foreground" />
-              <p className="text-muted-foreground ltr-sentence flex-1">{promptEn}</p>
+              <p className="text-muted-foreground flex-1" style={{ unicodeBidi: 'isolate' }}>{promptEn}</p>
             </div>
           )}
         </CardContent>
