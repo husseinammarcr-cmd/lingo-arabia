@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, User, Eye, Tag, Share2, Facebook, Twitter, Linkedin, Copy, Check } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,7 +10,8 @@ import { toast } from 'sonner';
 import Header from '@/components/Header';
 import PageBackground from '@/components/PageBackground';
 import { useArticle, useIncrementViews, useArticles } from '@/hooks/useBlog';
-import { useState } from 'react';
+
+const SITE_URL = 'https://lingoarab.com';
 
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -107,8 +109,97 @@ const BlogArticle = () => {
 
   const filteredRelated = relatedArticles?.filter(a => a.id !== article.id).slice(0, 3);
 
+  // Generate Article Schema
+  const articleSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title_ar,
+    "description": article.excerpt_ar,
+    "image": article.featured_image || `${SITE_URL}/og-image.png`,
+    "datePublished": article.published_at || article.created_at,
+    "dateModified": article.updated_at || article.created_at,
+    "author": {
+      "@type": "Person",
+      "name": article.author_name
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "LingoArab",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${SITE_URL}/logo.png`
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/blog/${article.slug}`
+    },
+    "inLanguage": "ar"
+  }), [article]);
+
+  // Generate Breadcrumb Schema
+  const breadcrumbSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "الرئيسية",
+        "item": SITE_URL
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "المدونة",
+        "item": `${SITE_URL}/blog`
+      },
+      ...(article.category ? [{
+        "@type": "ListItem",
+        "position": 3,
+        "name": article.category.name_ar,
+        "item": `${SITE_URL}/blog?category=${article.category.slug}`
+      }] : []),
+      {
+        "@type": "ListItem",
+        "position": article.category ? 4 : 3,
+        "name": article.title_ar,
+        "item": `${SITE_URL}/blog/${article.slug}`
+      }
+    ]
+  }), [article]);
+
   return (
     <PageBackground>
+      <Helmet>
+        <title>{article.title_ar} - LingoArab</title>
+        <meta name="description" content={article.excerpt_ar} />
+        <link rel="canonical" href={`${SITE_URL}/blog/${article.slug}`} />
+        
+        {/* OpenGraph */}
+        <meta property="og:title" content={article.title_ar} />
+        <meta property="og:description" content={article.excerpt_ar} />
+        <meta property="og:url" content={`${SITE_URL}/blog/${article.slug}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={article.featured_image || `${SITE_URL}/og-image.png`} />
+        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:locale" content="ar_SA" />
+        <meta property="article:published_time" content={article.published_at || article.created_at} />
+        <meta property="article:modified_time" content={article.updated_at || article.created_at} />
+        <meta property="article:author" content={article.author_name} />
+        {article.category && <meta property="article:section" content={article.category.name_ar} />}
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title_ar} />
+        <meta name="twitter:description" content={article.excerpt_ar} />
+        <meta name="twitter:image" content={article.featured_image || `${SITE_URL}/og-image.png`} />
+        
+        {/* JSON-LD Schemas */}
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      </Helmet>
+      
       <Header showBack showUserInfo />
       
       <main className="container mx-auto px-4 py-8">

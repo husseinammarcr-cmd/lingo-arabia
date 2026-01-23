@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, Eye, ArrowLeft, BookOpen, Tag, Loader2, Filter } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +17,38 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { useArticles, useCategories } from '@/hooks/useBlog';
+
+const SITE_URL = 'https://lingoarab.com';
+
+// Static Organization Schema
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "LingoArab",
+  "url": SITE_URL,
+  "logo": `${SITE_URL}/logo.png`,
+  "description": "منصة تعليمية عربية لتعلم اللغة الإنجليزية"
+};
+
+// Breadcrumb Schema for Blog listing
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "الرئيسية",
+      "item": SITE_URL
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "المدونة",
+      "item": `${SITE_URL}/blog`
+    }
+  ]
+};
 
 const POSTS_PER_PAGE = 6;
 
@@ -40,6 +73,39 @@ const Blog = () => {
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = articles?.slice(startIndex, startIndex + POSTS_PER_PAGE) || [];
 
+  // Generate ItemList schema for articles
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "مقالات LingoArab",
+    "description": "مقالات ونصائح لتعلم اللغة الإنجليزية للناطقين بالعربية",
+    "numberOfItems": articles?.length || 0,
+    "itemListElement": currentPosts.map((article, index) => ({
+      "@type": "ListItem",
+      "position": startIndex + index + 1,
+      "item": {
+        "@type": "Article",
+        "headline": article.title_ar,
+        "description": article.excerpt_ar,
+        "url": `${SITE_URL}/blog/${article.slug}`,
+        "image": article.featured_image || `${SITE_URL}/og-image.png`,
+        "datePublished": article.published_at || article.created_at,
+        "author": {
+          "@type": "Person",
+          "name": article.author_name
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LingoArab",
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${SITE_URL}/logo.png`
+          }
+        }
+      }
+    }))
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ar-SA', {
@@ -62,6 +128,32 @@ const Blog = () => {
 
   return (
     <PageBackground>
+      <Helmet>
+        <title>المدونة - LingoArab | مقالات تعلم الإنجليزية</title>
+        <meta name="description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية. نشارك معك أفضل الاستراتيجيات والموارد لرحلة تعلم ناجحة." />
+        <link rel="canonical" href={`${SITE_URL}/blog`} />
+        
+        {/* OpenGraph */}
+        <meta property="og:title" content="المدونة - LingoArab" />
+        <meta property="og:description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية" />
+        <meta property="og:url" content={`${SITE_URL}/blog`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:locale" content="ar_SA" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="المدونة - LingoArab" />
+        <meta name="twitter:description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية" />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
+        
+        {/* JSON-LD Schemas */}
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
+      </Helmet>
+      
       <div className="min-h-screen" dir="rtl">
         <Header />
 
