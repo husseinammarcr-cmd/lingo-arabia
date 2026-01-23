@@ -412,26 +412,54 @@ export const ExerciseRenderer = ({
     }
   };
 
-  // Helper function to wrap English text in LTR isolation
+  // Helper function to wrap English sentences (including blanks) in LTR isolation
   const renderPromptWithLTR = (text: string) => {
-    // Match English sentences with blanks, punctuation, parentheses
-    const englishPattern = /([A-Za-z][A-Za-z0-9\s.,!?'"()_\-–—]+[A-Za-z0-9.!?'"()_]|___+|\([^)]+\))/g;
+    // Pattern to match: Arabic prefix (like "أكمل:") followed by English sentence
+    // We detect English segments that contain letters, blanks, punctuation
+    const segments: React.ReactNode[] = [];
     
-    const parts = text.split(englishPattern);
+    // Split by detecting transitions between Arabic and English/blank content
+    // Match full English sentences including ___, punctuation, etc.
+    const fullEnglishPattern = /([_]{2,}[\s]*[A-Za-z][A-Za-z0-9\s.,!?'"()\-–—_]*|[A-Za-z][A-Za-z0-9\s.,!?'"()\-–—_]*[_]{2,}[A-Za-z0-9\s.,!?'"()\-–—_]*|[A-Za-z][A-Za-z0-9\s.,!?'"()\-–—]+)/g;
     
-    return parts.map((part, index) => {
-      // Check if this part is English text
-      if (englishPattern.test(part) || /^[A-Za-z]/.test(part) || part.includes('___')) {
-        // Reset regex lastIndex
-        englishPattern.lastIndex = 0;
-        return (
-          <bdi key={index} dir="ltr" className="inline-block" style={{ unicodeBidi: 'isolate' }}>
-            {part}
-          </bdi>
-        );
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = fullEnglishPattern.exec(text)) !== null) {
+      // Add Arabic text before this match
+      if (match.index > lastIndex) {
+        const arabicPart = text.slice(lastIndex, match.index);
+        if (arabicPart.trim()) {
+          segments.push(<span key={`ar-${lastIndex}`}>{arabicPart}</span>);
+        }
       }
-      return <span key={index}>{part}</span>;
-    });
+      
+      // Add English text wrapped in bdi for LTR isolation
+      segments.push(
+        <bdi 
+          key={`en-${match.index}`} 
+          dir="ltr" 
+          style={{ 
+            unicodeBidi: 'isolate',
+            display: 'inline'
+          }}
+        >
+          {match[0]}
+        </bdi>
+      );
+      
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Add remaining Arabic text
+    if (lastIndex < text.length) {
+      const remaining = text.slice(lastIndex);
+      if (remaining.trim()) {
+        segments.push(<span key={`ar-end`}>{remaining}</span>);
+      }
+    }
+    
+    return segments.length > 0 ? segments : text;
   };
 
   return (
