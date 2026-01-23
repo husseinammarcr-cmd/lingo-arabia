@@ -116,17 +116,17 @@ const Index = () => {
         <link rel="canonical" href={SITE_URL} />
         
         {/* OpenGraph */}
-        <meta property="og:title" content="LingoArab – تعلم الإنجليزية بالعربية" />
+        <meta property="og:title" content="Lingo Arab – تعلم الإنجليزية مجانا" />
         <meta property="og:description" content="منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً." />
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
-        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:site_name" content="Lingo Arab" />
         <meta property="og:locale" content="ar_SA" />
         
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="LingoArab – تعلم الإنجليزية بالعربية" />
+        <meta name="twitter:title" content="Lingo Arab – تعلم الإنجليزية مجانا" />
         <meta name="twitter:description" content="منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً." />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         
