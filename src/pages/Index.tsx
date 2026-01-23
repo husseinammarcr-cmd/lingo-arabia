@@ -98,7 +98,15 @@ const Index = () => {
     "@type": "WebSite",
     "name": "Lingo Arab",
     "alternateName": "LingoArab",
-    "url": SITE_URL
+    "url": SITE_URL,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${SITE_URL}/blog?search={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
   }), []);
 
   return (
