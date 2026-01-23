@@ -54,12 +54,10 @@ const Auth = () => {
       } else if (view === 'signup') {
         const { error } = await signUp(email, password, name);
         if (error) throw error;
-        toast({ 
-          title: 'تم إنشاء الحساب بنجاح! ✉️', 
-          description: 'يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل المتابعة' 
-        });
-        // لا توجيه - يبقى المستخدم هنا حتى يؤكد بريده
-        // سيتم توجيهه تلقائياً بعد تأكيد البريد وتسجيل الدخول
+        // حفظ البريد للصفحة التالية
+        sessionStorage.setItem('pendingVerificationEmail', email);
+        // توجيه لصفحة تأكيد البريد
+        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
       } else if (view === 'forgot-password') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
