@@ -12,7 +12,8 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import VerifyEmail from "./pages/VerifyEmail";
 import Learn from "./pages/Learn";
-import Courses from "./pages/Courses";
+import CoursesPublic from "./pages/CoursesPublic";
+import AppCourses from "./pages/AppCourses";
 import CourseLevel from "./pages/CourseLevel";
 import CourseUnit from "./pages/CourseUnit";
 import LessonPlayer from "./pages/LessonPlayer";
@@ -66,9 +67,17 @@ const App = () => (
                   <Route path="/learn" element={<Navigate to="/courses" replace />} />
                   <Route path="/units" element={<Navigate to="/courses" replace />} />
                   <Route path="/learning" element={<Navigate to="/courses" replace />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/courses/:level" element={<CourseLevel />} />
-                  <Route path="/courses/:level/:unit" element={<CourseUnit />} />
+                  <Route path="/courses" element={<CoursesPublic />} />
+                  
+                  {/* Protected app routes */}
+                  <Route path="/app/courses" element={<AppCourses />} />
+                  <Route path="/app/courses/:level" element={<CourseLevel />} />
+                  <Route path="/app/courses/:level/:unit" element={<CourseUnit />} />
+                  
+                  {/* Legacy routes - redirect to new paths */}
+                  <Route path="/courses/:level" element={<Navigate to="/app/courses" replace />} />
+                  <Route path="/courses/:level/:unit" element={<Navigate to="/app/courses" replace />} />
+                  
                   <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
                   <Route path="/placement-test" element={<PlacementTest />} />
                   <Route path="/placement-test/start" element={<PlacementTestStart />} />
