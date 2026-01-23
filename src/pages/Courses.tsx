@@ -3,12 +3,15 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { CURRICULUM, getTotalLessonsCount } from '@/lib/curriculum';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { 
   ChevronLeft, 
   BookOpen,
   GraduationCap,
   Lock,
-  CheckCircle
+  CheckCircle,
+  Target,
+  Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo } from 'react';
@@ -45,6 +48,9 @@ const Courses = () => {
   const { user, profile, isLoading } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { data: progressData } = useUserProgress();
+
+  // Check if user has taken placement test
+  const hasTakenPlacement = profile?.has_taken_placement ?? false;
 
   // Get completed lesson IDs
   const completedLessonIds = useMemo(() => {
@@ -110,35 +116,65 @@ const Courses = () => {
       <Header showUserInfo />
 
       <main className="container mx-auto px-4 py-6 max-w-4xl">
-        {/* Placement Test Banner */}
-        {!profile?.has_taken_placement && (
+        {/* Placement Test Required Banner - Shows when user hasn't taken the test */}
+        {!hasTakenPlacement && (
           <FadeUp>
-            <motion.div
-              whileHover={prefersReducedMotion ? {} : { scale: 1.02 }}
-              whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
-            >
-              <Card 
-                className="mb-6 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 cursor-pointer hover:shadow-lg transition-shadow" 
-                onClick={() => navigate('/placement-test')}
-              >
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <motion.div 
-                      className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center"
-                      animate={prefersReducedMotion ? {} : { rotate: [0, 5, -5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                    >
-                      <GraduationCap className="w-6 h-6 text-primary" />
-                    </motion.div>
-                    <div>
-                      <div className="font-bold text-foreground">اختبار تحديد المستوى</div>
-                      <div className="text-sm text-muted-foreground">اكتشف مستواك وابدأ من المكان المناسب</div>
+            <Card className="mb-8 overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col items-center text-center">
+                  {/* Icon with animation */}
+                  <motion.div 
+                    className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4 shadow-lg"
+                    animate={prefersReducedMotion ? {} : { 
+                      scale: [1, 1.05, 1],
+                      rotate: [0, 2, -2, 0]
+                    }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    <Target className="w-10 h-10 text-primary-foreground" />
+                  </motion.div>
+                  
+                  {/* Title */}
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    ابدأ رحلة التعلم!
+                  </h2>
+                  
+                  {/* Description */}
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    قم بتحديد مستواك في اللغة الإنجليزية لفتح الدروس المناسبة لك.
+                    الاختبار سريع ويستغرق فقط 5-10 دقائق.
+                  </p>
+                  
+                  {/* Features */}
+                  <div className="flex flex-wrap justify-center gap-4 mb-6 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      <span>30 سؤال متنوع</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <GraduationCap className="w-4 h-4 text-primary" />
+                      <span>تحديد دقيق للمستوى</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <BookOpen className="w-4 h-4 text-primary" />
+                      <span>فتح الدروس فوراً</span>
                     </div>
                   </div>
-                  <ChevronLeft className="w-5 h-5 text-primary" />
-                </CardContent>
-              </Card>
-            </motion.div>
+                  
+                  {/* CTA Button */}
+                  <Button 
+                    variant="hero" 
+                    size="xl"
+                    onClick={() => navigate('/placement-test')}
+                    className="text-lg gap-2"
+                  >
+                    <Target className="w-5 h-5" />
+                    حدد مستواك الآن
+                    <ChevronLeft className="w-5 h-5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </FadeUp>
         )}
 
@@ -149,6 +185,11 @@ const Courses = () => {
             <p className="text-muted-foreground">
               {totalLessons} درس في 4 مستويات - من المبتدئ إلى المتقدم
             </p>
+            {!hasTakenPlacement && (
+              <p className="text-sm text-primary mt-2">
+                قم بتحديد مستواك أولاً لفتح الدروس
+              </p>
+            )}
           </div>
         </FadeUp>
 
@@ -159,7 +200,9 @@ const Courses = () => {
             const totalLevelLessons = level.units.reduce((sum, unit) => sum + unit.lessons.length, 0);
             const levelProgress = levelProgressMap[level.code];
             const progress = levelProgress?.progress ?? 0;
-            const isUnlocked = isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level);
+            
+            // If user hasn't taken placement test, all levels are locked
+            const isUnlocked = hasTakenPlacement && isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level);
             const levelImage = levelImages[level.code];
             const isCompleted = levelProgress?.completed === levelProgress?.total && levelProgress?.total > 0;
 
@@ -251,7 +294,7 @@ const Courses = () => {
                         <span>{levelProgress?.completed ?? 0} / {totalLevelLessons} درس</span>
                       </div>
 
-                      <AnimatedProgress value={progress} />
+                      <AnimatedProgress value={isUnlocked ? progress : 0} />
                     </CardContent>
                   </Card>
                 </TiltCard>
