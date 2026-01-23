@@ -59,8 +59,8 @@ const PlacementTest = () => {
   }
 
   const features = [
-    { icon: Clock, title: '10-15 دقيقة', description: 'مدة الاختبار التقريبية' },
-    { icon: Target, title: '30 سؤال', description: 'أسئلة متنوعة ومتدرجة' },
+    { icon: Clock, title: '3-5 دقائق', description: 'مدة الاختبار التقريبية' },
+    { icon: Target, title: '15 سؤال', description: 'أسئلة متنوعة ومتدرجة' },
     { icon: Award, title: 'تحديد دقيق', description: 'A1 إلى B2' },
   ];
 
@@ -106,7 +106,7 @@ const PlacementTest = () => {
                       مستواك الحالي: {profile.placement_level}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      النتيجة: {profile.placement_score}/30
+                      النتيجة: {profile.placement_score}/15
                       {lastTestDate && ` • ${lastTestDate.toLocaleDateString('ar-EG')}`}
                     </div>
                   </div>
@@ -122,7 +122,7 @@ const PlacementTest = () => {
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
-                  <span>الاختبار يحتوي على 30 سؤال متنوع بين المفردات والقواعد والفهم</span>
+                  <span>الاختبار يحتوي على 15 سؤال متنوع بين المفردات والقواعد والفهم</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
