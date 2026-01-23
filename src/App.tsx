@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AnimatedCursor } from "@/components/animations/AnimatedCursor";
@@ -47,55 +48,57 @@ const SmoothScrollProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <SmoothScrollProvider>
-            <AnimatedCursor />
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <SidebarNav />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="/learn" element={<Navigate to="/courses" replace />} />
-                <Route path="/units" element={<Navigate to="/courses" replace />} />
-                <Route path="/learning" element={<Navigate to="/courses" replace />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/courses/:level" element={<CourseLevel />} />
-                <Route path="/courses/:level/:unit" element={<CourseUnit />} />
-                <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
-                <Route path="/placement-test" element={<PlacementTest />} />
-                <Route path="/placement-test/start" element={<PlacementTestStart />} />
-                <Route path="/placement-test/result" element={<PlacementTestResult />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
-                
-                <Route path="/leaderboard" element={<LeaderboardPage />} />
-                <Route path="/challenges" element={<ChallengesPage />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogArticle />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsAndConditions />} />
-                <Route path="/cookie-policy" element={<CookiePolicy />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </SmoothScrollProvider>
-        </TooltipProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <SmoothScrollProvider>
+              <AnimatedCursor />
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <SidebarNav />
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
+                  <Route path="/learn" element={<Navigate to="/courses" replace />} />
+                  <Route path="/units" element={<Navigate to="/courses" replace />} />
+                  <Route path="/learning" element={<Navigate to="/courses" replace />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/courses/:level" element={<CourseLevel />} />
+                  <Route path="/courses/:level/:unit" element={<CourseUnit />} />
+                  <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
+                  <Route path="/placement-test" element={<PlacementTest />} />
+                  <Route path="/placement-test/start" element={<PlacementTestStart />} />
+                  <Route path="/placement-test/result" element={<PlacementTestResult />} />
+                  <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
+                  
+                  <Route path="/leaderboard" element={<LeaderboardPage />} />
+                  <Route path="/challenges" element={<ChallengesPage />} />
+                  <Route path="/notifications" element={<Notifications />} />
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogArticle />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<TermsAndConditions />} />
+                  <Route path="/cookie-policy" element={<CookiePolicy />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </SmoothScrollProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
