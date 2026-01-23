@@ -169,21 +169,22 @@ const CoursesPublic = () => {
   return (
     <PageBackground>
       <Helmet>
-        <title>كورسات تعلم الإنجليزية للناطقين بالعربية | LingoArab</title>
+        <title>كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab</title>
         <meta name="description" content="تعلم الإنجليزية مجاناً من الصفر إلى المستوى المتقدم. 200+ درس تفاعلي في 4 مستويات CEFR مصممة خصيصاً للناطقين بالعربية." />
         <link rel="canonical" href="https://lingoarab.com/courses" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="كورسات تعلم الإنجليزية للناطقين بالعربية | LingoArab" />
+        <meta property="og:title" content="كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab" />
         <meta property="og:description" content="تعلم الإنجليزية مجاناً من الصفر إلى المستوى المتقدم. 200+ درس تفاعلي في 4 مستويات CEFR." />
         <meta property="og:url" content="https://lingoarab.com/courses" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://lingoarab.com/og-image.png" />
+        <meta property="og:site_name" content="Lingo Arab" />
         <meta property="og:locale" content="ar_SA" />
         
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="كورسات تعلم الإنجليزية للناطقين بالعربية | LingoArab" />
+        <meta name="twitter:title" content="كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab" />
         <meta name="twitter:description" content="تعلم الإنجليزية مجاناً من الصفر إلى المستوى المتقدم. 200+ درس تفاعلي." />
         <meta name="twitter:image" content="https://lingoarab.com/og-image.png" />
         

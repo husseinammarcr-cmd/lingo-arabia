@@ -110,18 +110,18 @@ const FAQ = () => {
         <link rel="canonical" href={`${SITE_URL}/faq`} />
         
         {/* OpenGraph */}
-        <meta property="og:title" content="الأسئلة الشائعة - LingoArab" />
-        <meta property="og:description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة LingoArab لتعلم اللغة الإنجليزية" />
+        <meta property="og:title" content="الأسئلة الشائعة - Lingo Arab" />
+        <meta property="og:description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة Lingo Arab لتعلم اللغة الإنجليزية" />
         <meta property="og:url" content={`${SITE_URL}/faq`} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
-        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:site_name" content="Lingo Arab" />
         <meta property="og:locale" content="ar_SA" />
         
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="الأسئلة الشائعة - LingoArab" />
-        <meta name="twitter:description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة LingoArab لتعلم اللغة الإنجليزية" />
+        <meta name="twitter:title" content="الأسئلة الشائعة - Lingo Arab" />
+        <meta name="twitter:description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة Lingo Arab لتعلم اللغة الإنجليزية" />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         
         {/* JSON-LD Schemas */}

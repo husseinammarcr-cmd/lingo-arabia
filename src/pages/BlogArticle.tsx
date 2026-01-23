@@ -172,7 +172,7 @@ const BlogArticle = () => {
   return (
     <PageBackground>
       <Helmet>
-        <title>{article.title_ar} - LingoArab</title>
+        <title>{article.title_ar} - Lingo Arab</title>
         <meta name="description" content={article.excerpt_ar} />
         <link rel="canonical" href={`${SITE_URL}/blog/${article.slug}`} />
         
@@ -182,7 +182,7 @@ const BlogArticle = () => {
         <meta property="og:url" content={`${SITE_URL}/blog/${article.slug}`} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content={article.featured_image || `${SITE_URL}/og-image.png`} />
-        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:site_name" content="Lingo Arab" />
         <meta property="og:locale" content="ar_SA" />
         <meta property="article:published_time" content={article.published_at || article.created_at} />
         <meta property="article:modified_time" content={article.updated_at || article.created_at} />
