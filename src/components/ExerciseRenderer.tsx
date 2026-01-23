@@ -185,14 +185,15 @@ export const ExerciseRenderer = ({
                     : 'secondary'
                 }
                 className={cn(
-                  "h-auto py-4 px-6 text-lg justify-start ltr-text",
+                  "h-auto py-4 px-6 text-lg justify-start",
                   answered && index === data.correct && "ring-2 ring-success",
                   answered && selectedOption === index && index !== data.correct && "ring-2 ring-destructive"
                 )}
                 onClick={() => !answered && !disabled && setSelectedOption(index)}
                 disabled={answered || disabled}
+                dir="ltr"
               >
-                <span className="flex-1 text-right">{option}</span>
+                <span className="flex-1 text-left ltr-sentence">{option}</span>
                 {answered && index === data.correct && (
                   <CheckCircle className="w-5 h-5 mr-2" />
                 )}
@@ -234,7 +235,7 @@ export const ExerciseRenderer = ({
                   ) : (
                     <>
                       <XCircle className="w-5 h-5" />
-                      الإجابة الصحيحة: <span className="ltr-text">{data.answer}</span>
+                      الإجابة الصحيحة: <span className="ltr-inline">{data.answer}</span>
                     </>
                   )}
                 </p>
@@ -259,7 +260,8 @@ export const ExerciseRenderer = ({
                     size="sm"
                     onClick={() => handleWordClick(wordIndex)}
                     disabled={answered || disabled}
-                    className="ltr-text"
+                    className="ltr-inline"
+                    dir="ltr"
                   >
                     {data.words?.[wordIndex]}
                   </Button>
@@ -278,9 +280,10 @@ export const ExerciseRenderer = ({
                   onClick={() => handleWordClick(index)}
                   disabled={answered || disabled || reorderedWords.includes(index)}
                   className={cn(
-                    "ltr-text",
+                    "ltr-inline",
                     reorderedWords.includes(index) && "opacity-50"
                   )}
+                  dir="ltr"
                 >
                   {word}
                 </Button>
@@ -301,7 +304,7 @@ export const ExerciseRenderer = ({
                   ) : (
                     <>
                       <XCircle className="w-5 h-5" />
-                      الترتيب الصحيح: <span className="ltr-text">{data.answer}</span>
+                      الترتيب الصحيح: <span className="ltr-inline">{data.answer}</span>
                     </>
                   )}
                 </p>
@@ -344,9 +347,10 @@ export const ExerciseRenderer = ({
                       type="button"
                       variant={isMatched ? 'success' : isSelected ? 'default' : 'secondary'}
                       className={cn(
-                        "w-full justify-start ltr-text",
+                        "w-full justify-start",
                         isMatched && "opacity-60"
                       )}
+                      dir="ltr"
                       onClick={() => handleMatchClick(true, index)}
                       disabled={answered || disabled || isMatched}
                     >
@@ -415,9 +419,9 @@ export const ExerciseRenderer = ({
         <CardContent className="p-6">
           <h2 className="text-xl font-bold mb-2">{promptAr}</h2>
           {promptEn && (
-            <div className="flex items-center gap-2">
-              <p className="text-muted-foreground ltr-text">{promptEn}</p>
+            <div className="flex items-center gap-2 justify-end" dir="ltr">
               <AudioButton text={promptEn} size="sm" className="text-muted-foreground" />
+              <p className="text-muted-foreground ltr-sentence flex-1">{promptEn}</p>
             </div>
           )}
         </CardContent>
