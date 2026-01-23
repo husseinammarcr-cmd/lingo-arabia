@@ -129,22 +129,22 @@ const Blog = () => {
   return (
     <PageBackground>
       <Helmet>
-        <title>المدونة - LingoArab | مقالات تعلم الإنجليزية</title>
+        <title>المدونة - Lingo Arab | مقالات تعلم الإنجليزية</title>
         <meta name="description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية. نشارك معك أفضل الاستراتيجيات والموارد لرحلة تعلم ناجحة." />
         <link rel="canonical" href={`${SITE_URL}/blog`} />
         
         {/* OpenGraph */}
-        <meta property="og:title" content="المدونة - LingoArab" />
+        <meta property="og:title" content="المدونة - Lingo Arab" />
         <meta property="og:description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية" />
         <meta property="og:url" content={`${SITE_URL}/blog`} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
-        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:site_name" content="Lingo Arab" />
         <meta property="og:locale" content="ar_SA" />
         
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="المدونة - LingoArab" />
+        <meta name="twitter:title" content="المدونة - Lingo Arab" />
         <meta name="twitter:description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية" />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         
