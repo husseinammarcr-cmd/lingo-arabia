@@ -111,7 +111,7 @@ const Index = () => {
   return (
     <PageBackground>
       <Helmet>
-        <title>LingoArab – تعلم الإنجليزية بالعربية | منصة تعليمية للناطقين بالعربية</title>
+        <title>Lingo Arab – تعلم الإنجليزية مجانا</title>
         <meta name="description" content="تعلم اللغة الإنجليزية بطريقة ممتعة وفعّالة مع LingoArab. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً. مصممة خصيصاً للناطقين بالعربية." />
         <link rel="canonical" href={SITE_URL} />
         
