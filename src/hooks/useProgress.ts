@@ -389,7 +389,7 @@ export const useUpdateProgress = () => {
         // Calculate new user level based on XP (every 500 XP = 1 level)
         const newUserLevel = Math.max(1, Math.floor(newXp / 500) + 1);
 
-        await updateProfile({
+        const { error: profileError } = await updateProfile({
           xp: newXp,
           weekly_xp: newWeeklyXp,
           monthly_xp: newMonthlyXp,
@@ -397,6 +397,11 @@ export const useUpdateProgress = () => {
           last_study_date: today,
           user_level: newUserLevel
         });
+
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+          throw profileError;
+        }
 
         console.log('Profile updated:', { newXp, newWeeklyXp, newMonthlyXp, newStreakCount, newUserLevel, lastStudyDate: today });
       }
