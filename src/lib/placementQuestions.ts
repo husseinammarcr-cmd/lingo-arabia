@@ -1,4 +1,4 @@
-// Placement Test Questions - 30 questions across A1-B2 levels
+// Placement Test Questions - 15 questions across A1-B2 levels
 // Mixed vocabulary, grammar, and reading comprehension
 
 export interface PlacementQuestion {
@@ -13,7 +13,7 @@ export interface PlacementQuestion {
 }
 
 export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
-  // A1 Level - Basic (Questions 1-8)
+  // A1 Level - Basic (Questions 1-4)
   {
     id: 1,
     level: 'A1',
@@ -30,19 +30,6 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
   {
     id: 2,
     level: 'A1',
-    type: 'vocabulary',
-    questionAr: 'كيف تقول "أنا" بالإنجليزية؟',
-    options: [
-      { id: 'a', text: 'You' },
-      { id: 'b', text: 'He' },
-      { id: 'c', text: 'I' },
-      { id: 'd', text: 'We' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 3,
-    level: 'A1',
     type: 'grammar',
     questionAr: 'اختر الجملة الصحيحة:',
     options: [
@@ -54,7 +41,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'a',
   },
   {
-    id: 4,
+    id: 3,
     level: 'A1',
     type: 'vocabulary',
     questionAr: 'ما هو عكس كلمة "big" (كبير)؟',
@@ -67,7 +54,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 5,
+    id: 4,
     level: 'A1',
     type: 'grammar',
     questionAr: 'أكمل: She ___ a teacher.',
@@ -79,49 +66,10 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctAnswer: 'b',
   },
-  {
-    id: 6,
-    level: 'A1',
-    type: 'vocabulary',
-    questionAr: 'ما معنى "water"؟',
-    options: [
-      { id: 'a', text: 'نار', textAr: 'نار' },
-      { id: 'b', text: 'هواء', textAr: 'هواء' },
-      { id: 'c', text: 'ماء', textAr: 'ماء' },
-      { id: 'd', text: 'تراب', textAr: 'تراب' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 7,
-    level: 'A1',
-    type: 'grammar',
-    questionAr: 'أكمل: They ___ my friends.',
-    options: [
-      { id: 'a', text: 'am' },
-      { id: 'b', text: 'is' },
-      { id: 'c', text: 'are' },
-      { id: 'd', text: 'was' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 8,
-    level: 'A1',
-    type: 'vocabulary',
-    questionAr: 'كم عدد الأيام في الأسبوع بالإنجليزية؟',
-    options: [
-      { id: 'a', text: 'Five' },
-      { id: 'b', text: 'Six' },
-      { id: 'c', text: 'Seven' },
-      { id: 'd', text: 'Eight' },
-    ],
-    correctAnswer: 'c',
-  },
 
-  // A2 Level - Elementary (Questions 9-16)
+  // A2 Level - Elementary (Questions 5-8)
   {
-    id: 9,
+    id: 5,
     level: 'A2',
     type: 'grammar',
     questionAr: 'أكمل: I ___ to school yesterday.',
@@ -134,33 +82,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'c',
   },
   {
-    id: 10,
-    level: 'A2',
-    type: 'vocabulary',
-    questionAr: 'ما معنى "sometimes"؟',
-    options: [
-      { id: 'a', text: 'دائماً', textAr: 'دائماً' },
-      { id: 'b', text: 'أبداً', textAr: 'أبداً' },
-      { id: 'c', text: 'أحياناً', textAr: 'أحياناً' },
-      { id: 'd', text: 'عادةً', textAr: 'عادةً' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 11,
-    level: 'A2',
-    type: 'grammar',
-    questionAr: 'اختر الجملة الصحيحة:',
-    options: [
-      { id: 'a', text: 'She can sings well.' },
-      { id: 'b', text: 'She can sing well.' },
-      { id: 'c', text: 'She can to sing well.' },
-      { id: 'd', text: 'She can singing well.' },
-    ],
-    correctAnswer: 'b',
-  },
-  {
-    id: 12,
+    id: 6,
     level: 'A2',
     type: 'vocabulary',
     questionAr: 'ما الفرق بين "borrow" و "lend"؟',
@@ -173,33 +95,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 13,
-    level: 'A2',
-    type: 'grammar',
-    questionAr: 'أكمل: There ___ some milk in the fridge.',
-    options: [
-      { id: 'a', text: 'is' },
-      { id: 'b', text: 'are' },
-      { id: 'c', text: 'be' },
-      { id: 'd', text: 'have' },
-    ],
-    correctAnswer: 'a',
-  },
-  {
-    id: 14,
-    level: 'A2',
-    type: 'reading',
-    questionAr: '"I wake up at 7 AM every day. Then I have breakfast and go to work." - ماذا يفعل الشخص أولاً؟',
-    options: [
-      { id: 'a', text: 'يذهب للعمل' },
-      { id: 'b', text: 'يتناول الفطور' },
-      { id: 'c', text: 'يستيقظ' },
-      { id: 'd', text: 'ينام' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 15,
+    id: 7,
     level: 'A2',
     type: 'grammar',
     questionAr: 'أكمل: This book is ___ than that one.',
@@ -212,22 +108,22 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 16,
+    id: 8,
     level: 'A2',
-    type: 'vocabulary',
-    questionAr: 'ما معنى "appointment"؟',
+    type: 'reading',
+    questionAr: '"I wake up at 7 AM every day. Then I have breakfast and go to work." - ماذا يفعل الشخص أولاً؟',
     options: [
-      { id: 'a', text: 'هدية' },
-      { id: 'b', text: 'موعد' },
-      { id: 'c', text: 'مفاجأة' },
-      { id: 'd', text: 'رحلة' },
+      { id: 'a', text: 'يذهب للعمل' },
+      { id: 'b', text: 'يتناول الفطور' },
+      { id: 'c', text: 'يستيقظ' },
+      { id: 'd', text: 'ينام' },
     ],
-    correctAnswer: 'b',
+    correctAnswer: 'c',
   },
 
-  // B1 Level - Intermediate (Questions 17-24)
+  // B1 Level - Intermediate (Questions 9-12)
   {
-    id: 17,
+    id: 9,
     level: 'B1',
     type: 'grammar',
     questionAr: 'أكمل: If I ___ rich, I would travel the world.',
@@ -240,7 +136,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'c',
   },
   {
-    id: 18,
+    id: 10,
     level: 'B1',
     type: 'vocabulary',
     questionAr: 'ما معنى "although"؟',
@@ -253,7 +149,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 19,
+    id: 11,
     level: 'B1',
     type: 'grammar',
     questionAr: 'اختر الجملة الصحيحة:',
@@ -266,7 +162,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 20,
+    id: 12,
     level: 'B1',
     type: 'reading',
     questionAr: '"Despite the bad weather, they decided to continue with the trip." - ماذا يعني هذا؟',
@@ -278,62 +174,10 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctAnswer: 'b',
   },
-  {
-    id: 21,
-    level: 'B1',
-    type: 'grammar',
-    questionAr: 'أكمل: He asked me where I ___.',
-    options: [
-      { id: 'a', text: 'live' },
-      { id: 'b', text: 'lived' },
-      { id: 'c', text: 'am living' },
-      { id: 'd', text: 'do live' },
-    ],
-    correctAnswer: 'b',
-  },
-  {
-    id: 22,
-    level: 'B1',
-    type: 'vocabulary',
-    questionAr: 'ما معنى "to postpone"؟',
-    options: [
-      { id: 'a', text: 'يُلغي' },
-      { id: 'b', text: 'يُقدّم' },
-      { id: 'c', text: 'يُؤجّل' },
-      { id: 'd', text: 'يُكرر' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 23,
-    level: 'B1',
-    type: 'grammar',
-    questionAr: 'أكمل: I wish I ___ speak French.',
-    options: [
-      { id: 'a', text: 'can' },
-      { id: 'b', text: 'could' },
-      { id: 'c', text: 'will' },
-      { id: 'd', text: 'would' },
-    ],
-    correctAnswer: 'b',
-  },
-  {
-    id: 24,
-    level: 'B1',
-    type: 'vocabulary',
-    questionAr: 'ما الفرق بين "effect" و "affect"؟',
-    options: [
-      { id: 'a', text: 'effect = فعل، affect = اسم' },
-      { id: 'b', text: 'effect = اسم، affect = فعل' },
-      { id: 'c', text: 'نفس المعنى تماماً' },
-      { id: 'd', text: 'effect = سلبي، affect = إيجابي' },
-    ],
-    correctAnswer: 'b',
-  },
 
-  // B2 Level - Upper Intermediate (Questions 25-30)
+  // B2 Level - Upper Intermediate (Questions 13-15)
   {
-    id: 25,
+    id: 13,
     level: 'B2',
     type: 'grammar',
     questionAr: 'أكمل: Had I known about the meeting, I ___ attended.',
@@ -346,7 +190,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 26,
+    id: 14,
     level: 'B2',
     type: 'vocabulary',
     questionAr: 'ما معنى "to take something for granted"؟',
@@ -359,7 +203,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctAnswer: 'b',
   },
   {
-    id: 27,
+    id: 15,
     level: 'B2',
     type: 'reading',
     questionAr: '"The unprecedented growth in technology has fundamentally altered the way we communicate." - ما المقصود بـ "unprecedented"؟',
@@ -370,45 +214,6 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
       { id: 'd', text: 'مؤقت' },
     ],
     correctAnswer: 'c',
-  },
-  {
-    id: 28,
-    level: 'B2',
-    type: 'grammar',
-    questionAr: 'اختر الجملة الصحيحة:',
-    options: [
-      { id: 'a', text: 'Not only she speaks English, but also French.' },
-      { id: 'b', text: 'Not only does she speak English, but also French.' },
-      { id: 'c', text: 'Not only she does speak English, but also French.' },
-      { id: 'd', text: 'She not only speaks English, but also French.' },
-    ],
-    correctAnswer: 'b',
-  },
-  {
-    id: 29,
-    level: 'B2',
-    type: 'vocabulary',
-    questionAr: 'ما معنى "to beat around the bush"؟',
-    options: [
-      { id: 'a', text: 'يضرب الشجيرات' },
-      { id: 'b', text: 'يتحدث بوضوح' },
-      { id: 'c', text: 'يتجنب الموضوع الرئيسي' },
-      { id: 'd', text: 'يمشي في الغابة' },
-    ],
-    correctAnswer: 'c',
-  },
-  {
-    id: 30,
-    level: 'B2',
-    type: 'grammar',
-    questionAr: 'أكمل: By this time next year, I ___ my degree.',
-    options: [
-      { id: 'a', text: 'will complete' },
-      { id: 'b', text: 'will have completed' },
-      { id: 'c', text: 'complete' },
-      { id: 'd', text: 'am completing' },
-    ],
-    correctAnswer: 'b',
   },
 ];
 
