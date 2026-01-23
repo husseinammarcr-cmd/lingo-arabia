@@ -171,10 +171,27 @@
     font-family: 'Cairo', 'Tajawal', sans-serif;
   }
 
-  /* LTR for English text inside cards */
+  /* LTR for English text inside RTL context */
   .ltr-text {
     direction: ltr;
     text-align: left;
+    unicode-bidi: isolate;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+  }
+
+  /* Inline LTR text - prevents mixing with RTL */
+  .ltr-inline {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+  }
+
+  /* For English sentences with blanks/punctuation in RTL context */
+  .ltr-sentence {
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: isolate;
+    display: block;
     font-family: 'Inter', 'Segoe UI', sans-serif;
   }
 }
