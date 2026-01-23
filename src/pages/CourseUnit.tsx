@@ -105,7 +105,7 @@ const CourseUnit = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground mb-4">الوحدة غير موجودة</h2>
           <p className="text-muted-foreground mb-6">عذراً، لم نتمكن من العثور على هذه الوحدة</p>
-          <Button onClick={() => navigate('/courses')}>
+          <Button onClick={() => navigate('/app/courses')}>
             <ChevronRight className="w-4 h-4 ml-2" />
             العودة للمستويات
           </Button>

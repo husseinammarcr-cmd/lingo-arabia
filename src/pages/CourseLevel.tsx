@@ -149,7 +149,7 @@ const CourseLevel = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">المستوى غير موجود</h2>
             <p className="text-muted-foreground mb-6">عذراً، لم نتمكن من العثور على هذا المستوى</p>
-            <Button onClick={() => navigate('/courses')}>
+            <Button onClick={() => navigate('/app/courses')}>
               <ChevronRight className="w-4 h-4 ml-2" />
               العودة للمستويات
             </Button>
@@ -192,7 +192,7 @@ const CourseLevel = () => {
             return (
               <Card
                 key={unit.id}
-                onClick={!isLocked ? () => navigate(`/courses/${level.code.toLowerCase()}/${unit.id}`) : undefined}
+                onClick={!isLocked ? () => navigate(`/app/courses/${level.code.toLowerCase()}/${unit.id}`) : undefined}
                 className={cn(
                   "relative overflow-hidden cursor-pointer hover:shadow-elevated hover:-translate-y-1 transition-all duration-300",
                   isLocked && "opacity-60 cursor-not-allowed",

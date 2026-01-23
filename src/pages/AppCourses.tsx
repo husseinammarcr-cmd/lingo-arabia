@@ -90,7 +90,7 @@ const levelImages: Record<string, string> = {
   'B2': levelB2Books,
 };
 
-const Courses = () => {
+const AppCourses = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -265,7 +265,7 @@ const Courses = () => {
             return (
               <StaggerItem key={level.id}>
                 <TiltCard
-                  onClick={isUnlocked ? () => navigate(`/courses/${level.code.toLowerCase()}`) : undefined}
+                  onClick={isUnlocked ? () => navigate(`/app/courses/${level.code.toLowerCase()}`) : undefined}
                   className={cn("h-full", !isUnlocked && "opacity-60 cursor-not-allowed")}
                 >
                   <Card className={cn(
@@ -364,4 +364,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default AppCourses;
