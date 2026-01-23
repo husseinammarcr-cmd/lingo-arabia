@@ -9,6 +9,7 @@ import { PLACEMENT_QUESTIONS, PlacementQuestion } from '@/lib/placementQuestions
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface Answer {
   questionId: number;
@@ -20,6 +21,7 @@ interface Answer {
 const PlacementTestStart = () => {
   const navigate = useNavigate();
   const { user, isLoading, refreshProfile } = useAuth();
+  const { playSelect, playSuccess, playError } = useSoundEffects();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -64,6 +66,7 @@ const PlacementTestStart = () => {
   const isLastQuestion = currentIndex === PLACEMENT_QUESTIONS.length - 1;
 
   const handleSelectOption = (optionId: string) => {
+    playSelect();
     setSelectedOption(optionId);
   };
 
@@ -71,6 +74,14 @@ const PlacementTestStart = () => {
     if (!selectedOption || !currentQuestion) return;
 
     const isCorrect = selectedOption === currentQuestion.correctAnswer;
+    
+    // Play sound based on answer
+    if (isCorrect) {
+      playSuccess();
+    } else {
+      playError();
+    }
+
     const newAnswer: Answer = {
       questionId: currentQuestion.id,
       selectedAnswer: selectedOption,
@@ -85,8 +96,11 @@ const PlacementTestStart = () => {
       // Submit test
       await submitTest(updatedAnswers);
     } else {
-      setCurrentIndex(prev => prev + 1);
-      setSelectedOption(null);
+      // Small delay to let sound play before moving to next question
+      setTimeout(() => {
+        setCurrentIndex(prev => prev + 1);
+        setSelectedOption(null);
+      }, 300);
     }
   };
 
