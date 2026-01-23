@@ -9,6 +9,7 @@ import { AnimatedCursor } from "@/components/animations/AnimatedCursor";
 import { useLenis } from "@/hooks/useLenis";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import VerifyEmail from "./pages/VerifyEmail";
 import Learn from "./pages/Learn";
 import Courses from "./pages/Courses";
 import CourseLevel from "./pages/CourseLevel";
@@ -59,6 +60,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/learn" element={<Navigate to="/courses" replace />} />
                 <Route path="/units" element={<Navigate to="/courses" replace />} />
                 <Route path="/learning" element={<Navigate to="/courses" replace />} />
