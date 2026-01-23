@@ -337,19 +337,38 @@ export const useUpdateProgress = () => {
 
       const wasAlreadyCompleted = existingProgress?.completed === true;
 
-      // Upsert progress
-      const { error: progressError } = await supabase
-        .from('progress')
-        .upsert({
-          user_id: user.id,
-          lesson_id: lessonId,
-          completed,
-          score,
-          hearts_remaining: heartsRemaining,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,lesson_id'
-        });
+      // Save progress - use insert/update pattern for reliability
+      const progressData = {
+        user_id: user.id,
+        lesson_id: lessonId,
+        completed,
+        score,
+        hearts_remaining: heartsRemaining,
+        updated_at: new Date().toISOString()
+      };
+
+      let progressError;
+
+      if (existingProgress) {
+        // Update existing record
+        const { error } = await supabase
+          .from('progress')
+          .update({
+            completed,
+            score,
+            hearts_remaining: heartsRemaining,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user.id)
+          .eq('lesson_id', lessonId);
+        progressError = error;
+      } else {
+        // Insert new record
+        const { error } = await supabase
+          .from('progress')
+          .insert(progressData);
+        progressError = error;
+      }
 
       if (progressError) {
         console.error('Progress save error:', progressError);
