@@ -156,12 +156,13 @@ const LessonPlayer = () => {
     }
   }, [user, isLoading, navigate]);
 
-  // Calculate pass status - passing threshold is 50%
+  // Calculate pass status - use lesson's passing score or default to 50%
+  const passingThreshold = lessonContent?.passingScore ?? 50;
+  
   const calculatePassed = useCallback(() => {
     if (!lessonContent || quizTotal === 0) return true;
-    const passingThreshold = 50; // Fixed at 50% for all lessons
     return (quizScore / quizTotal) * 100 >= passingThreshold;
-  }, [lessonContent, quizScore, quizTotal]);
+  }, [lessonContent, quizScore, quizTotal, passingThreshold]);
 
   // Save to DB when lesson completes (only if passed)
   useEffect(() => {
@@ -392,7 +393,7 @@ const LessonPlayer = () => {
           <p className="text-muted-foreground mb-6">
             {passed 
               ? 'لقد أكملت الدرس بنجاح' 
-              : `حصلت على ${scorePercent}% - تحتاج ${lessonContent?.passingScore || 70}% للنجاح`}
+              : `حصلت على ${scorePercent}% - تحتاج ${passingThreshold}% للنجاح`}
           </p>
           
           <Card className="mb-6">
