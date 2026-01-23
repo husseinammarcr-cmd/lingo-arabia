@@ -86,11 +86,10 @@ const Index = () => {
   const organizationSchema = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "LingoArab",
+    "name": "Lingo Arab",
     "url": SITE_URL,
     "logo": `${SITE_URL}/logo.png`,
-    "description": "منصة تعلم اللغة الإنجليزية للناطقين بالعربية",
-    "sameAs": []
+    "description": "منصة لتعلم اللغة الإنجليزية للناطقين بالعربية"
   }), []);
 
   const websiteSchema = useMemo(() => ({
