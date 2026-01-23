@@ -102,7 +102,7 @@ const Index = () => {
               <Button 
                 variant="hero" 
                 size="xl" 
-                onClick={() => navigate(user ? '/courses' : '/auth')}
+                onClick={() => navigate(user ? '/app/courses' : '/auth')}
                 className="text-lg shadow-lg hover:shadow-xl"
               >
                 {user ? 'تابع التعلم' : 'ابدأ مجاناً'}
@@ -161,7 +161,7 @@ const Index = () => {
               <Button 
                 variant="accent" 
                 size="xl"
-                onClick={() => navigate(user ? '/courses' : '/auth')}
+                onClick={() => navigate(user ? '/app/courses' : '/auth')}
                 className="shadow-lg hover:shadow-xl"
               >
                 {user ? 'تابع التعلم' : 'سجّل الآن مجاناً'}
