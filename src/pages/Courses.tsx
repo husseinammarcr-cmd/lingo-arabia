@@ -24,42 +24,50 @@ import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
 
-// Generate Course JSON-LD schema
-const generateCoursesSchema = () => {
-  const courses = CURRICULUM.map((level) => ({
-    "@type": "Course",
-    "@id": `https://lingoarab.com/courses/${level.code.toLowerCase()}`,
-    "name": `${level.titleEn} English Course (${level.code})`,
-    "description": level.descriptionAr,
-    "provider": {
-      "@type": "Organization",
-      "name": "LingoArab",
-      "url": "https://lingoarab.com"
-    },
-    "inLanguage": ["en", "ar"],
-    "courseCode": level.code,
-    "educationalLevel": level.code,
-    "numberOfCredits": level.units.reduce((sum, unit) => sum + unit.lessons.length, 0),
-    "hasCourseInstance": level.units.map((unit) => ({
+// Static Course JSON-LD schema for SEO
+const COURSE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Learn English for Arabic Speakers",
+  "description": "Interactive English courses designed for Arabic speakers from A1 to B2 levels. Master vocabulary, grammar, listening, and conversation skills.",
+  "provider": {
+    "@type": "Organization",
+    "name": "LingoArab",
+    "sameAs": "https://lingoarab.com",
+    "url": "https://lingoarab.com"
+  },
+  "inLanguage": ["en", "ar"],
+  "isAccessibleForFree": true,
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  },
+  "hasCourseInstance": [
+    {
       "@type": "CourseInstance",
-      "name": unit.titleEn,
-      "description": unit.descriptionAr,
+      "name": "A1 - Beginner English",
+      "description": "Foundation level for complete beginners",
       "courseMode": "online"
-    }))
-  }));
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "LingoArab English Courses",
-    "description": "دورات تعلم اللغة الإنجليزية للناطقين بالعربية - من المبتدئ إلى المتقدم",
-    "numberOfItems": courses.length,
-    "itemListElement": courses.map((course, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": course
-    }))
-  };
+    },
+    {
+      "@type": "CourseInstance", 
+      "name": "A2 - Elementary English",
+      "description": "Elementary level for basic communication",
+      "courseMode": "online"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "B1 - Intermediate English", 
+      "description": "Intermediate level for independent users",
+      "courseMode": "online"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "B2 - Upper Intermediate English",
+      "description": "Upper intermediate level for advanced communication",
+      "courseMode": "online"
+    }
+  ]
 };
 
 // Import level illustrations
@@ -148,9 +156,6 @@ const Courses = () => {
 
   const totalLessons = getTotalLessonsCount();
 
-  // Generate schema
-  const coursesSchema = useMemo(() => generateCoursesSchema(), []);
-
   return (
     <PageBackground>
       {/* SEO - JSON-LD Course Schema */}
@@ -158,7 +163,7 @@ const Courses = () => {
         <title>الدورات التعليمية | LingoArab</title>
         <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى المتقدم - 200 درس تفاعلي في 4 مستويات CEFR" />
         <script type="application/ld+json">
-          {JSON.stringify(coursesSchema)}
+          {JSON.stringify(COURSE_SCHEMA)}
         </script>
       </Helmet>
 
