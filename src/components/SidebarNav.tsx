@@ -30,7 +30,7 @@ interface NavItem {
   hideWhenAuth?: boolean;
 }
 
-const navItems: NavItem[] = [
+const publicNavItems: NavItem[] = [
   { label: 'Home', labelAr: 'الرئيسية', href: '/', icon: <Home className="w-5 h-5" /> },
   { label: 'Courses', labelAr: 'الدورات', href: '/courses', icon: <BookOpen className="w-5 h-5" /> },
   { label: 'Levels', labelAr: 'المستويات', href: '/learn', icon: <Layers className="w-5 h-5" /> },
@@ -41,7 +41,7 @@ const navItems: NavItem[] = [
 ];
 
 const authNavItems: NavItem[] = [
-  { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
+  { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/app/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
   { label: 'Profile', labelAr: 'الملف الشخصي', href: '/profile', icon: <User className="w-5 h-5" />, requiresAuth: true },
   { label: 'Settings', labelAr: 'الإعدادات', href: '/settings', icon: <Settings className="w-5 h-5" />, requiresAuth: true },
 ];
@@ -164,7 +164,7 @@ const SidebarNav = () => {
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
                   التنقل
                 </p>
-                {navItems.map((item) => (
+                {publicNavItems.map((item) => (
                   <button
                     key={item.href}
                     onClick={() => handleNavClick(item.href)}
