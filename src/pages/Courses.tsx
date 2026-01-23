@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { CURRICULUM, getTotalLessonsCount } from '@/lib/curriculum';
@@ -22,6 +23,44 @@ import { TiltCard } from '@/components/animations/TiltCard';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
+
+// Generate Course JSON-LD schema
+const generateCoursesSchema = () => {
+  const courses = CURRICULUM.map((level) => ({
+    "@type": "Course",
+    "@id": `https://lingoarab.com/courses/${level.code.toLowerCase()}`,
+    "name": `${level.titleEn} English Course (${level.code})`,
+    "description": level.descriptionAr,
+    "provider": {
+      "@type": "Organization",
+      "name": "LingoArab",
+      "url": "https://lingoarab.com"
+    },
+    "inLanguage": ["en", "ar"],
+    "courseCode": level.code,
+    "educationalLevel": level.code,
+    "numberOfCredits": level.units.reduce((sum, unit) => sum + unit.lessons.length, 0),
+    "hasCourseInstance": level.units.map((unit) => ({
+      "@type": "CourseInstance",
+      "name": unit.titleEn,
+      "description": unit.descriptionAr,
+      "courseMode": "online"
+    }))
+  }));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "LingoArab English Courses",
+    "description": "دورات تعلم اللغة الإنجليزية للناطقين بالعربية - من المبتدئ إلى المتقدم",
+    "numberOfItems": courses.length,
+    "itemListElement": courses.map((course, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": course
+    }))
+  };
+};
 
 // Import level illustrations
 import levelA1Books from '@/assets/level-a1-books.jpeg';
@@ -109,8 +148,20 @@ const Courses = () => {
 
   const totalLessons = getTotalLessonsCount();
 
+  // Generate schema
+  const coursesSchema = useMemo(() => generateCoursesSchema(), []);
+
   return (
     <PageBackground>
+      {/* SEO - JSON-LD Course Schema */}
+      <Helmet>
+        <title>الدورات التعليمية | LingoArab</title>
+        <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى المتقدم - 200 درس تفاعلي في 4 مستويات CEFR" />
+        <script type="application/ld+json">
+          {JSON.stringify(coursesSchema)}
+        </script>
+      </Helmet>
+
       <div dir="rtl">
       {/* Header */}
       <Header showUserInfo />
