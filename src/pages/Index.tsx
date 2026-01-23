@@ -96,19 +96,9 @@ const Index = () => {
   const websiteSchema = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "LingoArab",
-    "alternateName": "لينجو عرب",
-    "url": SITE_URL,
-    "description": "منصة تعليمية مصممة خصيصاً للناطقين بالعربية لتعلم اللغة الإنجليزية",
-    "inLanguage": ["ar", "en"],
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": `${SITE_URL}/blog?search={search_term_string}`
-      },
-      "query-input": "required name=search_term_string"
-    }
+    "name": "Lingo Arab",
+    "alternateName": "LingoArab",
+    "url": SITE_URL
   }), []);
 
   return (
