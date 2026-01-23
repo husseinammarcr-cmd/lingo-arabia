@@ -75,6 +75,74 @@ const BlogArticle = () => {
       });
   };
 
+  // Generate Article Schema - must be before any early returns
+  const articleSchema = useMemo(() => {
+    if (!article) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": article.title_ar,
+      "description": article.excerpt_ar,
+      "image": article.featured_image || `${SITE_URL}/og-image.png`,
+      "datePublished": article.published_at || article.created_at,
+      "dateModified": article.updated_at || article.created_at,
+      "author": {
+        "@type": "Person",
+        "name": article.author_name
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lingo Arab",
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${SITE_URL}/logo.png`
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `${SITE_URL}/blog/${article.slug}`
+      },
+      "inLanguage": "ar"
+    };
+  }, [article]);
+
+  // Generate Breadcrumb Schema - must be before any early returns
+  const breadcrumbSchema = useMemo(() => {
+    if (!article) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "الرئيسية",
+          "item": SITE_URL
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "المدونة",
+          "item": `${SITE_URL}/blog`
+        },
+        ...(article.category ? [{
+          "@type": "ListItem",
+          "position": 3,
+          "name": article.category.name_ar,
+          "item": `${SITE_URL}/blog?category=${article.category.slug}`
+        }] : []),
+        {
+          "@type": "ListItem",
+          "position": article.category ? 4 : 3,
+          "name": article.title_ar,
+          "item": `${SITE_URL}/blog/${article.slug}`
+        }
+      ]
+    };
+  }, [article]);
+
+  const filteredRelated = relatedArticles?.filter(a => a.id !== article?.id).slice(0, 3);
+
   if (isLoading) {
     return (
       <PageBackground>
@@ -107,67 +175,6 @@ const BlogArticle = () => {
     );
   }
 
-  const filteredRelated = relatedArticles?.filter(a => a.id !== article.id).slice(0, 3);
-
-  // Generate Article Schema
-  const articleSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": article.title_ar,
-    "description": article.excerpt_ar,
-    "image": article.featured_image || `${SITE_URL}/og-image.png`,
-    "datePublished": article.published_at || article.created_at,
-    "dateModified": article.updated_at || article.created_at,
-    "author": {
-      "@type": "Person",
-      "name": article.author_name
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "LingoArab",
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${SITE_URL}/logo.png`
-      }
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": `${SITE_URL}/blog/${article.slug}`
-    },
-    "inLanguage": "ar"
-  }), [article]);
-
-  // Generate Breadcrumb Schema
-  const breadcrumbSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "الرئيسية",
-        "item": SITE_URL
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "المدونة",
-        "item": `${SITE_URL}/blog`
-      },
-      ...(article.category ? [{
-        "@type": "ListItem",
-        "position": 3,
-        "name": article.category.name_ar,
-        "item": `${SITE_URL}/blog?category=${article.category.slug}`
-      }] : []),
-      {
-        "@type": "ListItem",
-        "position": article.category ? 4 : 3,
-        "name": article.title_ar,
-        "item": `${SITE_URL}/blog/${article.slug}`
-      }
-    ]
-  }), [article]);
 
   return (
     <PageBackground>
