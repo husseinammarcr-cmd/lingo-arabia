@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,6 +8,8 @@ import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { motion } from 'framer-motion';
 import { ThreeBackground } from '@/components/animations/ThreeBackground';
+
+const SITE_URL = 'https://lingoarab.com';
 
 // Import feature illustrations
 import featureLessons from '@/assets/feature-lessons.png';
@@ -79,8 +82,61 @@ const Index = () => {
     },
   ];
 
+  // JSON-LD Schemas
+  const organizationSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "LingoArab",
+    "url": SITE_URL,
+    "logo": `${SITE_URL}/logo.png`,
+    "description": "منصة تعلم اللغة الإنجليزية للناطقين بالعربية",
+    "sameAs": []
+  }), []);
+
+  const websiteSchema = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LingoArab",
+    "alternateName": "لينجو عرب",
+    "url": SITE_URL,
+    "description": "منصة تعليمية مصممة خصيصاً للناطقين بالعربية لتعلم اللغة الإنجليزية",
+    "inLanguage": ["ar", "en"],
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${SITE_URL}/blog?search={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }), []);
+
   return (
     <PageBackground>
+      <Helmet>
+        <title>LingoArab – تعلم الإنجليزية بالعربية | منصة تعليمية للناطقين بالعربية</title>
+        <meta name="description" content="تعلم اللغة الإنجليزية بطريقة ممتعة وفعّالة مع LingoArab. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً. مصممة خصيصاً للناطقين بالعربية." />
+        <link rel="canonical" href={SITE_URL} />
+        
+        {/* OpenGraph */}
+        <meta property="og:title" content="LingoArab – تعلم الإنجليزية بالعربية" />
+        <meta property="og:description" content="منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً." />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta property="og:site_name" content="LingoArab" />
+        <meta property="og:locale" content="ar_SA" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="LingoArab – تعلم الإنجليزية بالعربية" />
+        <meta name="twitter:description" content="منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً." />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
+        
+        {/* JSON-LD Schemas */}
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+      </Helmet>
       {/* 3D Particles Background */}
       <ThreeBackground variant="particles" intensity="medium" />
       
