@@ -26,6 +26,7 @@ const PlacementTestStart = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedbackState, setFeedbackState] = useState<'idle' | 'correct' | 'incorrect'>('idle');
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -71,14 +72,16 @@ const PlacementTestStart = () => {
   };
 
   const handleNext = async () => {
-    if (!selectedOption || !currentQuestion) return;
+    if (!selectedOption || !currentQuestion || feedbackState !== 'idle') return;
 
     const isCorrect = selectedOption === currentQuestion.correctAnswer;
     
-    // Play sound based on answer
+    // Set feedback state and play sound
     if (isCorrect) {
+      setFeedbackState('correct');
       playSuccess();
     } else {
+      setFeedbackState('incorrect');
       playError();
     }
 
@@ -93,14 +96,17 @@ const PlacementTestStart = () => {
     setAnswers(updatedAnswers);
 
     if (isLastQuestion) {
-      // Submit test
-      await submitTest(updatedAnswers);
+      // Submit test after animation
+      setTimeout(async () => {
+        await submitTest(updatedAnswers);
+      }, 600);
     } else {
-      // Small delay to let sound play before moving to next question
+      // Delay to show animation before moving to next question
       setTimeout(() => {
+        setFeedbackState('idle');
         setCurrentIndex(prev => prev + 1);
         setSelectedOption(null);
-      }, 300);
+      }, 600);
     }
   };
 
@@ -243,37 +249,59 @@ const PlacementTestStart = () => {
 
             {/* Options */}
             <div className="space-y-3">
-              {currentQuestion.options.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleSelectOption(option.id)}
-                  disabled={isSubmitting}
-                  className={cn(
-                    "w-full p-4 rounded-xl border-2 text-right transition-all duration-200",
-                    "hover:border-primary/50 hover:bg-primary/5",
-                    selectedOption === option.id
-                      ? "border-primary bg-primary/10 shadow-md"
-                      : "border-border bg-card"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0",
-                      selectedOption === option.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    )}>
-                      {option.id.toUpperCase()}
-                    </span>
-                    <span className={cn(
-                      "text-lg",
-                      selectedOption === option.id ? "text-foreground font-medium" : "text-foreground"
-                    )}>
-                      {option.textAr || option.text}
-                    </span>
-                  </div>
-                </button>
-              ))}
+              {currentQuestion.options.map((option) => {
+                const isSelected = selectedOption === option.id;
+                const isCorrectAnswer = option.id === currentQuestion.correctAnswer;
+                const showCorrectFeedback = feedbackState === 'correct' && isSelected;
+                const showIncorrectFeedback = feedbackState === 'incorrect' && isSelected;
+                const showCorrectHighlight = feedbackState === 'incorrect' && isCorrectAnswer;
+
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => handleSelectOption(option.id)}
+                    disabled={isSubmitting || feedbackState !== 'idle'}
+                    className={cn(
+                      "w-full p-4 rounded-xl border-2 text-right transition-all duration-200",
+                      "hover:border-primary/50 hover:bg-primary/5",
+                      // Default selected state
+                      isSelected && feedbackState === 'idle' && "border-primary bg-primary/10 shadow-md",
+                      // Not selected
+                      !isSelected && feedbackState === 'idle' && "border-border bg-card",
+                      // Correct answer feedback - turquoise glow
+                      showCorrectFeedback && "border-cyan-500 bg-cyan-500/20 shadow-lg shadow-cyan-500/30 animate-pulse",
+                      // Incorrect answer feedback - shake
+                      showIncorrectFeedback && "border-red-400 bg-red-500/10 animate-[shake_0.5s_ease-in-out]",
+                      // Show correct answer when wrong
+                      showCorrectHighlight && "border-cyan-500 bg-cyan-500/10",
+                      // Disabled state during feedback
+                      feedbackState !== 'idle' && !isSelected && !showCorrectHighlight && "opacity-50"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-all duration-200",
+                        isSelected && feedbackState === 'idle' && "bg-primary text-primary-foreground",
+                        !isSelected && feedbackState === 'idle' && "bg-muted text-muted-foreground",
+                        showCorrectFeedback && "bg-cyan-500 text-white",
+                        showIncorrectFeedback && "bg-red-400 text-white",
+                        showCorrectHighlight && "bg-cyan-500 text-white"
+                      )}>
+                        {showCorrectFeedback || showCorrectHighlight ? '✓' : showIncorrectFeedback ? '✗' : option.id.toUpperCase()}
+                      </span>
+                      <span className={cn(
+                        "text-lg transition-all duration-200",
+                        isSelected && feedbackState === 'idle' && "text-foreground font-medium",
+                        showCorrectFeedback && "text-cyan-700 dark:text-cyan-300 font-medium",
+                        showIncorrectFeedback && "text-red-600 dark:text-red-400",
+                        showCorrectHighlight && "text-cyan-700 dark:text-cyan-300 font-medium"
+                      )}>
+                        {option.textAr || option.text}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
