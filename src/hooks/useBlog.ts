@@ -134,10 +134,11 @@ export const useArticle = (slug: string) => {
           category:blog_categories(*)
         `)
         .eq('slug', slug)
-        .single();
+        .eq('is_published', true)
+        .maybeSingle();
 
       if (error) throw error;
-      return data as BlogArticle;
+      return data as BlogArticle | null;
     },
     enabled: !!slug
   });
