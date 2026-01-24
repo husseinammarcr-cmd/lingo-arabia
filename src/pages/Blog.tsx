@@ -24,10 +24,42 @@ const SITE_URL = 'https://lingoarab.com';
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "LingoArab",
+  "name": "Lingo Arab",
   "url": SITE_URL,
-  "logo": `${SITE_URL}/logo.png`,
-  "description": "منصة تعليمية عربية لتعلم اللغة الإنجليزية"
+  "logo": {
+    "@type": "ImageObject",
+    "url": `${SITE_URL}/logo.png`,
+    "width": 512,
+    "height": 512
+  },
+  "description": "منصة تعليمية عربية لتعلم اللغة الإنجليزية",
+  "sameAs": [
+    "https://www.tiktok.com/@lingo.arab"
+  ]
+};
+
+// WebPage Schema for Blog listing
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "مدونة Lingo Arab - مقالات تعلم الإنجليزية",
+  "description": "اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية للناطقين بالعربية",
+  "url": `${SITE_URL}/blog`,
+  "inLanguage": "ar",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Lingo Arab",
+    "url": SITE_URL
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "تعلم اللغة الإنجليزية"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Lingo Arab",
+    "url": SITE_URL
+  }
 };
 
 // Breadcrumb Schema for Blog listing
@@ -150,6 +182,7 @@ const Blog = () => {
         
         {/* JSON-LD Schemas */}
         <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webPageSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
       </Helmet>

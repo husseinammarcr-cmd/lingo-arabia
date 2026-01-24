@@ -78,31 +78,60 @@ const BlogArticle = () => {
   // Generate Article Schema - must be before any early returns
   const articleSchema = useMemo(() => {
     if (!article) return null;
+    const wordCount = article.content_ar?.split(/\s+/).length || 0;
     return {
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": article.title_ar,
+      "alternativeHeadline": article.title_en,
       "description": article.excerpt_ar,
-      "image": article.featured_image || `${SITE_URL}/og-image.png`,
+      "image": {
+        "@type": "ImageObject",
+        "url": article.featured_image || `${SITE_URL}/og-image.png`,
+        "width": 1200,
+        "height": 630
+      },
       "datePublished": article.published_at || article.created_at,
       "dateModified": article.updated_at || article.created_at,
       "author": {
         "@type": "Person",
-        "name": article.author_name
+        "name": article.author_name,
+        "url": SITE_URL
       },
       "publisher": {
         "@type": "Organization",
         "name": "Lingo Arab",
+        "url": SITE_URL,
         "logo": {
           "@type": "ImageObject",
-          "url": `${SITE_URL}/logo.png`
+          "url": `${SITE_URL}/logo.png`,
+          "width": 512,
+          "height": 512
         }
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": `${SITE_URL}/blog/${article.slug}`
       },
-      "inLanguage": "ar"
+      "inLanguage": "ar",
+      "wordCount": wordCount,
+      "articleSection": article.category?.name_ar || "تعلم الإنجليزية",
+      "keywords": [
+        "تعلم الإنجليزية",
+        "اللغة الإنجليزية",
+        "LingoArab",
+        article.category?.name_ar
+      ].filter(Boolean).join(", "),
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", ".prose"]
+      },
+      "isAccessibleForFree": true,
+      "copyrightHolder": {
+        "@type": "Organization",
+        "name": "Lingo Arab"
+      },
+      "copyrightYear": new Date(article.published_at || article.created_at).getFullYear()
     };
   }, [article]);
 
