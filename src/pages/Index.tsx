@@ -31,21 +31,21 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
   ({ image, lottieData, titleAr, titleEn, delay }, ref) => (
     <motion.div 
       ref={ref}
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative bg-gradient-to-b from-[hsl(195_85%_97%)] to-[hsl(195_80%_92%)] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+      whileHover={{ y: -4 }}
+      className="group bg-card/80 backdrop-blur-sm border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       {/* Card content */}
-      <div className="relative p-6 pb-0">
+      <div className="p-6 pb-0">
         <h3 className="text-xl font-bold text-foreground mb-1">{titleAr}</h3>
         <p className="text-sm text-muted-foreground ltr-text">{titleEn}</p>
       </div>
       
       {/* Illustration container */}
-      <div className="relative h-48 md:h-56 flex items-end justify-center overflow-hidden">
+      <div className="h-48 md:h-56 flex items-end justify-center overflow-hidden">
         {lottieData ? (
           <LottieAnimation 
             animationData={lottieData}
