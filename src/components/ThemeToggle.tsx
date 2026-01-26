@@ -9,30 +9,29 @@ interface ThemeToggleProps {
 
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const isAnimatingRef = useRef(false);
   const { theme, toggleTheme } = useTheme();
 
   // Sync animation state with current theme on mount and theme changes
   useEffect(() => {
-    if (lottieRef.current) {
-      // Dark mode = moon frame, Light mode = sun frame
-      if (theme === 'dark') {
-        lottieRef.current.goToAndStop(80, true);
-      } else {
-        lottieRef.current.goToAndStop(179, true);
-      }
-    }
+    // Don't snap to a frame while an animation is playing.
+    if (!lottieRef.current || isAnimatingRef.current) return;
+
+    // Light = sun (frame 0), Dark = moon (frame 80)
+    lottieRef.current.goToAndStop(theme === 'dark' ? 80 : 0, true);
   }, [theme]);
 
   const handleClick = () => {
     if (lottieRef.current) {
+      isAnimatingRef.current = true;
       if (theme === 'light') {
         // Play forward: sun to moon (frames 0-80)
         lottieRef.current.setDirection(1);
         lottieRef.current.playSegments([0, 80], true);
       } else {
-        // Play backward: moon to sun (frames 120-179)
-        lottieRef.current.setDirection(1);
-        lottieRef.current.playSegments([120, 179], true);
+        // Play backward-ish segment: moon to sun (frames 80-0)
+        lottieRef.current.setDirection(-1);
+        lottieRef.current.playSegments([0, 80], true);
       }
     }
     toggleTheme();
@@ -41,7 +40,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
   return (
     <button
       onClick={handleClick}
-      className={`w-10 h-10 flex items-center justify-center rounded-md hover:bg-accent transition-colors focus:outline-none focus:ring-0 focus-visible:outline-none ${className}`}
+      className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors hover:bg-muted/40 active:bg-muted/60 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${className}`}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       <Lottie
@@ -50,6 +49,13 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
         loop={false}
         autoplay={false}
         className="w-8 h-8"
+        onComplete={() => {
+          isAnimatingRef.current = false;
+          // Snap to the final correct frame to avoid drift.
+          if (lottieRef.current) {
+            lottieRef.current.goToAndStop(theme === 'dark' ? 80 : 0, true);
+          }
+        }}
       />
     </button>
   );
