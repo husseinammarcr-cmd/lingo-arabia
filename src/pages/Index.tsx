@@ -17,7 +17,6 @@ import featureXp from '@/assets/feature-xp.png';
 import smilingMascot from '@/assets/smiling_mascot.json';
 import streakAnimation from '@/assets/streak-animation.json';
 import trophyAnimation from '@/assets/trophy-animation.json';
-import glassmorphismAnimation from '@/assets/glassmorphism-animation.json';
 import { LottieAnimation } from '@/components/animations/LottieAnimation';
 
 interface FeatureCardProps {
@@ -37,20 +36,8 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative bg-white/20 dark:bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-white/30 dark:border-white/10"
+      className="group relative bg-gradient-to-b from-[hsl(195_85%_97%)] to-[hsl(195_80%_92%)] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
     >
-      {/* Glassmorphism Lottie background */}
-      <div className="absolute inset-0 opacity-60 pointer-events-none">
-        <LottieAnimation 
-          animationData={glassmorphismAnimation}
-          loop={true}
-          autoplay={true}
-          className="w-full h-full object-cover scale-150"
-        />
-      </div>
-      
-      {/* Glass shine effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none" />
       
       {/* Card content */}
       <div className="relative p-6 pb-0">
