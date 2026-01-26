@@ -14,20 +14,21 @@ const SITE_URL = 'https://lingoarab.com';
 // Import feature illustrations
 import featureLessons from '@/assets/feature-lessons.png';
 import featureXp from '@/assets/feature-xp.png';
-import featureStreaks from '@/assets/feature-streaks.png';
 import featureAchievements from '@/assets/feature-achievements.png';
 import smilingMascot from '@/assets/smiling_mascot.json';
+import streakAnimation from '@/assets/streak-animation.json';
 import { LottieAnimation } from '@/components/animations/LottieAnimation';
 
 interface FeatureCardProps {
-  image: string;
+  image?: string;
+  lottieData?: object;
   titleAr: string;
   titleEn: string;
   delay: number;
 }
 
 const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
-  ({ image, titleAr, titleEn, delay }, ref) => (
+  ({ image, lottieData, titleAr, titleEn, delay }, ref) => (
     <motion.div 
       ref={ref}
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -45,11 +46,20 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       
       {/* Illustration container */}
       <div className="relative h-48 md:h-56 flex items-end justify-center overflow-hidden">
-        <img 
-          src={image} 
-          alt={titleEn}
-          className="w-full h-full object-contain object-bottom transform group-hover:scale-105 transition-transform duration-300"
-        />
+        {lottieData ? (
+          <LottieAnimation 
+            animationData={lottieData}
+            loop={true}
+            autoplay={true}
+            className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <img 
+            src={image} 
+            alt={titleEn}
+            className="w-full h-full object-contain object-bottom transform group-hover:scale-105 transition-transform duration-300"
+          />
+        )}
       </div>
     </motion.div>
   )
@@ -73,7 +83,7 @@ const Index = () => {
       titleEn: 'Earn XP Points' 
     },
     { 
-      image: featureStreaks, 
+      lottieData: streakAnimation, 
       titleAr: 'سلسلة يومية', 
       titleEn: 'Daily Streaks' 
     },
@@ -202,6 +212,7 @@ const Index = () => {
               <FeatureCard
                 key={index}
                 image={feature.image}
+                lottieData={feature.lottieData}
                 titleAr={feature.titleAr}
                 titleEn={feature.titleEn}
                 delay={index * 100}
