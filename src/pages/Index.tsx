@@ -208,27 +208,32 @@ const Index = () => {
         </section>
 
         {/* Feature Cards Section */}
-        <section className="container mx-auto px-4 py-12 md:py-16">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-              لماذا LingoArab؟
-            </h2>
-            <p className="text-muted-foreground">
-              اكتشف مميزات التعلم معنا
-            </p>
-          </div>
+        <section className="relative py-12 md:py-16 overflow-hidden">
+          {/* Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364]" />
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                image={feature.image}
-                lottieData={feature.lottieData}
-                titleAr={feature.titleAr}
-                titleEn={feature.titleEn}
-                delay={index * 100}
-              />
-            ))}
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                لماذا LingoArab؟
+              </h2>
+              <p className="text-white/70">
+                اكتشف مميزات التعلم معنا
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              {features.map((feature, index) => (
+                <FeatureCard
+                  key={index}
+                  image={feature.image}
+                  lottieData={feature.lottieData}
+                  titleAr={feature.titleAr}
+                  titleEn={feature.titleEn}
+                  delay={index * 100}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
