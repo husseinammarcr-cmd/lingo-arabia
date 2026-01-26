@@ -51,7 +51,7 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
             animationData={lottieData}
             loop={true}
             autoplay={true}
-            className="w-32 h-32 md:w-40 md:h-40 mb-4"
+            className="w-36 h-36 md:w-44 md:h-44 mb-2"
           />
         ) : (
           <img 
