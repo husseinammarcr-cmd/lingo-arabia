@@ -36,10 +36,13 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative bg-gradient-to-b from-[hsl(195_85%_97%)] to-[hsl(195_80%_92%)] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+      className="group relative bg-white/40 dark:bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-white/50 dark:border-white/20"
     >
+      {/* Glass shine effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent pointer-events-none" />
+      
       {/* Card content */}
-      <div className="p-6 pb-0">
+      <div className="relative p-6 pb-0">
         <h3 className="text-xl font-bold text-foreground mb-1">{titleAr}</h3>
         <p className="text-sm text-muted-foreground ltr-text">{titleEn}</p>
       </div>
