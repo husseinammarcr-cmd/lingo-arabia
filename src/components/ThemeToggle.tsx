@@ -11,17 +11,17 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const { theme, toggleTheme } = useTheme();
 
+  // Sync animation state with current theme on mount and theme changes
   useEffect(() => {
     if (lottieRef.current) {
-      // Set initial frame based on current theme
-      // Dark mode = end of animation (moon), Light mode = start (sun)
+      // Dark mode = moon frame, Light mode = sun frame
       if (theme === 'dark') {
-        lottieRef.current.goToAndStop(179, true);
+        lottieRef.current.goToAndStop(80, true);
       } else {
-        lottieRef.current.goToAndStop(0, true);
+        lottieRef.current.goToAndStop(179, true);
       }
     }
-  }, []);
+  }, [theme]);
 
   const handleClick = () => {
     if (lottieRef.current) {
@@ -41,7 +41,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
   return (
     <button
       onClick={handleClick}
-      className={`w-10 h-10 flex items-center justify-center rounded-md hover:bg-accent transition-colors ${className}`}
+      className={`w-10 h-10 flex items-center justify-center rounded-md hover:bg-accent transition-colors focus:outline-none focus:ring-0 focus-visible:outline-none ${className}`}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       <Lottie
