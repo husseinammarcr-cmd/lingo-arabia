@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef, useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { motion } from 'framer-motion';
 import { ThreeBackground } from '@/components/animations/ThreeBackground';
+import SplashScreen from '@/components/SplashScreen';
 
 const SITE_URL = 'https://lingoarab.com';
 
@@ -70,6 +71,16 @@ FeatureCard.displayName = 'FeatureCard';
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [showSplash, setShowSplash] = useState(() => {
+    // Check if user has already seen splash in this session
+    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+    return !hasSeenSplash;
+  });
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem('hasSeenSplash', 'true');
+    setShowSplash(false);
+  };
 
   const features = [
     { 
@@ -121,7 +132,9 @@ const Index = () => {
   }), []);
 
   return (
-    <PageBackground>
+    <>
+      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
+      <PageBackground>
       <Helmet>
         <title>Lingo Arab – تعلم الإنجليزية مجانا</title>
         <meta name="description" content="تعلم اللغة الإنجليزية بطريقة ممتعة وفعّالة مع LingoArab. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً. مصممة خصيصاً للناطقين بالعربية." />
@@ -298,6 +311,7 @@ const Index = () => {
         </footer>
       </div>
     </PageBackground>
+    </>
   );
 };
 
