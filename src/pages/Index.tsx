@@ -14,7 +14,7 @@ const SITE_URL = 'https://lingoarab.com';
 // Import feature illustrations
 import featureLessons from '@/assets/feature-lessons.png';
 import featureXp from '@/assets/feature-xp.png';
-import smilingMascot from '@/assets/smiling_mascot.json';
+import orangeSkating from '@/assets/orange-skating.json';
 import streakAnimation from '@/assets/streak-animation.json';
 import trophyAnimation from '@/assets/trophy-animation.json';
 import { LottieAnimation } from '@/components/animations/LottieAnimation';
@@ -164,13 +164,13 @@ const Index = () => {
               منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً.
             </p>
             
-            {/* Lottie Mascot Animation */}
-            <div className="flex justify-center mb-8 animate-slide-up" style={{ animationDelay: '150ms' }}>
+            {/* Lottie Orange Skating Animation */}
+            <div className="flex justify-center mb-4 animate-slide-up" style={{ animationDelay: '150ms' }}>
               <LottieAnimation 
-                animationData={smilingMascot}
+                animationData={orangeSkating}
                 loop={true}
                 autoplay={true}
-                className="w-40 h-40 md:w-52 md:h-52"
+                className="w-48 h-28 md:w-64 md:h-36"
               />
             </div>
             
