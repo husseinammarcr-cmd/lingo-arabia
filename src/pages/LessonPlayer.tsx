@@ -16,7 +16,6 @@ import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MiniConfetti } from '@/components/animations/MiniConfetti';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
-import { InterstitialAd } from '@/components/InterstitialAd';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
@@ -109,7 +108,6 @@ const LessonPlayer = () => {
   const [hasSaved, setHasSaved] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [slideDirection, setSlideDirection] = useState(1);
-  const [showAd, setShowAd] = useState(true); // Show ad on lesson start
 
   const lessonData = getLessonById(lessonId || '');
   const lessonContent = getLessonContent(lessonId || '');
@@ -210,16 +208,6 @@ const LessonPlayer = () => {
       });
     }
   }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements]);
-
-  // Show interstitial ad first
-  if (showAd) {
-    return (
-      <InterstitialAd 
-        onComplete={() => setShowAd(false)} 
-        autoCloseDelay={5000}
-      />
-    );
-  }
 
   if (isLoading) {
     return (
