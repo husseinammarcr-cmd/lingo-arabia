@@ -16,6 +16,8 @@ import featureLessons from '@/assets/feature-lessons.png';
 import featureXp from '@/assets/feature-xp.png';
 import featureStreaks from '@/assets/feature-streaks.png';
 import featureAchievements from '@/assets/feature-achievements.png';
+import smilingMascot from '@/assets/smiling_mascot.json';
+import { LottieAnimation } from '@/components/animations/LottieAnimation';
 
 interface FeatureCardProps {
   image: string;
@@ -148,9 +150,20 @@ const Index = () => {
               تعلّم الإنجليزية
               <span className="block text-primary mt-2">بطريقة ممتعة وفعّالة</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '100ms' }}>
+            <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '100ms' }}>
               منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً.
             </p>
+            
+            {/* Lottie Mascot Animation */}
+            <div className="flex justify-center mb-8 animate-slide-up" style={{ animationDelay: '150ms' }}>
+              <LottieAnimation 
+                animationData={smilingMascot}
+                loop={true}
+                autoplay={true}
+                className="w-40 h-40 md:w-52 md:h-52"
+              />
+            </div>
+            
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '200ms' }}>
               <Button 
                 variant="hero" 
