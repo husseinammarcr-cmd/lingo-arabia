@@ -14,9 +14,9 @@ const SITE_URL = 'https://lingoarab.com';
 // Import feature illustrations
 import featureLessons from '@/assets/feature-lessons.png';
 import featureXp from '@/assets/feature-xp.png';
-import featureAchievements from '@/assets/feature-achievements.png';
 import smilingMascot from '@/assets/smiling_mascot.json';
 import streakAnimation from '@/assets/streak-animation.json';
+import trophyAnimation from '@/assets/trophy-animation.json';
 import { LottieAnimation } from '@/components/animations/LottieAnimation';
 
 interface FeatureCardProps {
@@ -88,7 +88,7 @@ const Index = () => {
       titleEn: 'Daily Streaks' 
     },
     { 
-      image: featureAchievements, 
+      lottieData: trophyAnimation, 
       titleAr: 'إنجازات', 
       titleEn: 'Achievements' 
     },
