@@ -36,7 +36,7 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
       whileHover={{ y: -4 }}
-      className="group bg-card/80 backdrop-blur-sm border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="group bg-card/50 backdrop-blur-md border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       {/* Card content */}
       <div className="p-6 pb-0">
