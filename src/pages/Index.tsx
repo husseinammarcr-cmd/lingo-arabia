@@ -36,17 +36,27 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative bg-gradient-to-b from-[hsl(195_85%_97%)] to-[hsl(195_80%_92%)] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+      className="group relative rounded-[20px] overflow-hidden transition-all duration-300
+        bg-white/40 dark:bg-white/20
+        backdrop-blur-[5px]
+        border border-white/30 dark:border-white/20
+        shadow-[0_8px_32px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(255,255,255,0.1),inset_0_0_60px_30px_rgba(255,255,255,0.03)]
+        hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.6),inset_0_-1px_0_rgba(255,255,255,0.15),inset_0_0_60px_30px_rgba(255,255,255,0.05)]"
     >
+      {/* Top shine line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent" />
+      
+      {/* Left shine line */}
+      <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-white/80 via-transparent to-white/30" />
       
       {/* Card content */}
-      <div className="relative p-6 pb-0">
+      <div className="relative p-6 pb-0 z-10">
         <h3 className="text-xl font-bold text-foreground mb-1">{titleAr}</h3>
         <p className="text-sm text-muted-foreground ltr-text">{titleEn}</p>
       </div>
       
       {/* Illustration container */}
-      <div className="relative h-48 md:h-56 flex items-end justify-center overflow-hidden">
+      <div className="relative h-48 md:h-56 flex items-end justify-center overflow-hidden z-10">
         {lottieData ? (
           <LottieAnimation 
             animationData={lottieData}
