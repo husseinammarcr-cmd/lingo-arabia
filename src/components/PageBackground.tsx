@@ -10,7 +10,10 @@ const PageBackground = ({ children, className }: PageBackgroundProps) => {
     <div
       className={cn(
         "min-h-screen bg-no-repeat relative",
-        "bg-top md:bg-center",
+        // Desktop: cover and centered
+        "bg-cover bg-center",
+        // Mobile: position top to show the main artwork
+        "max-md:bg-top max-md:bg-[length:100%_auto]",
         className
       )}
       style={{ backgroundImage: "url('/images/learning-bg.png')" }}
