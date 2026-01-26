@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Star, LogOut, ChevronLeft, Shield } from 'lucide-react';
+import { Star, LogOut, ChevronLeft, Shield } from 'lucide-react';
 import { NotificationBell } from '@/components/NotificationBell';
 import EmailVerificationBanner from '@/components/EmailVerificationBanner';
+import ThemeToggle from '@/components/ThemeToggle';
 import logo from '@/assets/logo.png';
 
 interface HeaderProps {
@@ -16,7 +16,6 @@ interface HeaderProps {
 const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false }: HeaderProps) => {
   const navigate = useNavigate();
   const { user, profile, signOut, isAdmin } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <>
@@ -55,9 +54,7 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
             </>
           )}
           
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </Button>
+          <ThemeToggle />
           
           {showUserInfo && user && (
             <>
