@@ -264,7 +264,8 @@ const AppCourses = () => {
             const progress = levelProgress?.progress ?? 0;
             
             // If user hasn't taken placement test, all levels are locked (unless admin)
-            const isUnlocked = isAdmin || (hasTakenPlacement && isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level, isAdmin));
+            // Admin bypasses all restrictions - levels are always unlocked
+            const isUnlocked = isAdmin || (hasTakenPlacement && isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level));
             const levelImage = levelImages[level.code];
             const isCompleted = levelProgress?.completed === levelProgress?.total && levelProgress?.total > 0;
 
