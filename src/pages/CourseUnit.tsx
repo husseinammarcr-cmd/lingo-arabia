@@ -49,7 +49,7 @@ const shakeAnimation = {
 const CourseUnit = () => {
   const navigate = useNavigate();
   const { level: levelParam, unit: unitParam } = useParams<{ level: string; unit: string }>();
-  const { user, profile, isLoading } = useAuth();
+  const { user, profile, isLoading, isAdmin } = useAuth();
   const { data: progressData } = useUserProgress();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [shakingLessonId, setShakingLessonId] = useState<string | null>(null);
@@ -157,7 +157,8 @@ const CourseUnit = () => {
               lesson.id, 
               completedLessons,
               profile?.placement_level,
-              profile?.current_level
+              profile?.current_level,
+              isAdmin
             );
             const hasExercises = lesson.hasRealExercises;
             const isLocked = !isUnlocked && !hasExercises;
