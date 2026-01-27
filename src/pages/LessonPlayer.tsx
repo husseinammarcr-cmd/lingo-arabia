@@ -191,7 +191,8 @@ const LessonPlayer = () => {
         completed: true,
         score: lessonContent ? Math.round((quizScore / quizTotal) * 100) : 100,
         heartsRemaining: hearts,
-        xpEarned: totalXp
+        xpEarned: totalXp,
+        hintPenalty: hintPenalties
       }, {
         onSuccess: async () => {
           clearTimeout(saveTimeout);
@@ -208,7 +209,7 @@ const LessonPlayer = () => {
         }
       });
     }
-  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements]);
+  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements, hintPenalties]);
 
   if (isLoading) {
     return (
@@ -322,14 +323,14 @@ const LessonPlayer = () => {
 
   const handlePracticeAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
     if (isCorrect) {
-      // Award XP minus hint penalty (minimum 1 XP for correct answer)
-      const earnedXp = Math.max(1, 3 - hintPenalty);
-      setXpEarned(prev => prev + earnedXp);
-      if (hintPenalty > 0) {
-        setHintPenalties(prev => prev + hintPenalty);
-      }
+      // Award full XP for correct answer
+      setXpEarned(prev => prev + 3);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
+    }
+    // Track hint penalties separately (will be deducted from total XP)
+    if (hintPenalty > 0) {
+      setHintPenalties(prev => prev + hintPenalty);
     }
 
     setSlideDirection(1);
@@ -347,14 +348,14 @@ const LessonPlayer = () => {
     const currentQuiz = lessonContent.quiz[quizIndex];
     if (isCorrect) {
       setQuizScore(prev => prev + currentQuiz.points);
-      // Award XP minus hint penalty (minimum 1 XP for correct answer)
-      const earnedXp = Math.max(1, 5 - hintPenalty);
-      setXpEarned(prev => prev + earnedXp);
-      if (hintPenalty > 0) {
-        setHintPenalties(prev => prev + hintPenalty);
-      }
+      // Award full XP for correct answer
+      setXpEarned(prev => prev + 5);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
+    }
+    // Track hint penalties separately (will be deducted from total XP)
+    if (hintPenalty > 0) {
+      setHintPenalties(prev => prev + hintPenalty);
     }
 
     setSlideDirection(1);
