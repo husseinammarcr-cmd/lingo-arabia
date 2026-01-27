@@ -235,19 +235,29 @@ export const ExerciseRenderer = ({
                 "p-4 rounded-lg",
                 isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
               )}>
-                <p className="font-semibold flex items-center gap-2">
-                  {isCorrect ? (
-                    <>
-                      <CheckCircle className="w-5 h-5" />
-                      ممتاز!
-                    </>
-                  ) : (
-                    <>
+                {isCorrect ? (
+                  <p className="font-semibold flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    ممتاز!
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="font-semibold flex items-center gap-2">
                       <XCircle className="w-5 h-5" />
-                      الإجابة الصحيحة: <span className="ltr-inline">{data.answer}</span>
-                    </>
-                  )}
-                </p>
+                      إجابة خاطئة
+                    </p>
+                    <div className="bg-background/50 rounded-lg p-3 space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <span className="text-muted-foreground shrink-0">إجابتك:</span>
+                        <span className="ltr-inline line-through opacity-70">{textAnswer}</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-muted-foreground shrink-0">الصحيح:</span>
+                        <span className="ltr-inline text-success font-medium">{data.answer}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -301,22 +311,34 @@ export const ExerciseRenderer = ({
 
             {answered && (
               <div className={cn(
-                "p-4 rounded-lg text-center",
+                "p-4 rounded-lg",
                 isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
               )}>
-                <p className="font-semibold flex items-center justify-center gap-2">
-                  {isCorrect ? (
-                    <>
-                      <CheckCircle className="w-5 h-5" />
-                      ممتاز!
-                    </>
-                  ) : (
-                    <>
+                {isCorrect ? (
+                  <p className="font-semibold flex items-center justify-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    ممتاز!
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="font-semibold flex items-center justify-center gap-2">
                       <XCircle className="w-5 h-5" />
-                      الترتيب الصحيح: <span className="ltr-inline">{data.answer}</span>
-                    </>
-                  )}
-                </p>
+                      ترتيب خاطئ
+                    </p>
+                    <div className="bg-background/50 rounded-lg p-3 space-y-2 text-sm">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-muted-foreground shrink-0">ترتيبك:</span>
+                        <span className="ltr-inline line-through opacity-70">
+                          {reorderedWords.map(i => data.words?.[i]).join(' ')}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-muted-foreground shrink-0">الصحيح:</span>
+                        <span className="ltr-inline text-success font-medium">{data.answer}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -330,10 +352,44 @@ export const ExerciseRenderer = ({
               value={textAnswer}
               onChange={(e) => setTextAnswer(e.target.value)}
               placeholder="اكتب ما سمعته..."
-              className="text-lg h-14 ltr-text"
+              className={cn(
+                "text-lg h-14 ltr-text",
+                answered && isCorrect && "border-success ring-2 ring-success",
+                answered && !isCorrect && "border-destructive ring-2 ring-destructive"
+              )}
               disabled={answered || disabled}
               dir="ltr"
             />
+            {answered && (
+              <div className={cn(
+                "p-4 rounded-lg",
+                isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
+              )}>
+                {isCorrect ? (
+                  <p className="font-semibold flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    ممتاز!
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="font-semibold flex items-center gap-2">
+                      <XCircle className="w-5 h-5" />
+                      إجابة خاطئة
+                    </p>
+                    <div className="bg-background/50 rounded-lg p-3 space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <span className="text-muted-foreground shrink-0">إجابتك:</span>
+                        <span className="ltr-inline line-through opacity-70">{textAnswer}</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-muted-foreground shrink-0">الصحيح:</span>
+                        <span className="ltr-inline text-success font-medium">{data.answer}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
 
