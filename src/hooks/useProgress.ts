@@ -317,13 +317,15 @@ export const useUpdateProgress = () => {
       completed,
       score,
       heartsRemaining,
-      xpEarned
+      xpEarned,
+      hintPenalty = 0
     }: {
       lessonId: string;
       completed: boolean;
       score: number;
       heartsRemaining: number;
       xpEarned: number;
+      hintPenalty?: number;
     }) => {
       if (!user) throw new Error('Not authenticated');
 
@@ -401,9 +403,13 @@ export const useUpdateProgress = () => {
           newStreakCount = 1;
         }
 
-        const newXp = (profile.xp || 0) + xpEarned;
-        const newWeeklyXp = (profile.weekly_xp || 0) + xpEarned;
-        const newMonthlyXp = (profile.monthly_xp || 0) + xpEarned;
+        // Calculate net XP (earned minus hint penalty, but never go negative for this lesson)
+        const netXpFromLesson = Math.max(0, xpEarned);
+        
+        // Apply hint penalty to total XP (can reduce overall XP)
+        const newXp = Math.max(0, (profile.xp || 0) + netXpFromLesson - hintPenalty);
+        const newWeeklyXp = Math.max(0, (profile.weekly_xp || 0) + netXpFromLesson - hintPenalty);
+        const newMonthlyXp = Math.max(0, (profile.monthly_xp || 0) + netXpFromLesson - hintPenalty);
         
         // Calculate new user level based on XP (every 500 XP = 1 level)
         const newUserLevel = Math.max(1, Math.floor(newXp / 500) + 1);
