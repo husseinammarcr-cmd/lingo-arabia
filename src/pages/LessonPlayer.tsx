@@ -166,9 +166,21 @@ const LessonPlayer = () => {
     return (quizScore / quizTotal) * 100 >= passingThreshold;
   }, [lessonContent, quizScore, quizTotal, passingThreshold]);
 
+  // Ref to track the save timeout
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Save to DB when lesson completes (only if passed)
   useEffect(() => {
-    if (isComplete && lessonId && lessonData && !isSaving && !hasSaved) {
+    if (isComplete && lessonId && lessonData && !isSaving && !hasSaved && !saveError) {
       const passed = calculatePassed();
       
       if (!passed) {
@@ -177,7 +189,6 @@ const LessonPlayer = () => {
       }
       
       setIsSaving(true);
-      setSaveError(false);
       clearProgress();
       setShowConfetti(true);
       
@@ -188,9 +199,17 @@ const LessonPlayer = () => {
         netXp: totalXp - hintPenalties
       });
       
-      const saveTimeout = setTimeout(() => {
-        setIsSaving(false);
-        setSaveError(true);
+      // Clear any existing timeout
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      // Set new timeout
+      saveTimeoutRef.current = setTimeout(() => {
+        if (!hasSaved) {
+          setIsSaving(false);
+          setSaveError(true);
+        }
       }, 10000);
       
       updateProgress.mutate({
@@ -202,23 +221,27 @@ const LessonPlayer = () => {
         hintPenalty: hintPenalties
       }, {
         onSuccess: async () => {
-          clearTimeout(saveTimeout);
+          if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+            saveTimeoutRef.current = null;
+          }
           setHasSaved(true);
           setIsSaving(false);
-          
-          // Hints are now free - no penalty notification needed
           
           await refreshProfile();
           await evaluateAchievements();
         },
         onError: () => {
-          clearTimeout(saveTimeout);
+          if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+            saveTimeoutRef.current = null;
+          }
           setIsSaving(false);
           setSaveError(true);
         }
       });
     }
-  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements, hintPenalties]);
+  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, saveError, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements, hintPenalties]);
 
   if (isLoading) {
     return (
