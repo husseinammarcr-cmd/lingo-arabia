@@ -98,7 +98,7 @@ const levelImages: Record<string, string> = {
 
 const AppCourses = () => {
   const navigate = useNavigate();
-  const { user, profile, isLoading } = useAuth();
+  const { user, profile, isLoading, isAdmin } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { data: progressData } = useUserProgress();
 
@@ -263,8 +263,8 @@ const AppCourses = () => {
             const levelProgress = levelProgressMap[level.code];
             const progress = levelProgress?.progress ?? 0;
             
-            // If user hasn't taken placement test, all levels are locked
-            const isUnlocked = hasTakenPlacement && isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level);
+            // If user hasn't taken placement test, all levels are locked (unless admin)
+            const isUnlocked = isAdmin || (hasTakenPlacement && isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level, isAdmin));
             const levelImage = levelImages[level.code];
             const isCompleted = levelProgress?.completed === levelProgress?.total && levelProgress?.total > 0;
 

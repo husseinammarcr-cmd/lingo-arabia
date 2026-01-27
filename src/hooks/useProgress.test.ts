@@ -50,6 +50,13 @@ describe("useProgress - Level Logic", () => {
       expect(isLevelUnlocked("C1", "C2", null)).toBe(true);
       expect(isLevelUnlocked("C2", "C2", null)).toBe(true);
     });
+
+    it("unlocks all levels for admin", () => {
+      expect(isLevelUnlocked("A1", null, null, true)).toBe(true);
+      expect(isLevelUnlocked("B2", null, null, true)).toBe(true);
+      expect(isLevelUnlocked("C1", null, null, true)).toBe(true);
+      expect(isLevelUnlocked("C2", null, null, true)).toBe(true);
+    });
   });
 
   describe("isLessonUnlocked", () => {
@@ -71,6 +78,12 @@ describe("useProgress - Level Logic", () => {
     it("handles C1 and C2 lessons correctly", () => {
       expect(isLessonUnlocked("C1-u01-l01", [], "C1", null)).toBe(true);
       expect(isLessonUnlocked("C2-u01-l01", [], "C2", null)).toBe(true);
+    });
+
+    it("unlocks all lessons for admin", () => {
+      expect(isLessonUnlocked("A1-u01-l05", [], null, null, true)).toBe(true);
+      expect(isLessonUnlocked("B2-u05-l03", [], null, null, true)).toBe(true);
+      expect(isLessonUnlocked("C2-u10-l05", [], null, null, true)).toBe(true);
     });
   });
 

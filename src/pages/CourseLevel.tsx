@@ -99,7 +99,7 @@ const levelColors: Record<string, { bg: string; text: string; accent: string }> 
 const CourseLevel = () => {
   const navigate = useNavigate();
   const { level: levelParam } = useParams<{ level: string }>();
-  const { user, profile, isLoading } = useAuth();
+  const { user, profile, isLoading, isAdmin } = useAuth();
   const { data: progressData, isLoading: isProgressLoading } = useUserProgress();
 
   const level = getLevelByCode(levelParam || '');
@@ -119,13 +119,14 @@ const CourseLevel = () => {
       levelParam, 
       completedLessonIds,
       profile?.placement_level,
-      profile?.current_level
+      profile?.current_level,
+      isAdmin
     );
     return progressList.reduce((acc, up) => {
       acc[up.unitId] = up;
       return acc;
     }, {} as Record<string, ReturnType<typeof getUnitProgress>[0]>);
-  }, [levelParam, completedLessonIds, profile?.placement_level, profile?.current_level]);
+  }, [levelParam, completedLessonIds, profile?.placement_level, profile?.current_level, isAdmin]);
 
   useEffect(() => {
     if (!isLoading && !user) {

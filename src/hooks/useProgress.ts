@@ -29,7 +29,15 @@ export function getLevelIndex(levelCode: string): number {
 }
 
 // Check if a level is unlocked based on user's placement/current level
-export function isLevelUnlocked(levelCode: string, userPlacementLevel: string | null, userCurrentLevel: string | null): boolean {
+export function isLevelUnlocked(
+  levelCode: string, 
+  userPlacementLevel: string | null, 
+  userCurrentLevel: string | null,
+  isAdmin: boolean = false
+): boolean {
+  // Admin has access to all levels
+  if (isAdmin) return true;
+  
   const targetLevelIndex = getLevelIndex(levelCode);
   
   // Use the higher of placement_level or current_level
@@ -134,8 +142,12 @@ export function isLessonUnlocked(
   lessonId: string, 
   completedLessons: string[],
   userPlacementLevel?: string | null,
-  userCurrentLevel?: string | null
+  userCurrentLevel?: string | null,
+  isAdmin: boolean = false
 ): boolean {
+  // Admin has access to all lessons
+  if (isAdmin) return true;
+  
   // Extract level code from lesson ID (e.g., "A1-u01-l01" -> "A1")
   const lessonLevelCode = lessonId.split('-')[0].toUpperCase();
   const lessonLevelIndex = getLevelIndex(lessonLevelCode);
@@ -206,10 +218,26 @@ export function getUnitProgress(
   levelCode: string,
   completedLessonIds: string[],
   userPlacementLevel?: string | null,
-  userCurrentLevel?: string | null
+  userCurrentLevel?: string | null,
+  isAdmin: boolean = false
 ): UnitProgress[] {
   const level = CURRICULUM.find(l => l.code.toLowerCase() === levelCode.toLowerCase());
   if (!level) return [];
+
+  // Admin has access to all units
+  if (isAdmin) {
+    return level.units.map(unit => {
+      const lessonIds = unit.lessons.map(l => l.id);
+      const completedCount = lessonIds.filter(id => completedLessonIds.includes(id)).length;
+      return {
+        unitId: unit.id,
+        completedLessons: completedCount,
+        totalLessons: lessonIds.length,
+        isCompleted: completedCount === lessonIds.length && lessonIds.length > 0,
+        isUnlocked: true
+      };
+    });
+  }
 
   // Check if this entire level is unlocked based on placement
   const levelIndex = getLevelIndex(levelCode);
@@ -267,13 +295,23 @@ export function getLessonProgress(
   unitId: string,
   completedLessonIds: string[],
   userPlacementLevel?: string | null,
-  userCurrentLevel?: string | null
+  userCurrentLevel?: string | null,
+  isAdmin: boolean = false
 ): { lessonId: string; isCompleted: boolean; isUnlocked: boolean }[] {
   const level = CURRICULUM.find(l => l.code.toLowerCase() === levelCode.toLowerCase());
   if (!level) return [];
   
   const unit = level.units.find(u => u.id === unitId);
   if (!unit) return [];
+
+  // Admin has access to all lessons
+  if (isAdmin) {
+    return unit.lessons.map(lesson => ({
+      lessonId: lesson.id,
+      isCompleted: completedLessonIds.includes(lesson.id),
+      isUnlocked: true
+    }));
+  }
 
   const levelIndex = getLevelIndex(levelCode);
   const placementIndex = getLevelIndex(userPlacementLevel || 'A1');
