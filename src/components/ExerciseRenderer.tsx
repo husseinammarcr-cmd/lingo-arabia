@@ -88,6 +88,15 @@ export const ExerciseRenderer = ({
     };
   }, []);
 
+  // Helper function to normalize text by removing trailing punctuation
+  const normalizeAnswer = (text: string): string => {
+    return text
+      .trim()
+      .toLowerCase()
+      .replace(/[.?!,،؟]+$/g, '') // Remove trailing punctuation (English & Arabic)
+      .trim();
+  };
+
   const checkAnswer = () => {
     let correct = false;
 
@@ -97,16 +106,16 @@ export const ExerciseRenderer = ({
         break;
       case 'fill_blank':
       case 'translation':
-        const userAnswer = textAnswer.trim().toLowerCase();
-        const correctAnswer = data.answer?.toLowerCase() || '';
-        const alternatives = data.alternatives?.map(a => a.toLowerCase()) || [];
+        const userAnswer = normalizeAnswer(textAnswer);
+        const correctAnswer = normalizeAnswer(data.answer || '');
+        const alternatives = data.alternatives?.map(a => normalizeAnswer(a)) || [];
         correct = userAnswer === correctAnswer || alternatives.includes(userAnswer);
         break;
       case 'reorder':
         correct = JSON.stringify(reorderedWords) === JSON.stringify(data.correct_order);
         break;
       case 'listening':
-        correct = textAnswer.trim().toLowerCase() === (data.answer?.toLowerCase() || '');
+        correct = normalizeAnswer(textAnswer) === normalizeAnswer(data.answer || '');
         break;
       case 'matching':
         // Check if all pairs are correctly matched
