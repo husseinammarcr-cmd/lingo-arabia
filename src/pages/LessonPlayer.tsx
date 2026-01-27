@@ -7,7 +7,7 @@ import { getLessonContent, VocabItem, SentenceItem } from '@/lib/a1-lessons';
 import { ExerciseRenderer } from '@/components/ExerciseRenderer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { X, Heart, Star, ChevronRight, Trophy, Loader2, BookOpen, Dumbbell, ClipboardCheck, ChevronLeft } from 'lucide-react';
+import { X, Heart, Star, ChevronRight, Trophy, Loader2, BookOpen, Dumbbell, ClipboardCheck, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { AudioButton } from '@/components/AudioButton';
 import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
@@ -16,6 +16,7 @@ import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MiniConfetti } from '@/components/animations/MiniConfetti';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
+import { toast } from 'sonner';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
@@ -198,6 +199,14 @@ const LessonPlayer = () => {
           clearTimeout(saveTimeout);
           setHasSaved(true);
           setIsSaving(false);
+          
+          // Show hint penalty notification if applicable
+          if (hintPenalties > 0) {
+            toast.warning(`تم خصم ${hintPenalties} XP من رصيدك بسبب استخدام التلميحات`, {
+              icon: <AlertTriangle className="w-5 h-5 text-amber-500" />,
+              duration: 5000,
+            });
+          }
           
           await refreshProfile();
           await evaluateAchievements();
