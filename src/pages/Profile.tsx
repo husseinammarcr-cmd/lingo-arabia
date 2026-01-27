@@ -40,7 +40,7 @@ const Profile = () => {
           <Card className="overflow-hidden relative">
             {/* Level 1 Banner Animation - Background */}
             {(profile?.user_level || 1) === 1 && (
-              <div className="absolute inset-0 z-0 opacity-20 overflow-hidden">
+              <div className="absolute inset-0 z-0 opacity-40 overflow-hidden">
                 <LottieAnimation 
                   animationData={level1Banner}
                   loop={true}
