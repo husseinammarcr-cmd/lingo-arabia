@@ -557,20 +557,20 @@ export const ExerciseRenderer = ({
           {/* Progressive hints for text-based exercises */}
           {(type === 'fill_blank' || type === 'translation' || type === 'listening') && data.answer && (
             <div className="space-y-3">
-              {/* Warning dialog for hint confirmation */}
+              {/* Hint confirmation dialog - hints are free! */}
               {pendingHintLevel !== null && (
-                <Card className="bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 animate-scale-in">
+                <Card className="bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 animate-scale-in">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center shrink-0">
-                        <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                      <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center shrink-0">
+                        <Lightbulb className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
-                          تحذير: خصم نقاط
+                        <p className="font-semibold text-blue-800 dark:text-blue-200 mb-1">
+                          تلميح مجاني 💡
                         </p>
-                        <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                          استخدام هذا التلميح سيخصم <strong>25 XP</strong> من نقاطك المكتسبة في هذا السؤال.
+                        <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                          استخدم التلميحات للمساعدة في التعلم - بدون أي خصم من نقاطك!
                         </p>
                         <div className="flex gap-2">
                           <Button
@@ -578,7 +578,7 @@ export const ExerciseRenderer = ({
                             size="sm"
                             variant="outline"
                             onClick={() => setPendingHintLevel(null)}
-                            className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-800"
+                            className="border-blue-400 text-blue-700 hover:bg-blue-100 dark:hover:bg-blue-800"
                           >
                             إلغاء
                           </Button>
@@ -589,9 +589,9 @@ export const ExerciseRenderer = ({
                               setHintLevel(pendingHintLevel);
                               setPendingHintLevel(null);
                             }}
-                            className="bg-amber-500 hover:bg-amber-600 text-white"
+                            className="bg-blue-500 hover:bg-blue-600 text-white"
                           >
-                            موافق، أظهر التلميح
+                            أظهر التلميح
                           </Button>
                         </div>
                       </div>
@@ -610,11 +610,10 @@ export const ExerciseRenderer = ({
                       variant="outline"
                       size="sm"
                       onClick={() => setPendingHintLevel(1)}
-                      className="text-amber-600 border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                      className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     >
                       <Hash className="w-4 h-4 ml-1" />
                       عدد الكلمات
-                      <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                     </Button>
                   )}
                   
@@ -625,11 +624,10 @@ export const ExerciseRenderer = ({
                       variant="outline"
                       size="sm"
                       onClick={() => setPendingHintLevel(2)}
-                      className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                      className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     >
                       <Type className="w-4 h-4 ml-1" />
                       الحرف الأول
-                      <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                     </Button>
                   )}
                   
@@ -640,11 +638,10 @@ export const ExerciseRenderer = ({
                       variant="outline"
                       size="sm"
                       onClick={() => setPendingHintLevel(3)}
-                      className="text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     >
                       <Eye className="w-4 h-4 ml-1" />
                       كشف المزيد
-                      <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                     </Button>
                   )}
                 </div>
@@ -697,57 +694,18 @@ export const ExerciseRenderer = ({
                     </p>
                   </CardContent>
                 </Card>
-              ) : showHintWarning ? (
-                <Card className="bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 animate-scale-in">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center shrink-0">
-                        <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
-                          تحذير: خصم نقاط
-                        </p>
-                        <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                          استخدام هذا التلميح سيخصم <strong>25 XP</strong> من نقاطك.
-                        </p>
-                        <div className="flex gap-2 justify-center">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setShowHintWarning(false)}
-                            className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-800"
-                          >
-                            إلغاء
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => {
-                              setShowHint(true);
-                              setShowHintWarning(false);
-                            }}
-                            className="bg-amber-500 hover:bg-amber-600 text-white"
-                          >
-                            موافق
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               ) : (
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setShowHintWarning(true)}
+                  onClick={() => {
+                    setShowHint(true);
+                  }}
                   className="text-accent"
                 >
                   <Lightbulb className="w-4 h-4 ml-2" />
                   تلميح إضافي
-                  <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                 </Button>
               )}
             </div>
