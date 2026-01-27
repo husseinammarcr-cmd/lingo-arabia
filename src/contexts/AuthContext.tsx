@@ -107,6 +107,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (profileData) {
         setProfile(profileData);
       }
+
+      // Re-check admin status as well (roles can change while the user is logged in)
+      const adminStatus = await checkAdminRole(user.id);
+      setIsAdmin(adminStatus);
     }
   };
 
