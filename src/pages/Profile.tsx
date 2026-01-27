@@ -37,10 +37,10 @@ const Profile = () => {
       <main className="container mx-auto px-4 py-6 max-w-2xl space-y-6">
         {/* Profile Card */}
         <FadeUp delay={0}>
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden relative">
             {/* Level 1 Banner Animation */}
             {(profile?.user_level || 1) === 1 && (
-              <div className="w-full h-12 overflow-hidden bg-gradient-to-l from-primary/10 via-accent/10 to-primary/10">
+              <div className="relative z-10 w-full h-12 overflow-hidden bg-gradient-to-l from-primary/10 via-accent/10 to-primary/10">
                 <LottieAnimation 
                   animationData={level1Banner}
                   loop={true}
@@ -51,8 +51,8 @@ const Profile = () => {
               </div>
             )}
             {/* Subtle gradient glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
-            <CardContent className="p-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none z-0" />
+            <CardContent className="p-6 relative z-10">
               <div className="flex items-start gap-4">
                 {/* Avatar with animation */}
                 <motion.div
