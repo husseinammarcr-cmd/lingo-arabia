@@ -76,10 +76,12 @@ export const ExerciseRenderer = ({
   const [reorderedWords, setReorderedWords] = useState<number[]>([]);
   const [showHint, setShowHint] = useState(false);
   const [hintLevel, setHintLevel] = useState(0); // 0: none, 1: basic, 2: first letter, 3: word count
+  const [pendingHintLevel, setPendingHintLevel] = useState<number | null>(null); // For confirmation dialog
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
   const [selectedEnglish, setSelectedEnglish] = useState<number | null>(null);
+  const [showHintWarning, setShowHintWarning] = useState(false); // For original hint
 
   // Reset state only when the component is truly remounted via key change
   // We no longer use dependencies that change on every render
@@ -554,47 +556,98 @@ export const ExerciseRenderer = ({
         <div className="space-y-3">
           {/* Progressive hints for text-based exercises */}
           {(type === 'fill_blank' || type === 'translation' || type === 'listening') && data.answer && (
-            <div className="flex flex-wrap gap-2 justify-center">
-              {/* Hint 1: Word count */}
-              {hintLevel < 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setHintLevel(1)}
-                  className="text-amber-600 border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                >
-                  <Hash className="w-4 h-4 ml-1" />
-                  عدد الكلمات
-                </Button>
+            <div className="space-y-3">
+              {/* Warning dialog for hint confirmation */}
+              {pendingHintLevel !== null && (
+                <Card className="bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 animate-scale-in">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center shrink-0">
+                        <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
+                          تحذير: خصم نقاط
+                        </p>
+                        <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
+                          استخدام هذا التلميح سيخصم <strong>1 XP</strong> من نقاطك المكتسبة في هذا السؤال.
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setPendingHintLevel(null)}
+                            className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-800"
+                          >
+                            إلغاء
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => {
+                              setHintLevel(pendingHintLevel);
+                              setPendingHintLevel(null);
+                            }}
+                            className="bg-amber-500 hover:bg-amber-600 text-white"
+                          >
+                            موافق، أظهر التلميح
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
-              
-              {/* Hint 2: First letter */}
-              {hintLevel >= 1 && hintLevel < 2 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setHintLevel(2)}
-                  className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                >
-                  <Type className="w-4 h-4 ml-1" />
-                  الحرف الأول
-                </Button>
-              )}
-              
-              {/* Hint 3: Show more letters */}
-              {hintLevel >= 2 && hintLevel < 3 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setHintLevel(3)}
-                  className="text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
-                >
-                  <Eye className="w-4 h-4 ml-1" />
-                  كشف المزيد
-                </Button>
+
+              {/* Hint buttons */}
+              {pendingHintLevel === null && (
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {/* Hint 1: Word count */}
+                  {hintLevel < 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPendingHintLevel(1)}
+                      className="text-amber-600 border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                    >
+                      <Hash className="w-4 h-4 ml-1" />
+                      عدد الكلمات
+                      <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                    </Button>
+                  )}
+                  
+                  {/* Hint 2: First letter */}
+                  {hintLevel >= 1 && hintLevel < 2 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPendingHintLevel(2)}
+                      className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                    >
+                      <Type className="w-4 h-4 ml-1" />
+                      الحرف الأول
+                      <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                    </Button>
+                  )}
+                  
+                  {/* Hint 3: Show more letters */}
+                  {hintLevel >= 2 && hintLevel < 3 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPendingHintLevel(3)}
+                      className="text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    >
+                      <Eye className="w-4 h-4 ml-1" />
+                      كشف المزيد
+                      <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -644,16 +697,57 @@ export const ExerciseRenderer = ({
                     </p>
                   </CardContent>
                 </Card>
+              ) : showHintWarning ? (
+                <Card className="bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 animate-scale-in">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center shrink-0">
+                        <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
+                          تحذير: خصم نقاط
+                        </p>
+                        <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
+                          استخدام هذا التلميح سيخصم <strong>1 XP</strong> من نقاطك.
+                        </p>
+                        <div className="flex gap-2 justify-center">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setShowHintWarning(false)}
+                            className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-800"
+                          >
+                            إلغاء
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => {
+                              setShowHint(true);
+                              setShowHintWarning(false);
+                            }}
+                            className="bg-amber-500 hover:bg-amber-600 text-white"
+                          >
+                            موافق
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : (
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setShowHint(true)}
+                  onClick={() => setShowHintWarning(true)}
                   className="text-accent"
                 >
                   <Lightbulb className="w-4 h-4 ml-2" />
                   تلميح إضافي
+                  <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
                 </Button>
               )}
             </div>
