@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2, FileText } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,8 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import BlogManager from '@/components/admin/BlogManager';
+import { formatDistanceToNow } from 'date-fns';
+import { ar } from 'date-fns/locale';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -35,14 +37,15 @@ const Admin = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, name, email, display_name, current_level, country_code, xp, user_level')
-        .order('xp', { ascending: false })
+        .select('id, name, email, display_name, current_level, country_code, xp, user_level, last_active_at, created_at')
+        .order('last_active_at', { ascending: false, nullsFirst: false })
         .limit(100);
 
       if (error) throw error;
       return data;
     },
-    enabled: isAdmin
+    enabled: isAdmin,
+    refetchInterval: 30000 // Refresh every 30 seconds
   });
 
   // Fetch stats
@@ -312,22 +315,51 @@ const Admin = () => {
                           <th className="text-right p-3">المستوى</th>
                           <th className="text-right p-3">XP</th>
                           <th className="text-right p-3">البلد</th>
+                          <th className="text-right p-3">آخر نشاط</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {users?.map((u) => (
-                          <tr key={u.id} className="border-b hover:bg-muted/50">
-                            <td className="p-3 font-medium">{u.display_name || u.name || 'مستخدم'}</td>
-                            <td className="p-3 text-muted-foreground">{u.email || '-'}</td>
-                            <td className="p-3">
-                              <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
-                                Lv.{u.user_level} ({u.current_level || 'A1'})
-                              </span>
-                            </td>
-                            <td className="p-3 font-bold">{u.xp?.toLocaleString()}</td>
-                            <td className="p-3">{u.country_code || '-'}</td>
-                          </tr>
-                        ))}
+                        {users?.map((u) => {
+                          const lastActive = u.last_active_at ? new Date(u.last_active_at) : null;
+                          const isOnlineNow = lastActive && (Date.now() - lastActive.getTime()) < 5 * 60 * 1000; // 5 minutes
+                          const isRecentlyActive = lastActive && (Date.now() - lastActive.getTime()) < 60 * 60 * 1000; // 1 hour
+                          
+                          return (
+                            <tr key={u.id} className="border-b hover:bg-muted/50">
+                              <td className="p-3 font-medium">{u.display_name || u.name || 'مستخدم'}</td>
+                              <td className="p-3 text-muted-foreground">{u.email || '-'}</td>
+                              <td className="p-3">
+                                <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
+                                  Lv.{u.user_level} ({u.current_level || 'A1'})
+                                </span>
+                              </td>
+                              <td className="p-3 font-bold">{u.xp?.toLocaleString()}</td>
+                              <td className="p-3">{u.country_code || '-'}</td>
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  {isOnlineNow ? (
+                                    <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                      متصل الآن
+                                    </span>
+                                  ) : isRecentlyActive ? (
+                                    <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                                      <Clock className="w-3 h-3" />
+                                      {lastActive ? formatDistanceToNow(lastActive, { addSuffix: true, locale: ar }) : '-'}
+                                    </span>
+                                  ) : lastActive ? (
+                                    <span className="flex items-center gap-1 text-muted-foreground text-sm">
+                                      <Clock className="w-3 h-3" />
+                                      {formatDistanceToNow(lastActive, { addSuffix: true, locale: ar })}
+                                    </span>
+                                  ) : (
+                                    <span className="text-muted-foreground text-sm">-</span>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

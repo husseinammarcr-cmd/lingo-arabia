@@ -78,6 +78,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return data as Profile;
   };
 
+  // Update last_active_at timestamp
+  const updateLastActive = async (userId: string) => {
+    await supabase
+      .from('profiles')
+      .update({ last_active_at: new Date().toISOString() })
+      .eq('id', userId);
+  };
+
   const checkAdminRole = async (userId: string) => {
     const { data, error } = await supabase
       .from('user_roles')
@@ -142,6 +150,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsAdmin(adminStatus);
             setIsLoading(false);
           });
+          // Update last active timestamp
+          updateLastActive(session.user.id);
         });
       } else {
         setIsLoading(false);
@@ -150,6 +160,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Periodic activity update (every 2 minutes)
+  useEffect(() => {
+    if (!user) return;
+    
+    const interval = setInterval(() => {
+      updateLastActive(user.id);
+    }, 2 * 60 * 1000); // 2 minutes
+    
+    // Also update on visibility change (when user returns to tab)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && user) {
+        updateLastActive(user.id);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user]);
 
   const signUp = async (email: string, password: string, name?: string) => {
     const redirectUrl = `${window.location.origin}/`;

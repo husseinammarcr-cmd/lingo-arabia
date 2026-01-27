@@ -370,6 +370,7 @@ export type Database = {
           is_founder: boolean | null
           is_premium: boolean | null
           is_verified: boolean | null
+          last_active_at: string | null
           last_login_at: string | null
           last_study_date: string | null
           level: Database["public"]["Enums"]["user_level"] | null
@@ -409,6 +410,7 @@ export type Database = {
           is_founder?: boolean | null
           is_premium?: boolean | null
           is_verified?: boolean | null
+          last_active_at?: string | null
           last_login_at?: string | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
@@ -448,6 +450,7 @@ export type Database = {
           is_founder?: boolean | null
           is_premium?: boolean | null
           is_verified?: boolean | null
+          last_active_at?: string | null
           last_login_at?: string | null
           last_study_date?: string | null
           level?: Database["public"]["Enums"]["user_level"] | null
