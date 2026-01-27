@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { StreakWidget } from '@/components/StreakWidget';
 import { UserLevelBadge } from '@/components/UserLevelBadge';
 import { AchievementsGrid } from '@/components/AchievementsGrid';
+import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -30,9 +31,12 @@ const getFlagEmoji = (countryCode: string | null) => {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, isAdmin } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [showLevelDialog, setShowLevelDialog] = useState(false);
+  
+  // Show verified badge for founders, verified users, or admins
+  const showVerifiedBadge = profile?.is_verified || profile?.is_founder || isAdmin;
 
   // Level calculation: 500 XP per level
   const currentLevel = profile?.user_level || 1;
@@ -86,7 +90,10 @@ const Profile = () => {
 
                 {/* Info */}
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold">{profile?.display_name || profile?.name || 'متعلم'}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-bold">{profile?.display_name || profile?.name || 'متعلم'}</h2>
+                    {showVerifiedBadge && <VerifiedBadge size="md" />}
+                  </div>
                   <p className="text-muted-foreground text-sm">{profile?.email}</p>
                   
                   {/* Level badge */}

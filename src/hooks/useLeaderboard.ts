@@ -15,6 +15,7 @@ export interface LeaderboardEntry {
   current_level: string | null;
   is_founder?: boolean;
   is_verified?: boolean;
+  is_admin?: boolean;
   rank?: number;
 }
 
@@ -56,8 +57,19 @@ export const useLeaderboard = (
 
       if (error) throw error;
 
-      // Add rank to each entry (founder doesn't affect ranking)
-      const entries = (data || []) as LeaderboardEntry[];
+      // Fetch admin user IDs from user_roles table
+      const { data: adminRoles } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'admin');
+
+      const adminUserIds = new Set((adminRoles || []).map(r => r.user_id));
+
+      // Add rank and admin status to each entry
+      const entries = (data || []).map(entry => ({
+        ...entry,
+        is_admin: adminUserIds.has(entry.id)
+      })) as LeaderboardEntry[];
       
       // Separate founder and regular users
       const founder = entries.find(e => e.is_founder);
