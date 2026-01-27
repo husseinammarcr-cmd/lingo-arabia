@@ -31,7 +31,7 @@ interface ExerciseRendererProps {
   promptAr: string;
   promptEn?: string;
   data: ExerciseData;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (isCorrect: boolean, hintPenalty?: number) => void;
   disabled?: boolean;
 }
 
@@ -129,9 +129,12 @@ export const ExerciseRenderer = ({
     setAnswered(true);
     setIsCorrect(correct);
     
+    // Calculate hint penalty: 1 XP per hint level used
+    const hintPenalty = hintLevel + (showHint ? 1 : 0);
+    
     // Delay callback to show feedback
     setTimeout(() => {
-      onAnswer(correct);
+      onAnswer(correct, hintPenalty);
     }, 1500);
   };
 
