@@ -13,6 +13,8 @@ import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/A
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MagneticButton, BouncingIcon } from '@/components/animations/MagneticButton';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
+import { LottieAnimation } from '@/components/animations/LottieAnimation';
+import level1Banner from '@/assets/level1-banner.json';
 
 const getFlagEmoji = (countryCode: string | null) => {
   if (!countryCode) return '🌍';
@@ -36,6 +38,17 @@ const Profile = () => {
         {/* Profile Card */}
         <FadeUp delay={0}>
           <Card className="overflow-hidden">
+            {/* Level 1 Banner Animation */}
+            {(profile?.user_level || 1) === 1 && (
+              <div className="w-full h-16 overflow-hidden">
+                <LottieAnimation 
+                  animationData={level1Banner}
+                  loop={true}
+                  autoplay={true}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             {/* Subtle gradient glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
             <CardContent className="p-6 relative">
