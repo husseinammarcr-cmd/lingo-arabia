@@ -131,8 +131,8 @@ export const ExerciseRenderer = ({
     setAnswered(true);
     setIsCorrect(correct);
     
-    // Calculate hint penalty: 1 XP per hint level used
-    const hintPenalty = hintLevel + (showHint ? 1 : 0);
+    // Calculate hint penalty: 25 XP per hint used
+    const hintPenalty = (hintLevel + (showHint ? 1 : 0)) * 25;
     
     // Delay callback to show feedback
     setTimeout(() => {
@@ -570,7 +570,7 @@ export const ExerciseRenderer = ({
                           تحذير: خصم نقاط
                         </p>
                         <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                          استخدام هذا التلميح سيخصم <strong>1 XP</strong> من نقاطك المكتسبة في هذا السؤال.
+                          استخدام هذا التلميح سيخصم <strong>25 XP</strong> من نقاطك المكتسبة في هذا السؤال.
                         </p>
                         <div className="flex gap-2">
                           <Button
@@ -614,7 +614,7 @@ export const ExerciseRenderer = ({
                     >
                       <Hash className="w-4 h-4 ml-1" />
                       عدد الكلمات
-                      <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                      <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                     </Button>
                   )}
                   
@@ -629,7 +629,7 @@ export const ExerciseRenderer = ({
                     >
                       <Type className="w-4 h-4 ml-1" />
                       الحرف الأول
-                      <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                      <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                     </Button>
                   )}
                   
@@ -644,7 +644,7 @@ export const ExerciseRenderer = ({
                     >
                       <Eye className="w-4 h-4 ml-1" />
                       كشف المزيد
-                      <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                      <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                     </Button>
                   )}
                 </div>
@@ -709,7 +709,7 @@ export const ExerciseRenderer = ({
                           تحذير: خصم نقاط
                         </p>
                         <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                          استخدام هذا التلميح سيخصم <strong>1 XP</strong> من نقاطك.
+                          استخدام هذا التلميح سيخصم <strong>25 XP</strong> من نقاطك.
                         </p>
                         <div className="flex gap-2 justify-center">
                           <Button
@@ -747,7 +747,7 @@ export const ExerciseRenderer = ({
                 >
                   <Lightbulb className="w-4 h-4 ml-2" />
                   تلميح إضافي
-                  <span className="text-xs opacity-70 mr-1">(-1 XP)</span>
+                  <span className="text-xs opacity-70 mr-1">(-25 XP)</span>
                 </Button>
               )}
             </div>
