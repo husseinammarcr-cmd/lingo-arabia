@@ -40,12 +40,13 @@ const Profile = () => {
           <Card className="overflow-hidden">
             {/* Level 1 Banner Animation */}
             {(profile?.user_level || 1) === 1 && (
-              <div className="w-full h-16 overflow-hidden">
+              <div className="w-full h-12 overflow-hidden bg-gradient-to-l from-primary/10 via-accent/10 to-primary/10">
                 <LottieAnimation 
                   animationData={level1Banner}
                   loop={true}
                   autoplay={true}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
+                  style={{ background: 'transparent' }}
                 />
               </div>
             )}
