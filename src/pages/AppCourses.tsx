@@ -29,7 +29,7 @@ const COURSE_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "Course",
   "name": "Learn English for Arabic Speakers",
-  "description": "Interactive English courses designed for Arabic speakers from A1 to B2 levels. Master vocabulary, grammar, listening, and conversation skills.",
+  "description": "Interactive English courses designed for Arabic speakers from A1 to C2 levels. 300 lessons covering vocabulary, grammar, listening, and conversation skills.",
   "provider": {
     "@type": "Organization",
     "name": "LingoArab",
@@ -65,6 +65,18 @@ const COURSE_SCHEMA = {
       "@type": "CourseInstance",
       "name": "B2 - Upper Intermediate English",
       "description": "Upper intermediate level for advanced communication",
+      "courseMode": "online"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "C1 - Advanced English",
+      "description": "Advanced level for proficient users",
+      "courseMode": "online"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "C2 - Proficiency English",
+      "description": "Mastery level for near-native proficiency",
       "courseMode": "online"
     }
   ]
@@ -167,7 +179,7 @@ const AppCourses = () => {
       {/* SEO - JSON-LD Course Schema */}
       <Helmet>
         <title>الدورات التعليمية | LingoArab</title>
-        <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى المتقدم - 200 درس تفاعلي في 4 مستويات CEFR" />
+        <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى الإتقان - 300 درس تفاعلي في 6 مستويات CEFR" />
         <script type="application/ld+json">
           {JSON.stringify(COURSE_SCHEMA)}
         </script>
@@ -245,7 +257,7 @@ const AppCourses = () => {
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold text-foreground mb-2">مستويات التعلم</h2>
             <p className="text-muted-foreground">
-              {totalLessons} درس في 4 مستويات - من المبتدئ إلى المتقدم
+              {totalLessons} درس في 6 مستويات - من المبتدئ إلى الإتقان
             </p>
             {!hasTakenPlacement && (
               <p className="text-sm text-primary mt-2">

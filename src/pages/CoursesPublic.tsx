@@ -91,11 +91,11 @@ const faqItems = [
   },
   {
     question: 'كم من الوقت يستغرق إكمال مستوى كامل؟',
-    answer: 'يعتمد ذلك على وتيرة تعلمك. في المتوسط، يمكنك إكمال مستوى واحد خلال 2-3 أشهر بالدراسة اليومية لمدة 15-30 دقيقة.'
+    answer: 'يعتمد ذلك على وتيرة تعلمك. في المتوسط، يمكنك إكمال مستوى واحد خلال 2-3 أشهر بالدراسة اليومية لمدة 15-30 دقيقة. لدينا 6 مستويات كاملة من A1 إلى C2.'
   },
   {
     question: 'هل أحتاج معرفة سابقة بالإنجليزية؟',
-    answer: 'لا! نبدأ من الصفر في مستوى A1. إذا كان لديك معرفة سابقة، يمكنك أخذ اختبار تحديد المستوى لمعرفة أين تبدأ.'
+    answer: 'لا! نبدأ من الصفر في مستوى A1. إذا كان لديك معرفة سابقة، يمكنك أخذ اختبار تحديد المستوى لمعرفة أين تبدأ من بين مستوياتنا الستة.'
   },
   {
     question: 'ما أنواع التمارين المتوفرة؟',
@@ -184,12 +184,12 @@ const CoursesPublic = () => {
     <PageBackground>
       <Helmet>
         <title>كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab</title>
-        <meta name="description" content="تعلم الإنجليزية مجاناً من الصفر إلى المستوى المتقدم. 200+ درس تفاعلي في 4 مستويات CEFR مصممة خصيصاً للناطقين بالعربية." />
+        <meta name="description" content="تعلم الإنجليزية مجاناً من الصفر إلى الإتقان. 300+ درس تفاعلي في 6 مستويات CEFR مصممة خصيصاً للناطقين بالعربية." />
         <link rel="canonical" href="https://lingoarab.com/courses" />
         
         {/* Open Graph */}
         <meta property="og:title" content="كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab" />
-        <meta property="og:description" content="تعلم الإنجليزية مجاناً من الصفر إلى المستوى المتقدم. 200+ درس تفاعلي في 4 مستويات CEFR." />
+        <meta property="og:description" content="تعلم الإنجليزية مجاناً من الصفر إلى الإتقان. 300+ درس تفاعلي في 6 مستويات CEFR." />
         <meta property="og:url" content="https://lingoarab.com/courses" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://lingoarab.com/og-image.png" />
@@ -199,7 +199,7 @@ const CoursesPublic = () => {
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab" />
-        <meta name="twitter:description" content="تعلم الإنجليزية مجاناً من الصفر إلى المستوى المتقدم. 200+ درس تفاعلي." />
+        <meta name="twitter:description" content="تعلم الإنجليزية مجاناً من الصفر إلى الإتقان. 300+ درس تفاعلي." />
         <meta name="twitter:image" content="https://lingoarab.com/og-image.png" />
         
         {/* JSON-LD Schemas */}
@@ -244,7 +244,7 @@ const CoursesPublic = () => {
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <GraduationCap className="w-5 h-5 text-primary" />
-                  <span>4 مستويات CEFR</span>
+                  <span>6 مستويات CEFR</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Users className="w-5 h-5 text-primary" />
@@ -275,7 +275,7 @@ const CoursesPublic = () => {
                 مستويات التعلم
               </h2>
               <p className="text-muted-foreground text-center mb-8">
-                من المبتدئ إلى المتقدم - اختر المستوى المناسب لك
+                من المبتدئ إلى الإتقان - اختر المستوى المناسب لك
               </p>
 
               <StaggerContainer className="grid gap-6 md:grid-cols-2">
