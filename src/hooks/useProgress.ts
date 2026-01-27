@@ -446,13 +446,12 @@ export const useUpdateProgress = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['progress'] });
-      if (!data.wasAlreadyCompleted) {
-        toast.success('تم حفظ تقدمك بنجاح!');
-      }
+      // Don't show toast here - let the LessonPlayer handle UI feedback
+      console.log('[useProgress] Save successful, wasAlreadyCompleted:', data.wasAlreadyCompleted);
     },
     onError: (error) => {
       console.error('Failed to save progress:', error);
-      toast.error('حدث خطأ في حفظ التقدم');
+      // Don't show toast here - let the LessonPlayer handle UI feedback
     }
   });
 };
