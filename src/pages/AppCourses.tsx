@@ -256,6 +256,9 @@ const AppCourses = () => {
         <FadeUp delay={0.1}>
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold text-foreground mb-2">مستويات التعلم</h2>
+             {isAdmin && (
+               <p className="text-sm text-primary font-medium">وضع الأدمن مفعّل</p>
+             )}
             <p className="text-muted-foreground">
               {totalLessons} درس في 6 مستويات - من المبتدئ إلى الإتقان
             </p>
