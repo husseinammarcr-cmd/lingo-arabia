@@ -206,13 +206,7 @@ const LessonPlayer = () => {
           setHasSaved(true);
           setIsSaving(false);
           
-          // Show hint penalty notification if applicable
-          if (hintPenalties > 0) {
-            toast.warning(`تم خصم ${hintPenalties} XP من رصيدك بسبب استخدام التلميحات`, {
-              icon: <AlertTriangle className="w-5 h-5 text-amber-500" />,
-              duration: 5000,
-            });
-          }
+          // Hints are now free - no penalty notification needed
           
           await refreshProfile();
           await evaluateAchievements();
@@ -472,20 +466,6 @@ const LessonPlayer = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">قلوب متبقية</p>
                 </motion.div>
-                {hintPenalties > 0 && (
-                  <motion.div 
-                    className="text-center"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
-                  >
-                    <div className="flex items-center justify-center gap-1 text-amber-500 text-2xl font-bold">
-                      <span className="text-lg">💡</span>
-                      <span>-{hintPenalties}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">خصم التلميحات</p>
-                  </motion.div>
-                )}
               </div>
             </CardContent>
           </Card>
