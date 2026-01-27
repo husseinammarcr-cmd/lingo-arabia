@@ -131,8 +131,8 @@ export const ExerciseRenderer = ({
     setAnswered(true);
     setIsCorrect(correct);
     
-    // Calculate hint penalty: 25 XP per hint used
-    const hintPenalty = (hintLevel + (showHint ? 1 : 0)) * 25;
+    // Hints are free - no XP penalty
+    const hintPenalty = 0;
     
     // Delay callback to show feedback
     setTimeout(() => {
