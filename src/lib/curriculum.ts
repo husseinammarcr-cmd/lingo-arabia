@@ -20,7 +20,7 @@ export interface CurriculumUnit {
 
 export interface CurriculumLevel {
   id: string;
-  code: 'A1' | 'A2' | 'B1' | 'B2';
+  code: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
   titleAr: string;
   titleEn: string;
   descriptionAr: string;
@@ -79,6 +79,19 @@ const B2_UNITS = [
   { titleAr: 'رسمي/غير رسمي', titleEn: 'Formal/Informal', icon: 'layers' },
   { titleAr: 'اختبار شامل', titleEn: 'Comprehensive Test', icon: 'clipboard-check' },
   { titleAr: 'مراجعة B2', titleEn: 'B2 Review', icon: 'check-circle' },
+];
+
+const C1_UNITS = [
+  { titleAr: 'التعبير الدقيق', titleEn: 'Nuanced Expression', icon: 'feather' },
+  { titleAr: 'الكتابة الأكاديمية', titleEn: 'Academic Writing', icon: 'scroll' },
+  { titleAr: 'الإعلام والصحافة', titleEn: 'Media & Journalism', icon: 'newspaper' },
+  { titleAr: 'القانون والسياسة', titleEn: 'Law & Politics', icon: 'gavel' },
+  { titleAr: 'العلوم والتكنولوجيا', titleEn: 'Science & Technology', icon: 'flask' },
+  { titleAr: 'الفلسفة والتفكير المجرد', titleEn: 'Philosophy & Abstract Thinking', icon: 'brain' },
+  { titleAr: 'التحليل الأدبي', titleEn: 'Literary Analysis', icon: 'book-open' },
+  { titleAr: 'تلازمات متقدمة', titleEn: 'Advanced Collocations', icon: 'link' },
+  { titleAr: 'التواصل المهني', titleEn: 'Professional Communication', icon: 'building-2' },
+  { titleAr: 'مراجعة C1', titleEn: 'C1 Review', icon: 'check-circle' },
 ];
 
 // Lesson templates per unit position
@@ -156,6 +169,15 @@ export const CURRICULUM: CurriculumLevel[] = [
     descriptionAr: 'أتقن اللغة للعمل والدراسة',
     color: 'amber',
     units: generateUnits('B2', B2_UNITS),
+  },
+  {
+    id: 'level-c1',
+    code: 'C1',
+    titleAr: 'المتقدم',
+    titleEn: 'Advanced',
+    descriptionAr: 'أتقن اللغة بمستوى أكاديمي ومهني عالي',
+    color: 'rose',
+    units: generateUnits('C1', C1_UNITS),
   },
 ];
 
