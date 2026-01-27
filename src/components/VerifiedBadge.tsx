@@ -1,5 +1,6 @@
-import { BadgeCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Lottie from 'lottie-react';
+import verifyAnimation from '@/assets/verify-animation.json';
 
 interface VerifiedBadgeProps {
   className?: string;
@@ -14,12 +15,13 @@ export const VerifiedBadge = ({ className, size = 'md' }: VerifiedBadgeProps) =>
   };
 
   return (
-    <BadgeCheck 
-      className={cn(
-        sizeClasses[size],
-        "text-blue-500 fill-blue-500",
-        className
-      )} 
-    />
+    <div className={cn(sizeClasses[size], "inline-flex items-center justify-center shrink-0", className)}>
+      <Lottie 
+        animationData={verifyAnimation}
+        loop={false}
+        autoplay={true}
+        className="w-full h-full"
+      />
+    </div>
   );
 };
