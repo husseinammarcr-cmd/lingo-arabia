@@ -1119,10 +1119,11 @@ export const A1_LESSONS_CONTENT: Record<string, LessonContent> = {
   ...a1Unit10Lessons,
 };
 
-// Import A2, B1, and B2 lessons for unified access
+// Import A2, B1, B2, and C1 lessons for unified access
 import { A2_LESSONS_CONTENT } from './a2-lessons';
 import { B1_LESSONS_CONTENT } from './b1-lessons';
 import { B2_LESSONS_CONTENT } from './b2-lessons';
+import { C1_LESSONS_CONTENT } from './c1-lessons';
 
 // Unified lesson content registry
 export const ALL_LESSONS_CONTENT: Record<string, LessonContent> = {
@@ -1130,6 +1131,7 @@ export const ALL_LESSONS_CONTENT: Record<string, LessonContent> = {
   ...A2_LESSONS_CONTENT,
   ...B1_LESSONS_CONTENT,
   ...B2_LESSONS_CONTENT,
+  ...C1_LESSONS_CONTENT,
 };
 
 export function getLessonContent(lessonId: string): LessonContent | undefined {
