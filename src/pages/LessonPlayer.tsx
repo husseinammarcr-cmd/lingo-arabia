@@ -180,7 +180,7 @@ const LessonPlayer = () => {
 
   // Save to DB when lesson completes (only if passed)
   useEffect(() => {
-    if (isComplete && lessonId && lessonData && !isSaving && !hasSaved && !saveError) {
+    if (isComplete && lessonId && lessonData && !isSaving && !hasSaved) {
       const passed = calculatePassed();
       
       if (!passed) {
@@ -189,6 +189,7 @@ const LessonPlayer = () => {
       }
       
       setIsSaving(true);
+      setSaveError(false); // Reset error state before attempting save
       clearProgress();
       setShowConfetti(true);
       
@@ -241,7 +242,7 @@ const LessonPlayer = () => {
         }
       });
     }
-  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, saveError, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements, hintPenalties]);
+  }, [isComplete, lessonId, lessonData, isSaving, hasSaved, xpEarned, quizScore, quizTotal, hearts, lessonContent, updateProgress, calculatePassed, refreshProfile, evaluateAchievements, hintPenalties]);
 
   if (isLoading) {
     return (
