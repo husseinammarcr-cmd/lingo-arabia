@@ -57,7 +57,9 @@ export const LeaderboardCard = ({ entry, timeFrame, isCurrentUser }: Leaderboard
   const displayName = entry.display_name || entry.name || 'Anonymous';
   const initials = displayName.slice(0, 2).toUpperCase();
   const isFounder = entry.is_founder;
-  const isVerified = entry.is_verified || isFounder;
+  const isAdmin = entry.is_admin;
+  // Show verified badge for founders, verified users, or admins
+  const showVerifiedBadge = entry.is_verified || isFounder || isAdmin;
 
   return (
     <Card className={cn(
@@ -89,7 +91,7 @@ export const LeaderboardCard = ({ entry, timeFrame, isCurrentUser }: Leaderboard
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold truncate">{displayName}</h3>
-            {isVerified && <VerifiedBadge size="sm" />}
+            {showVerifiedBadge && <VerifiedBadge size="sm" />}
             {isFounder && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-500 font-medium">
                 Founder
