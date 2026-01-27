@@ -100,6 +100,7 @@ const LessonPlayer = () => {
   const [quizIndex, setQuizIndex] = useState(savedProgress?.quizIndex || 0);
   const [hearts, setHearts] = useState(savedProgress?.hearts ?? 5);
   const [xpEarned, setXpEarned] = useState(savedProgress?.xpEarned || 0);
+  const [hintPenalties, setHintPenalties] = useState(0); // Track total hint penalties
   const [quizScore, setQuizScore] = useState(savedProgress?.quizScore || 0);
   const [quizTotal, setQuizTotal] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -319,9 +320,14 @@ const LessonPlayer = () => {
     }
   };
 
-  const handlePracticeAnswer = (isCorrect: boolean) => {
+  const handlePracticeAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
     if (isCorrect) {
-      setXpEarned(prev => prev + 3);
+      // Award XP minus hint penalty (minimum 1 XP for correct answer)
+      const earnedXp = Math.max(1, 3 - hintPenalty);
+      setXpEarned(prev => prev + earnedXp);
+      if (hintPenalty > 0) {
+        setHintPenalties(prev => prev + hintPenalty);
+      }
     } else {
       setHearts(prev => Math.max(0, prev - 1));
     }
@@ -337,11 +343,16 @@ const LessonPlayer = () => {
     }, 1500);
   };
 
-  const handleQuizAnswer = (isCorrect: boolean) => {
+  const handleQuizAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
     const currentQuiz = lessonContent.quiz[quizIndex];
     if (isCorrect) {
       setQuizScore(prev => prev + currentQuiz.points);
-      setXpEarned(prev => prev + 5);
+      // Award XP minus hint penalty (minimum 1 XP for correct answer)
+      const earnedXp = Math.max(1, 5 - hintPenalty);
+      setXpEarned(prev => prev + earnedXp);
+      if (hintPenalty > 0) {
+        setHintPenalties(prev => prev + hintPenalty);
+      }
     } else {
       setHearts(prev => Math.max(0, prev - 1));
     }
@@ -398,7 +409,7 @@ const LessonPlayer = () => {
           
           <Card className="mb-6">
             <CardContent className="p-6">
-              <div className="flex justify-around">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <motion.div 
                   className="text-center"
                   initial={{ opacity: 0, y: 10 }}
@@ -441,6 +452,20 @@ const LessonPlayer = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">قلوب متبقية</p>
                 </motion.div>
+                {hintPenalties > 0 && (
+                  <motion.div 
+                    className="text-center"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <div className="flex items-center justify-center gap-1 text-amber-500 text-2xl font-bold">
+                      <span className="text-lg">💡</span>
+                      <span>-{hintPenalties}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">خصم التلميحات</p>
+                  </motion.div>
+                )}
               </div>
             </CardContent>
           </Card>
