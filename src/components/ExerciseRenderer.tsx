@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, XCircle, Lightbulb, Volume2 } from 'lucide-react';
+import { CheckCircle, XCircle, Lightbulb, Volume2, Eye, Hash, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AudioButton } from '@/components/AudioButton';
 import { useSpeech } from '@/hooks/useSpeech';
@@ -75,6 +75,7 @@ export const ExerciseRenderer = ({
   const [textAnswer, setTextAnswer] = useState('');
   const [reorderedWords, setReorderedWords] = useState<number[]>([]);
   const [showHint, setShowHint] = useState(false);
+  const [hintLevel, setHintLevel] = useState(0); // 0: none, 1: basic, 2: first letter, 3: word count
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
@@ -545,32 +546,114 @@ export const ExerciseRenderer = ({
       {/* Exercise content */}
       {renderExercise()}
 
-      {/* Hint */}
-      {(data.hint_ar || data.hint_en) && !answered && (
-        <div className="text-center">
-          {showHint ? (
-            <Card className="bg-accent/10 border-accent/30">
-              <CardContent className="p-4">
-                <p className="text-sm flex items-center justify-center gap-2">
-                  <Lightbulb className="w-4 h-4 text-accent" />
-                  <span>{data.hint_ar}</span>
-                  {data.hint_en && (
-                    <span className="text-muted-foreground ltr-text">({data.hint_en})</span>
-                  )}
-                </p>
+      {/* Smart Hints System */}
+      {!answered && (
+        <div className="space-y-3">
+          {/* Progressive hints for text-based exercises */}
+          {(type === 'fill_blank' || type === 'translation' || type === 'listening') && data.answer && (
+            <div className="flex flex-wrap gap-2 justify-center">
+              {/* Hint 1: Word count */}
+              {hintLevel < 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setHintLevel(1)}
+                  className="text-amber-600 border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                >
+                  <Hash className="w-4 h-4 ml-1" />
+                  عدد الكلمات
+                </Button>
+              )}
+              
+              {/* Hint 2: First letter */}
+              {hintLevel >= 1 && hintLevel < 2 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setHintLevel(2)}
+                  className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                >
+                  <Type className="w-4 h-4 ml-1" />
+                  الحرف الأول
+                </Button>
+              )}
+              
+              {/* Hint 3: Show more letters */}
+              {hintLevel >= 2 && hintLevel < 3 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setHintLevel(3)}
+                  className="text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
+                  <Eye className="w-4 h-4 ml-1" />
+                  كشف المزيد
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Display active hints */}
+          {hintLevel > 0 && data.answer && (
+            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
+              <CardContent className="p-4 space-y-2">
+                {hintLevel >= 1 && (
+                  <p className="text-sm flex items-center gap-2 text-amber-700 dark:text-amber-300">
+                    <Hash className="w-4 h-4" />
+                    <span>عدد الكلمات: <strong>{data.answer.trim().split(/\s+/).length}</strong></span>
+                  </p>
+                )}
+                {hintLevel >= 2 && (
+                  <p className="text-sm flex items-center gap-2 text-orange-700 dark:text-orange-300">
+                    <Type className="w-4 h-4" />
+                    <span>يبدأ بـ: <strong className="ltr-inline font-mono text-base">{data.answer.charAt(0).toUpperCase()}...</strong></span>
+                  </p>
+                )}
+                {hintLevel >= 3 && (
+                  <p className="text-sm flex items-center gap-2 text-red-700 dark:text-red-300">
+                    <Eye className="w-4 h-4" />
+                    <span>التلميح: <strong className="ltr-inline font-mono text-base">
+                      {data.answer.split('').map((char, i) => 
+                        i < 3 || char === ' ' ? char : '_'
+                      ).join('')}
+                    </strong></span>
+                  </p>
+                )}
               </CardContent>
             </Card>
-          ) : (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowHint(true)}
-              className="text-accent"
-            >
-              <Lightbulb className="w-4 h-4 ml-2" />
-              أظهر تلميح
-            </Button>
+          )}
+
+          {/* Original hint from exercise data */}
+          {(data.hint_ar || data.hint_en) && (
+            <div className="text-center">
+              {showHint ? (
+                <Card className="bg-accent/10 border-accent/30">
+                  <CardContent className="p-4">
+                    <p className="text-sm flex items-center justify-center gap-2">
+                      <Lightbulb className="w-4 h-4 text-accent" />
+                      <span>{data.hint_ar}</span>
+                      {data.hint_en && (
+                        <span className="text-muted-foreground ltr-text">({data.hint_en})</span>
+                      )}
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHint(true)}
+                  className="text-accent"
+                >
+                  <Lightbulb className="w-4 h-4 ml-2" />
+                  تلميح إضافي
+                </Button>
+              )}
+            </div>
           )}
         </div>
       )}
