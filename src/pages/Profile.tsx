@@ -38,14 +38,14 @@ const Profile = () => {
         {/* Profile Card */}
         <FadeUp delay={0}>
           <Card className="overflow-hidden relative">
-            {/* Level 1 Banner Animation */}
+            {/* Level 1 Banner Animation - Background */}
             {(profile?.user_level || 1) === 1 && (
-              <div className="relative z-10 w-full h-12 overflow-hidden bg-gradient-to-l from-primary/10 via-accent/10 to-primary/10">
+              <div className="absolute inset-0 z-0 opacity-20 overflow-hidden">
                 <LottieAnimation 
                   animationData={level1Banner}
                   loop={true}
                   autoplay={true}
-                  className="w-full h-full"
+                  className="w-full h-full scale-150"
                   style={{ background: 'transparent' }}
                 />
               </div>
