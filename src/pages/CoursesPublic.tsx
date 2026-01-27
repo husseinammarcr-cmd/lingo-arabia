@@ -36,12 +36,14 @@ import levelA1Books from '@/assets/level-a1-books.jpeg';
 import levelA2Books from '@/assets/level-a2-books.jpeg';
 import levelB1Books from '@/assets/level-b1-books.jpeg';
 import levelB2Books from '@/assets/level-b2-books.jpeg';
+import levelC1Books from '@/assets/level-c1-books.jpeg';
 
 const levelColors: Record<string, string> = {
   'A1': 'from-emerald-500 to-emerald-600',
   'A2': 'from-sky-500 to-sky-600',
   'B1': 'from-violet-500 to-violet-600',
   'B2': 'from-amber-500 to-amber-600',
+  'C1': 'from-rose-500 to-rose-600',
 };
 
 const levelImages: Record<string, string> = {
@@ -49,6 +51,7 @@ const levelImages: Record<string, string> = {
   'A2': levelA2Books,
   'B1': levelB1Books,
   'B2': levelB2Books,
+  'C1': levelC1Books,
 };
 
 const levelDetails: Record<string, { skills: string[]; examples: string[] }> = {
@@ -67,6 +70,10 @@ const levelDetails: Record<string, { skills: string[]; examples: string[] }> = {
   'B2': {
     skills: ['المناقشات المتقدمة', 'الكتابة الرسمية', 'فهم الأخبار', 'التعبيرات الاصطلاحية'],
     examples: ['On the other hand...', 'It\'s raining cats and dogs', 'To whom it may concern']
+  },
+  'C1': {
+    skills: ['الكتابة الأكاديمية', 'التحليل الأدبي', 'التواصل المهني', 'الفلسفة والتفكير المجرد'],
+    examples: ['From a philosophical standpoint...', 'The implications of this research...', 'To elaborate on this point...']
   },
 };
 
