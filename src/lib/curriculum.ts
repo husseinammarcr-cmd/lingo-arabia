@@ -20,7 +20,7 @@ export interface CurriculumUnit {
 
 export interface CurriculumLevel {
   id: string;
-  code: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
+  code: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
   titleAr: string;
   titleEn: string;
   descriptionAr: string;
@@ -92,6 +92,19 @@ const C1_UNITS = [
   { titleAr: 'تلازمات متقدمة', titleEn: 'Advanced Collocations', icon: 'link' },
   { titleAr: 'التواصل المهني', titleEn: 'Professional Communication', icon: 'building-2' },
   { titleAr: 'مراجعة C1', titleEn: 'C1 Review', icon: 'check-circle' },
+];
+
+const C2_UNITS = [
+  { titleAr: 'الإتقان اللغوي', titleEn: 'Language Mastery', icon: 'crown' },
+  { titleAr: 'الأدب والشعر', titleEn: 'Literature & Poetry', icon: 'book-heart' },
+  { titleAr: 'الخطابة والإقناع', titleEn: 'Rhetoric & Persuasion', icon: 'mic' },
+  { titleAr: 'الترجمة المتقدمة', titleEn: 'Advanced Translation', icon: 'languages' },
+  { titleAr: 'اللهجات والتنوع اللغوي', titleEn: 'Dialects & Linguistic Diversity', icon: 'globe-2' },
+  { titleAr: 'الكتابة الإبداعية', titleEn: 'Creative Writing', icon: 'feather' },
+  { titleAr: 'النقد والتحليل', titleEn: 'Criticism & Analysis', icon: 'search' },
+  { titleAr: 'التواصل الدبلوماسي', titleEn: 'Diplomatic Communication', icon: 'handshake' },
+  { titleAr: 'اللغة في السياقات المتخصصة', titleEn: 'Specialized Contexts', icon: 'briefcase' },
+  { titleAr: 'مراجعة C2', titleEn: 'C2 Review', icon: 'award' },
 ];
 
 // Lesson templates per unit position
@@ -178,6 +191,15 @@ export const CURRICULUM: CurriculumLevel[] = [
     descriptionAr: 'أتقن اللغة بمستوى أكاديمي ومهني عالي',
     color: 'rose',
     units: generateUnits('C1', C1_UNITS),
+  },
+  {
+    id: 'level-c2',
+    code: 'C2',
+    titleAr: 'الإتقان',
+    titleEn: 'Proficiency',
+    descriptionAr: 'مستوى الناطق الأصلي - إتقان كامل للغة',
+    color: 'fuchsia',
+    units: generateUnits('C2', C2_UNITS),
   },
 ];
 

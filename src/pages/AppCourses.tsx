@@ -76,6 +76,7 @@ import levelA2Books from '@/assets/level-a2-books.jpeg';
 import levelB1Books from '@/assets/level-b1-books.jpeg';
 import levelB2Books from '@/assets/level-b2-books.jpeg';
 import levelC1Books from '@/assets/level-c1-books.jpeg';
+import levelC2Books from '@/assets/level-c2-books.jpeg';
 
 const levelColors: Record<string, string> = {
   'A1': 'from-emerald-500 to-emerald-600',
@@ -83,6 +84,7 @@ const levelColors: Record<string, string> = {
   'B1': 'from-violet-500 to-violet-600',
   'B2': 'from-amber-500 to-amber-600',
   'C1': 'from-rose-500 to-rose-600',
+  'C2': 'from-fuchsia-500 to-fuchsia-600',
 };
 
 const levelImages: Record<string, string> = {
@@ -91,6 +93,7 @@ const levelImages: Record<string, string> = {
   'B1': levelB1Books,
   'B2': levelB2Books,
   'C1': levelC1Books,
+  'C2': levelC2Books,
 };
 
 const AppCourses = () => {
