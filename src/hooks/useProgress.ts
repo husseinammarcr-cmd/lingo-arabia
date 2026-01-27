@@ -407,9 +407,18 @@ export const useUpdateProgress = () => {
         const netXpFromLesson = Math.max(0, xpEarned);
         
         // Apply hint penalty to total XP (can reduce overall XP)
-        const newXp = Math.max(0, (profile.xp || 0) + netXpFromLesson - hintPenalty);
+        const currentXp = profile.xp || 0;
+        const newXp = Math.max(0, currentXp + netXpFromLesson - hintPenalty);
         const newWeeklyXp = Math.max(0, (profile.weekly_xp || 0) + netXpFromLesson - hintPenalty);
         const newMonthlyXp = Math.max(0, (profile.monthly_xp || 0) + netXpFromLesson - hintPenalty);
+        
+        console.log('[useProgress] XP Calculation:', {
+          currentXp,
+          netXpFromLesson,
+          hintPenalty,
+          newXp,
+          formula: `${currentXp} + ${netXpFromLesson} - ${hintPenalty} = ${newXp}`
+        });
         
         // Calculate new user level based on XP (every 500 XP = 1 level)
         const newUserLevel = Math.max(1, Math.floor(newXp / 500) + 1);

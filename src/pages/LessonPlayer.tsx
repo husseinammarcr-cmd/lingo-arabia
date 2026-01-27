@@ -182,6 +182,12 @@ const LessonPlayer = () => {
       setShowConfetti(true);
       
       const totalXp = xpEarned + lessonData.lesson.xpReward;
+      console.log('[LessonPlayer] Saving progress with hint penalties:', {
+        totalXp,
+        hintPenalties,
+        netXp: totalXp - hintPenalties
+      });
+      
       const saveTimeout = setTimeout(() => {
         setIsSaving(false);
         setSaveError(true);
@@ -331,15 +337,17 @@ const LessonPlayer = () => {
   };
 
   const handlePracticeAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
+    // Track hint penalties regardless of answer correctness (will be deducted from total XP)
+    if (hintPenalty > 0) {
+      console.log('[LessonPlayer] Adding hint penalty:', hintPenalty);
+      setHintPenalties(prev => prev + hintPenalty);
+    }
+    
     if (isCorrect) {
       // Award full XP for correct answer
       setXpEarned(prev => prev + 3);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
-    }
-    // Track hint penalties separately (will be deducted from total XP)
-    if (hintPenalty > 0) {
-      setHintPenalties(prev => prev + hintPenalty);
     }
 
     setSlideDirection(1);
@@ -354,6 +362,12 @@ const LessonPlayer = () => {
   };
 
   const handleQuizAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
+    // Track hint penalties regardless of answer correctness (will be deducted from total XP)
+    if (hintPenalty > 0) {
+      console.log('[LessonPlayer] Adding quiz hint penalty:', hintPenalty);
+      setHintPenalties(prev => prev + hintPenalty);
+    }
+    
     const currentQuiz = lessonContent.quiz[quizIndex];
     if (isCorrect) {
       setQuizScore(prev => prev + currentQuiz.points);
@@ -361,10 +375,6 @@ const LessonPlayer = () => {
       setXpEarned(prev => prev + 5);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
-    }
-    // Track hint penalties separately (will be deducted from total XP)
-    if (hintPenalty > 0) {
-      setHintPenalties(prev => prev + hintPenalty);
     }
 
     setSlideDirection(1);
