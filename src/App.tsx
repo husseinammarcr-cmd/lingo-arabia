@@ -36,6 +36,7 @@ import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
+import FreeLessons from "./pages/FreeLessons";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import CookiePolicy from "./pages/CookiePolicy";
@@ -98,6 +99,7 @@ const App = () => (
                   <Route path="/about" element={<About />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/free-lessons" element={<FreeLessons />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogArticle />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
