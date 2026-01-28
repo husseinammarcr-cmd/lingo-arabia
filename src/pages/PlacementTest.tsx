@@ -59,9 +59,9 @@ const PlacementTest = () => {
   }
 
   const features = [
-    { icon: Clock, title: '3-5 دقائق', description: 'مدة الاختبار التقريبية' },
-    { icon: Target, title: '15 سؤال', description: 'أسئلة متنوعة ومتدرجة' },
-    { icon: Award, title: 'تحديد دقيق', description: 'A1 إلى B2' },
+    { icon: Clock, title: '5-7 دقائق', description: 'مدة الاختبار التقريبية' },
+    { icon: Target, title: '21 سؤال', description: 'أسئلة متنوعة ومتدرجة' },
+    { icon: Award, title: 'تحديد دقيق', description: 'A1 إلى C2' },
   ];
 
   return (
@@ -122,11 +122,11 @@ const PlacementTest = () => {
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
-                  <span>الاختبار يحتوي على 15 سؤال متنوع بين المفردات والقواعد والفهم</span>
+                  <span>الاختبار يحتوي على 21 سؤال متنوع بين المفردات والقواعد والفهم</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
-                  <span>الأسئلة متدرجة الصعوبة من المستوى المبتدئ إلى المتقدم</span>
+                  <span>الأسئلة متدرجة الصعوبة من المستوى المبتدئ (A1) إلى المتقدم (C2)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
