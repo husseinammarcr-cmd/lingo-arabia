@@ -126,25 +126,31 @@ const PlacementTestStart = () => {
       const score = finalAnswers.filter(a => a.isCorrect).length;
       const total = PLACEMENT_QUESTIONS.length;
       
-      // Calculate level breakdown
-      const breakdown = {
+      // Calculate level breakdown - support all CEFR levels
+      const breakdown: Record<string, { correct: number; total: number }> = {
         A1: { correct: 0, total: 0 },
         A2: { correct: 0, total: 0 },
         B1: { correct: 0, total: 0 },
         B2: { correct: 0, total: 0 },
+        C1: { correct: 0, total: 0 },
+        C2: { correct: 0, total: 0 },
       };
       
       finalAnswers.forEach(answer => {
-        const level = answer.level as keyof typeof breakdown;
-        breakdown[level].total++;
-        if (answer.isCorrect) breakdown[level].correct++;
+        const level = answer.level;
+        if (breakdown[level]) {
+          breakdown[level].total++;
+          if (answer.isCorrect) breakdown[level].correct++;
+        }
       });
 
-      // Determine suggested level
-      let suggestedLevel: 'A1' | 'A2' | 'B1' | 'B2';
+      // Determine suggested level based on percentage
+      let suggestedLevel: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
       const percentage = (score / total) * 100;
       
-      if (percentage >= 85) suggestedLevel = 'B2';
+      if (percentage >= 95) suggestedLevel = 'C2';
+      else if (percentage >= 85) suggestedLevel = 'C1';
+      else if (percentage >= 70) suggestedLevel = 'B2';
       else if (percentage >= 65) suggestedLevel = 'B1';
       else if (percentage >= 45) suggestedLevel = 'A2';
       else suggestedLevel = 'A1';
