@@ -39,6 +39,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import CookiePolicy from "./pages/CookiePolicy";
 import SidebarNav from "./components/SidebarNav";
+import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <CookieConsentBanner />
                 <SidebarNav />
                 <Routes>
                   <Route path="/" element={<Index />} />
