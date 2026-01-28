@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2, FileText, Clock } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,17 +11,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSendNotification } from '@/hooks/useNotifications';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import BlogManager from '@/components/admin/BlogManager';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
+import { Badge } from '@/components/ui/badge';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, isAdmin, isLoading: authLoading } = useAuth();
   const sendNotification = useSendNotification();
+  const queryClient = useQueryClient();
 
   // Notification form state
   const [senderName, setSenderName] = useState('Founder');
@@ -48,6 +50,23 @@ const Admin = () => {
     refetchInterval: 30000 // Refresh every 30 seconds
   });
 
+  // Fetch contact messages
+  const { data: contactMessages, isLoading: messagesLoading } = useQuery({
+    queryKey: ['admin_contact_messages'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('contact_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: isAdmin,
+    refetchInterval: 30000
+  });
+
   // Fetch stats
   const { data: stats } = useQuery({
     queryKey: ['admin_stats'],
@@ -60,9 +79,20 @@ const Admin = () => {
         .from('notifications')
         .select('*', { count: 'exact', head: true });
 
+      const { count: messagesCount } = await supabase
+        .from('contact_messages')
+        .select('*', { count: 'exact', head: true });
+
+      const { count: unreadMessagesCount } = await supabase
+        .from('contact_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false);
+
       return {
         usersCount: usersCount || 0,
-        notificationsCount: notificationsCount || 0
+        notificationsCount: notificationsCount || 0,
+        messagesCount: messagesCount || 0,
+        unreadMessagesCount: unreadMessagesCount || 0
       };
     },
     enabled: isAdmin
@@ -100,6 +130,38 @@ const Admin = () => {
     }
   };
 
+  const handleMarkAsRead = async (messageId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .update({ is_read: !currentStatus })
+        .eq('id', messageId);
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ['admin_contact_messages'] });
+      queryClient.invalidateQueries({ queryKey: ['admin_stats'] });
+      toast.success(currentStatus ? 'تم تحديد كغير مقروءة' : 'تم تحديد كمقروءة');
+    } catch (error) {
+      toast.error('فشل في تحديث حالة الرسالة');
+    }
+  };
+
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .delete()
+        .eq('id', messageId);
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ['admin_contact_messages'] });
+      queryClient.invalidateQueries({ queryKey: ['admin_stats'] });
+      toast.success('تم حذف الرسالة');
+    } catch (error) {
+      toast.error('فشل في حذف الرسالة');
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -123,7 +185,7 @@ const Admin = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
@@ -147,10 +209,43 @@ const Admin = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-4">
+                <MessageSquare className="w-10 h-10 text-primary" />
+                <div>
+                  <p className="text-2xl font-bold">{stats?.messagesCount || 0}</p>
+                  <p className="text-sm text-muted-foreground">رسائل التواصل</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-4">
+                <Mail className="w-10 h-10 text-amber-500" />
+                <div>
+                  <p className="text-2xl font-bold">{stats?.unreadMessagesCount || 0}</p>
+                  <p className="text-sm text-muted-foreground">رسائل غير مقروءة</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <Tabs defaultValue="notifications" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              الرسائل
+              {(stats?.unreadMessagesCount || 0) > 0 && (
+                <Badge variant="destructive" className="mr-1 px-1.5 py-0.5 text-xs">
+                  {stats?.unreadMessagesCount}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="w-4 h-4" />
               الإشعارات
@@ -164,6 +259,78 @@ const Admin = () => {
               المدونة
             </TabsTrigger>
           </TabsList>
+
+          {/* Messages Tab */}
+          <TabsContent value="messages">
+            <Card>
+              <CardHeader>
+                <CardTitle>رسائل التواصل</CardTitle>
+                <CardDescription>الرسائل الواردة من صفحة "تواصل معنا"</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {messagesLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+                ) : contactMessages && contactMessages.length > 0 ? (
+                  <div className="space-y-4">
+                    {contactMessages.map((msg) => (
+                      <div 
+                        key={msg.id} 
+                        className={`p-4 rounded-lg border ${msg.is_read ? 'bg-muted/30' : 'bg-primary/5 border-primary/20'}`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h4 className="font-semibold">{msg.name}</h4>
+                              {!msg.is_read && (
+                                <Badge variant="default" className="text-xs">جديد</Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-1">
+                              <a href={`mailto:${msg.email}`} className="hover:text-primary">
+                                {msg.email}
+                              </a>
+                            </p>
+                            <p className="font-medium text-primary mb-2">{msg.subject}</p>
+                            <p className="text-sm text-foreground whitespace-pre-wrap">{msg.message}</p>
+                            <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {format(new Date(msg.created_at), 'dd MMM yyyy - hh:mm a', { locale: ar })}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleMarkAsRead(msg.id, msg.is_read)}
+                              title={msg.is_read ? 'تحديد كغير مقروءة' : 'تحديد كمقروءة'}
+                            >
+                              {msg.is_read ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteMessage(msg.id)}
+                              className="text-destructive hover:text-destructive"
+                              title="حذف الرسالة"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>لا توجد رسائل حتى الآن</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="notifications">
             <Card>

@@ -17,6 +17,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const contactSchema = z.object({
   name: z
@@ -60,20 +62,26 @@ const Contact = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    // For now, just show success message
-    // In the future, this can be connected to an edge function
-    console.log('Form submitted:', { 
-      name: data.name, 
-      email: '[REDACTED]', 
-      subject: data.subject,
-      messageLength: data.message.length 
-    });
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert({
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message,
+        });
+
+      if (error) throw error;
+      
+      setIsSubmitted(true);
+      toast.success('تم إرسال رسالتك بنجاح!');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSendAnother = () => {
