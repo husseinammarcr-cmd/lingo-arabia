@@ -7,7 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { motion } from 'framer-motion';
-import { ThreeBackground } from '@/components/animations/ThreeBackground';
+import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
+import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
 import SplashScreen from '@/components/SplashScreen';
 
 const SITE_URL = 'https://lingoarab.com';
@@ -48,16 +49,20 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       {/* Illustration container */}
       <div className="h-48 md:h-56 flex items-end justify-center overflow-hidden">
         {lottieData ? (
-          <LottieAnimation 
+          <LazyLottieAnimation 
             animationData={lottieData}
             loop={true}
             autoplay={true}
             className="w-36 h-36 md:w-44 md:h-44 mb-2"
+            rootMargin="100px"
           />
         ) : (
           <img 
             src={image} 
-            alt={titleEn}
+            alt={`${titleEn} - ${titleAr} - ميزة تعليمية في LingoArab`}
+            loading="lazy"
+            width={176}
+            height={176}
             className="w-full h-full object-contain object-bottom transform group-hover:scale-105 transition-transform duration-300"
           />
         )}
@@ -159,8 +164,8 @@ const Index = () => {
         <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
       </Helmet>
-      {/* 3D Particles Background */}
-      <ThreeBackground variant="particles" intensity="medium" />
+      {/* 3D Particles Background - Lazy loaded for better LCP */}
+      <LazyThreeBackground variant="particles" intensity="medium" loadDelay={2000} />
       
       <div dir="rtl" className="relative z-10">
         {/* Header */}

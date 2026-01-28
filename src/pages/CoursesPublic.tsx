@@ -292,7 +292,10 @@ const CoursesPublic = () => {
                           <div className={cn("h-32 bg-gradient-to-br relative overflow-hidden", levelColors[level.code])}>
                             <img 
                               src={levelImage} 
-                              alt={`${level.code} illustration`}
+                              alt={`مستوى ${level.code} - ${level.titleAr} - تعلم الإنجليزية من LingoArab`}
+                              loading="lazy"
+                              width={400}
+                              height={128}
                               className="absolute inset-0 w-full h-full object-cover opacity-90"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
