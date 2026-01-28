@@ -82,7 +82,7 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
           )}
           
           {showAuthButton && user && (
-            <Button variant="default" onClick={() => navigate('/courses')}>
+            <Button variant="default" onClick={() => navigate('/app/courses')}>
               تابع التعلم
             </Button>
           )}
