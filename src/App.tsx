@@ -17,6 +17,7 @@ import AppCourses from "./pages/AppCourses";
 import CourseLevel from "./pages/CourseLevel";
 import CourseUnit from "./pages/CourseUnit";
 import LessonPlayer from "./pages/LessonPlayer";
+import PublicLessonPreview from "./pages/PublicLessonPreview";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
@@ -81,6 +82,7 @@ const App = () => (
                   <Route path="/courses/:level/:unit" element={<Navigate to="/app/courses" replace />} />
                   
                   <Route path="/lesson/:lessonId" element={<LessonPlayer />} />
+                  <Route path="/preview/lesson/:lessonId" element={<PublicLessonPreview />} />
                   <Route path="/placement-test" element={<PlacementTest />} />
                   <Route path="/placement-test/start" element={<PlacementTestStart />} />
                   <Route path="/placement-test/result" element={<PlacementTestResult />} />
