@@ -18,52 +18,79 @@
     <lastmod>2026-01-28</lastmod>
   </url>
 
-  <!-- Course Levels (A1-C2) -->
+  <!-- Public Lesson Previews - A1 Units -->
   <url>
-    <loc>https://lingoarab.com/courses/a1</loc>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/a1" />
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <loc>https://lingoarab.com/preview/lesson/A1-u01-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A1-u01-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+  <url>
+    <loc>https://lingoarab.com/preview/lesson/A1-u02-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A1-u02-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+  <url>
+    <loc>https://lingoarab.com/preview/lesson/A1-u03-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A1-u03-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+  <url>
+    <loc>https://lingoarab.com/preview/lesson/A1-u04-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A1-u04-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+  <url>
+    <loc>https://lingoarab.com/preview/lesson/A1-u05-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A1-u05-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
     <lastmod>2026-01-28</lastmod>
   </url>
 
+  <!-- Public Lesson Previews - A2 Units -->
   <url>
-    <loc>https://lingoarab.com/courses/a2</loc>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/a2" />
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <loc>https://lingoarab.com/preview/lesson/A2-u01-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A2-u01-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+  <url>
+    <loc>https://lingoarab.com/preview/lesson/A2-u02-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A2-u02-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+  <url>
+    <loc>https://lingoarab.com/preview/lesson/A2-u03-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/A2-u03-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
     <lastmod>2026-01-28</lastmod>
   </url>
 
+  <!-- Public Lesson Previews - B1 Units -->
   <url>
-    <loc>https://lingoarab.com/courses/b1</loc>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/b1" />
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <loc>https://lingoarab.com/preview/lesson/B1-u01-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/B1-u01-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
     <lastmod>2026-01-28</lastmod>
   </url>
-
   <url>
-    <loc>https://lingoarab.com/courses/b2</loc>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/b2" />
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-
-  <url>
-    <loc>https://lingoarab.com/courses/c1</loc>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/c1" />
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-
-  <url>
-    <loc>https://lingoarab.com/courses/c2</loc>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/c2" />
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <loc>https://lingoarab.com/preview/lesson/B1-u02-l01</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/preview/lesson/B1-u02-l01" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
     <lastmod>2026-01-28</lastmod>
   </url>
 
