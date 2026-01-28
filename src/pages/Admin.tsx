@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSendNotification } from '@/hooks/useNotifications';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,6 +33,18 @@ const Admin = () => {
   const [targetType, setTargetType] = useState<'all' | 'specific' | 'level' | 'country'>('all');
   const [targetValue, setTargetValue] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  // Reply dialog state
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+  } | null>(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [isSendingReply, setIsSendingReply] = useState(false);
 
   // Fetch users for admin
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -159,6 +172,46 @@ const Admin = () => {
       toast.success('تم حذف الرسالة');
     } catch (error) {
       toast.error('فشل في حذف الرسالة');
+    }
+  };
+
+  const handleOpenReplyDialog = (msg: { id: string; name: string; email: string; subject: string; message: string }) => {
+    setReplyingTo(msg);
+    setReplyMessage('');
+    setReplyDialogOpen(true);
+  };
+
+  const handleSendReply = async () => {
+    if (!replyingTo || !replyMessage.trim()) {
+      toast.error('يرجى كتابة رد');
+      return;
+    }
+
+    setIsSendingReply(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-reply', {
+        body: {
+          messageId: replyingTo.id,
+          recipientEmail: replyingTo.email,
+          recipientName: replyingTo.name,
+          originalSubject: replyingTo.subject,
+          replyMessage: replyMessage.trim(),
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success('تم إرسال الرد بنجاح');
+      setReplyDialogOpen(false);
+      setReplyingTo(null);
+      setReplyMessage('');
+      queryClient.invalidateQueries({ queryKey: ['admin_contact_messages'] });
+      queryClient.invalidateQueries({ queryKey: ['admin_stats'] });
+    } catch (error: any) {
+      console.error('Error sending reply:', error);
+      toast.error(error.message || 'فشل في إرسال الرد');
+    } finally {
+      setIsSendingReply(false);
     }
   };
 
@@ -299,7 +352,22 @@ const Admin = () => {
                               {format(new Date(msg.created_at), 'dd MMM yyyy - hh:mm a', { locale: ar })}
                             </p>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center gap-1 shrink-0">
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => handleOpenReplyDialog({
+                                id: msg.id,
+                                name: msg.name,
+                                email: msg.email,
+                                subject: msg.subject,
+                                message: msg.message,
+                              })}
+                              className="gap-1"
+                            >
+                              <Reply className="w-4 h-4" />
+                              رد
+                            </Button>
                             <Button
                               variant="ghost"
                               size="icon"
@@ -539,6 +607,66 @@ const Admin = () => {
             <BlogManager />
           </TabsContent>
         </Tabs>
+
+        {/* Reply Dialog */}
+        <Dialog open={replyDialogOpen} onOpenChange={setReplyDialogOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>الرد على الرسالة</DialogTitle>
+              <DialogDescription>
+                الرد على: {replyingTo?.name} ({replyingTo?.email})
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              {/* Original Message Preview */}
+              <div className="bg-muted/50 p-3 rounded-lg border">
+                <p className="text-xs text-muted-foreground mb-1">الرسالة الأصلية:</p>
+                <p className="font-medium text-sm text-primary mb-1">{replyingTo?.subject}</p>
+                <p className="text-sm text-foreground line-clamp-3">{replyingTo?.message}</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="reply-message">ردك</Label>
+                <Textarea
+                  id="reply-message"
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  placeholder="اكتب ردك هنا..."
+                  rows={5}
+                  className="resize-none"
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setReplyDialogOpen(false)}
+                disabled={isSendingReply}
+              >
+                إلغاء
+              </Button>
+              <Button
+                onClick={handleSendReply}
+                disabled={isSendingReply || !replyMessage.trim()}
+                className="gap-2"
+              >
+                {isSendingReply ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    جاري الإرسال...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    إرسال الرد
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
