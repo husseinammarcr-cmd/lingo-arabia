@@ -291,6 +291,13 @@ const Index = () => {
               </div>
               <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
                 <a 
+                  href="/free-lessons" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
+                  دروس مجانية
+                </a>
+                <span className="text-border">|</span>
+                <a 
                   href="/privacy-policy" 
                   className="text-muted-foreground hover:text-primary transition-colors text-sm"
                 >

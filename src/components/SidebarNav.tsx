@@ -16,7 +16,8 @@ import {
   Settings, 
   LogOut, 
   LogIn, 
-  UserPlus 
+  UserPlus,
+  GraduationCap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,6 +33,7 @@ interface NavItem {
 
 const publicNavItems: NavItem[] = [
   { label: 'Home', labelAr: 'الرئيسية', href: '/', icon: <Home className="w-5 h-5" /> },
+  { label: 'Free Lessons', labelAr: 'دروس مجانية', href: '/free-lessons', icon: <GraduationCap className="w-5 h-5" /> },
   { label: 'Courses', labelAr: 'الدورات', href: '/courses', icon: <BookOpen className="w-5 h-5" /> },
   { label: 'Levels', labelAr: 'المستويات', href: '/learn', icon: <Layers className="w-5 h-5" /> },
   { label: 'Blog', labelAr: 'المدونة', href: '/blog', icon: <FileText className="w-5 h-5" /> },
