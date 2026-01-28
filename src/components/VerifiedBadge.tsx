@@ -18,7 +18,7 @@ export const VerifiedBadge = ({ className, size = 'md' }: VerifiedBadgeProps) =>
     <div className={cn(sizeClasses[size], "inline-flex items-center justify-center shrink-0", className)}>
       <Lottie 
         animationData={verifyAnimation}
-        loop={false}
+        loop={true}
         autoplay={true}
         className="w-full h-full"
       />
