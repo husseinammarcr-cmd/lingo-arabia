@@ -141,17 +141,54 @@ const PlacementTest = () => {
           </Card>
 
           {/* Start Button */}
-          <div className="text-center">
+          <div className="text-center space-y-4">
             {canRetake ? (
-              <Button 
-                variant="hero" 
-                size="xl" 
-                onClick={() => navigate('/placement-test/start')}
-                className="text-lg w-full sm:w-auto"
-              >
-                {profile?.has_taken_placement ? 'إعادة الاختبار' : 'ابدأ الاختبار'}
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
+              <>
+                <Button 
+                  variant="hero" 
+                  size="xl" 
+                  onClick={() => navigate('/placement-test/start')}
+                  className="text-lg w-full sm:w-auto"
+                >
+                  {profile?.has_taken_placement ? 'إعادة الاختبار' : 'ابدأ الاختبار'}
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+                
+                {/* Skip test for complete beginners */}
+                {!profile?.has_taken_placement && (
+                  <div className="pt-4 border-t border-border/50">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      لا تعرف الإنجليزية؟ لا تقلق!
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="lg"
+                      onClick={async () => {
+                        if (!user) return;
+                        
+                        // Update profile to set as beginner (A1)
+                        await supabase
+                          .from('profiles')
+                          .update({
+                            has_taken_placement: true,
+                            placement_level: 'A1',
+                            placement_score: 0,
+                            current_level: 'A1',
+                            placement_taken_at: new Date().toISOString()
+                          })
+                          .eq('id', user.id);
+                        
+                        // Navigate to A1 course
+                        navigate('/app/courses/a1');
+                      }}
+                      className="w-full sm:w-auto gap-2"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      أنا مبتدئ تماماً - ابدأ من الصفر
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="space-y-3">
                 <Button variant="outline" size="xl" disabled className="text-lg w-full sm:w-auto">
