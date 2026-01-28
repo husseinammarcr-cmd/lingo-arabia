@@ -216,14 +216,14 @@ const AppCourses = () => {
                   {/* Description */}
                   <p className="text-muted-foreground mb-6 max-w-md">
                     قم بتحديد مستواك في اللغة الإنجليزية لفتح الدروس المناسبة لك.
-                    الاختبار سريع ويستغرق فقط 3-5 دقائق.
+                    الاختبار سريع ويستغرق فقط 5-7 دقائق.
                   </p>
                   
                   {/* Features */}
                   <div className="flex flex-wrap justify-center gap-4 mb-6 text-sm">
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Sparkles className="w-4 h-4 text-primary" />
-                      <span>15 سؤال متنوع</span>
+                      <span>21 سؤال متنوع</span>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <GraduationCap className="w-4 h-4 text-primary" />
