@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CURRICULUM } from '@/lib/curriculum';
-
+import { useAuth } from '@/contexts/AuthContext';
 // Get first lesson of each unit for public preview
 const getFreeLessons = () => {
   const freeLessons: Array<{
@@ -60,6 +60,7 @@ const getLevelGradient = (color: string) => {
 };
 
 const FreeLessons = () => {
+  const { user } = useAuth();
   const freeLessons = getFreeLessons();
   const totalLessons = freeLessons.reduce((acc, level) => acc + level.units.length, 0);
 
@@ -145,10 +146,10 @@ const FreeLessons = () => {
                 ابدأ رحلتك في تعلم الإنجليزية اليوم!
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/auth">
+                <Link to={user ? "/app/courses" : "/auth"}>
                   <Button size="lg" className="gap-2">
                     <GraduationCap className="w-5 h-5" />
-                    ابدأ التعلم مجاناً
+                    {user ? "استمر في التعلم" : "ابدأ التعلم مجاناً"}
                   </Button>
                 </Link>
                 <Link to="/placement-test">
@@ -253,10 +254,10 @@ const FreeLessons = () => {
                 سجّل الآن للوصول إلى جميع الدروس، تتبع تقدمك، واكسب نقاط XP!
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/auth">
-                  <Button size="lg">إنشاء حساب مجاني</Button>
+                <Link to={user ? "/app/courses" : "/auth"}>
+                  <Button size="lg">{user ? "استمر في التعلم" : "إنشاء حساب مجاني"}</Button>
                 </Link>
-                <Link to="/courses">
+                <Link to={user ? "/app/courses" : "/courses"}>
                   <Button size="lg" variant="outline">
                     استكشف المنهج الكامل
                   </Button>
