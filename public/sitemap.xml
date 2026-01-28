@@ -18,6 +18,55 @@
     <lastmod>2026-01-28</lastmod>
   </url>
 
+  <!-- Course Levels (A1-C2) -->
+  <url>
+    <loc>https://lingoarab.com/courses/a1</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/a1" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+
+  <url>
+    <loc>https://lingoarab.com/courses/a2</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/a2" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+
+  <url>
+    <loc>https://lingoarab.com/courses/b1</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/b1" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+
+  <url>
+    <loc>https://lingoarab.com/courses/b2</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/b2" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+
+  <url>
+    <loc>https://lingoarab.com/courses/c1</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/c1" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+
+  <url>
+    <loc>https://lingoarab.com/courses/c2</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses/c2" />
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-01-28</lastmod>
+  </url>
+
   <!-- Blog -->
   <url>
     <loc>https://lingoarab.com/blog</loc>
