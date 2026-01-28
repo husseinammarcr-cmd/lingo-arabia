@@ -485,90 +485,64 @@ export const ExerciseRenderer = ({
 
   // Helper function to wrap English sentences (including blanks) in LTR isolation
   const renderPromptWithLTR = (text: string) => {
-    // Strategy: Split by Arabic text blocks, treat everything else as English/LTR
-    // Arabic Unicode range: \u0600-\u06FF (Arabic), \u0750-\u077F (Arabic Supplement), \uFB50-\uFDFF, \uFE70-\uFEFF
+    // Check if text has Arabic hint in parentheses at the end: "English text. (Arabic hint)"
+    const hintPattern = /^(.+?)\s*\(([^\x00-\x7F]+)\)\s*$/;
+    const hintMatch = text.match(hintPattern);
     
-    // Pattern to find Arabic text blocks (including Arabic punctuation and parentheses with Arabic content)
-    const arabicPattern = /([\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]+(?:\s*[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]+)*)/g;
-    
-    const segments: React.ReactNode[] = [];
-    let lastIndex = 0;
-    let match;
-    let segmentIndex = 0;
-    
-    while ((match = arabicPattern.exec(text)) !== null) {
-      // Check if there's non-Arabic content before this match
-      if (match.index > lastIndex) {
-        const nonArabicPart = text.slice(lastIndex, match.index).trim();
-        if (nonArabicPart) {
-          // This is English/LTR content - wrap it
-          segments.push(
-            <bdi 
-              key={`ltr-${segmentIndex++}`} 
-              dir="ltr" 
-              style={{ 
-                unicodeBidi: 'isolate',
-                display: 'inline'
-              }}
-            >
-              {text.slice(lastIndex, match.index)}
-            </bdi>
-          );
-        } else if (text.slice(lastIndex, match.index)) {
-          // Whitespace only
-          segments.push(<span key={`ws-${segmentIndex++}`}>{text.slice(lastIndex, match.index)}</span>);
-        }
-      }
+    if (hintMatch) {
+      // We have: English part + (Arabic hint)
+      const englishPart = hintMatch[1].trim();
+      const arabicHint = hintMatch[2];
       
-      // Add Arabic text
-      segments.push(<span key={`ar-${segmentIndex++}`}>{match[0]}</span>);
-      lastIndex = match.index + match[0].length;
+      return (
+        <>
+          <bdi 
+            dir="ltr" 
+            style={{ unicodeBidi: 'isolate', display: 'inline' }}
+          >
+            {englishPart}
+          </bdi>
+          <span className="text-muted-foreground mr-2"> ({arabicHint})</span>
+        </>
+      );
     }
     
-    // Handle remaining content after last Arabic match
-    if (lastIndex < text.length) {
-      const remaining = text.slice(lastIndex);
-      if (remaining.trim()) {
-        // Check if it's just punctuation/parentheses with Arabic
-        const hasArabicInParens = remaining.match(/\(([^\x00-\x7F]+)\)/);
-        if (hasArabicInParens) {
-          // Split: LTR part + Arabic hint
-          const parenStart = remaining.indexOf('(');
-          if (parenStart > 0) {
-            const ltrPart = remaining.slice(0, parenStart).trim();
-            if (ltrPart) {
-              segments.push(
-                <bdi 
-                  key={`ltr-${segmentIndex++}`} 
-                  dir="ltr" 
-                  style={{ unicodeBidi: 'isolate', display: 'inline' }}
-                >
-                  {remaining.slice(0, parenStart)}
-                </bdi>
-              );
-            }
-          }
-          segments.push(
-            <span key={`hint-${segmentIndex++}`} className="text-muted-foreground">
-              {remaining.slice(parenStart)}
-            </span>
-          );
-        } else {
-          // Pure LTR content
-          segments.push(
-            <bdi 
-              key={`ltr-end-${segmentIndex++}`} 
-              dir="ltr" 
-              style={{ unicodeBidi: 'isolate', display: 'inline' }}
-            >
-              {remaining}
-            </bdi>
-          );
-        }
-      }
+    // Check for Arabic prefix followed by English: "Arabic: English text"
+    const prefixPattern = /^([\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF\s:]+)\s*(.+)$/;
+    const prefixMatch = text.match(prefixPattern);
+    
+    if (prefixMatch && /[A-Za-z_]/.test(prefixMatch[2])) {
+      const arabicPrefix = prefixMatch[1];
+      const englishPart = prefixMatch[2];
+      
+      return (
+        <>
+          <span>{arabicPrefix}</span>
+          <bdi 
+            dir="ltr" 
+            style={{ unicodeBidi: 'isolate', display: 'inline' }}
+          >
+            {englishPart}
+          </bdi>
+        </>
+      );
     }
     
-    return segments.length > 0 ? segments : text;
+    // Fallback: Check if text contains any English with blanks
+    if (/[A-Za-z]/.test(text) && /_{2,}/.test(text)) {
+      // Wrap entire text in LTR
+      return (
+        <bdi 
+          dir="ltr" 
+          style={{ unicodeBidi: 'isolate', display: 'inline' }}
+        >
+          {text}
+        </bdi>
+      );
+    }
+    
+    // Default: return as-is
+    return text;
   };
 
   return (
