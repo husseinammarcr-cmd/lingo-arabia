@@ -16,5 +16,9 @@ Allow: /
 User-agent: *
 Allow: /
 
-# Sitemap location
+# Sitemap locations
+# Static sitemap (fallback)
 Sitemap: https://lingoarab.com/sitemap.xml
+
+# Dynamic sitemap with blog articles (primary)
+Sitemap: https://qrbrilfuchxojsofzqwm.supabase.co/functions/v1/sitemap
