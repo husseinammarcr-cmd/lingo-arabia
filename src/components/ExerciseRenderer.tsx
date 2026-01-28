@@ -485,85 +485,87 @@ export const ExerciseRenderer = ({
 
   // Helper function to wrap English sentences (including blanks) in LTR isolation
   const renderPromptWithLTR = (text: string) => {
-    // First, separate Arabic hint in parentheses at the end (e.g., "(فضّل)")
-    const hintMatch = text.match(/\(([^\x00-\x7F]+)\)\s*$/);
-    let mainText = text;
-    let arabicHint = '';
+    // Strategy: Split by Arabic text blocks, treat everything else as English/LTR
+    // Arabic Unicode range: \u0600-\u06FF (Arabic), \u0750-\u077F (Arabic Supplement), \uFB50-\uFDFF, \uFE70-\uFEFF
     
-    if (hintMatch) {
-      arabicHint = hintMatch[0]; // e.g., "(فضّل)"
-      mainText = text.slice(0, text.lastIndexOf(hintMatch[0])).trim();
-    }
+    // Pattern to find Arabic text blocks (including Arabic punctuation and parentheses with Arabic content)
+    const arabicPattern = /([\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]+(?:\s*[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]+)*)/g;
     
     const segments: React.ReactNode[] = [];
-    
-    // Pattern to match English content including blanks, punctuation, parentheses
-    // This pattern captures contiguous English blocks with underscores
-    const fullEnglishPattern = /([A-Za-z_][A-Za-z0-9\s.,!?'"()\-–—_]*)/g;
-    
     let lastIndex = 0;
     let match;
-    let englishParts: string[] = [];
+    let segmentIndex = 0;
     
-    // Collect all English segments
-    while ((match = fullEnglishPattern.exec(mainText)) !== null) {
-      // Check if there's Arabic text before this match
+    while ((match = arabicPattern.exec(text)) !== null) {
+      // Check if there's non-Arabic content before this match
       if (match.index > lastIndex) {
-        const arabicPart = mainText.slice(lastIndex, match.index);
-        // If we have collected English parts and now hit Arabic, flush the English
-        if (englishParts.length > 0 && arabicPart.trim() && /[\u0600-\u06FF]/.test(arabicPart)) {
+        const nonArabicPart = text.slice(lastIndex, match.index).trim();
+        if (nonArabicPart) {
+          // This is English/LTR content - wrap it
           segments.push(
             <bdi 
-              key={`en-${lastIndex}`} 
+              key={`ltr-${segmentIndex++}`} 
               dir="ltr" 
               style={{ 
                 unicodeBidi: 'isolate',
                 display: 'inline'
               }}
             >
-              {englishParts.join('')}
+              {text.slice(lastIndex, match.index)}
             </bdi>
           );
-          englishParts = [];
-        }
-        if (arabicPart.trim() && /[\u0600-\u06FF]/.test(arabicPart)) {
-          segments.push(<span key={`ar-${lastIndex}`}>{arabicPart}</span>);
-        } else if (arabicPart.trim()) {
-          englishParts.push(arabicPart);
+        } else if (text.slice(lastIndex, match.index)) {
+          // Whitespace only
+          segments.push(<span key={`ws-${segmentIndex++}`}>{text.slice(lastIndex, match.index)}</span>);
         }
       }
       
-      englishParts.push(match[0]);
+      // Add Arabic text
+      segments.push(<span key={`ar-${segmentIndex++}`}>{match[0]}</span>);
       lastIndex = match.index + match[0].length;
     }
     
-    // Flush remaining English parts
-    if (englishParts.length > 0) {
-      segments.push(
-        <bdi 
-          key={`en-final`} 
-          dir="ltr" 
-          style={{ 
-            unicodeBidi: 'isolate',
-            display: 'inline'
-          }}
-        >
-          {englishParts.join('')}
-        </bdi>
-      );
-    }
-    
-    // Add remaining text
-    if (lastIndex < mainText.length) {
-      const remaining = mainText.slice(lastIndex);
+    // Handle remaining content after last Arabic match
+    if (lastIndex < text.length) {
+      const remaining = text.slice(lastIndex);
       if (remaining.trim()) {
-        segments.push(<span key={`ar-end`}>{remaining}</span>);
+        // Check if it's just punctuation/parentheses with Arabic
+        const hasArabicInParens = remaining.match(/\(([^\x00-\x7F]+)\)/);
+        if (hasArabicInParens) {
+          // Split: LTR part + Arabic hint
+          const parenStart = remaining.indexOf('(');
+          if (parenStart > 0) {
+            const ltrPart = remaining.slice(0, parenStart).trim();
+            if (ltrPart) {
+              segments.push(
+                <bdi 
+                  key={`ltr-${segmentIndex++}`} 
+                  dir="ltr" 
+                  style={{ unicodeBidi: 'isolate', display: 'inline' }}
+                >
+                  {remaining.slice(0, parenStart)}
+                </bdi>
+              );
+            }
+          }
+          segments.push(
+            <span key={`hint-${segmentIndex++}`} className="text-muted-foreground">
+              {remaining.slice(parenStart)}
+            </span>
+          );
+        } else {
+          // Pure LTR content
+          segments.push(
+            <bdi 
+              key={`ltr-end-${segmentIndex++}`} 
+              dir="ltr" 
+              style={{ unicodeBidi: 'isolate', display: 'inline' }}
+            >
+              {remaining}
+            </bdi>
+          );
+        }
       }
-    }
-    
-    // Add Arabic hint at the end if exists
-    if (arabicHint) {
-      segments.push(<span key="hint" className="text-muted-foreground"> {arabicHint}</span>);
     }
     
     return segments.length > 0 ? segments : text;
