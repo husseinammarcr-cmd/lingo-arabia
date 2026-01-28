@@ -186,11 +186,19 @@ const PlacementTestStart = () => {
       // Clear saved progress
       localStorage.removeItem(`placement_test_${user.id}`);
 
-      // Refresh profile and navigate to results
-      await refreshProfile();
-      navigate('/placement-test/result', { 
-        state: { score, total, level: suggestedLevel, breakdown } 
+      // Show success message
+      toast.success('تم حفظ نتيجتك بنجاح! 🎉', {
+        description: `مستواك: ${suggestedLevel} - النتيجة: ${score}/${total}`,
+        duration: 2000,
       });
+
+      // Refresh profile and navigate to results after a brief delay
+      await refreshProfile();
+      setTimeout(() => {
+        navigate('/placement-test/result', { 
+          state: { score, total, level: suggestedLevel, breakdown } 
+        });
+      }, 500);
     } catch (error) {
       console.error('Error submitting test:', error);
       toast.error('حدث خطأ أثناء حفظ النتيجة');
