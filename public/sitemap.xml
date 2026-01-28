@@ -6,7 +6,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/" />
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Courses -->
@@ -15,7 +15,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/courses" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Blog -->
@@ -24,7 +24,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/blog" />
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- About -->
@@ -33,7 +33,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/about" />
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- FAQ -->
@@ -42,7 +42,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/faq" />
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Contact -->
@@ -51,7 +51,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/contact" />
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Placement Test -->
@@ -60,7 +60,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/placement-test" />
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Leaderboard -->
@@ -69,7 +69,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/leaderboard" />
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Challenges -->
@@ -78,7 +78,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/challenges" />
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <!-- Legal Pages -->
@@ -87,7 +87,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/privacy-policy" />
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <url>
@@ -95,7 +95,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/terms" />
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 
   <url>
@@ -103,6 +103,6 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/cookie-policy" />
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
-    <lastmod>2025-01-24</lastmod>
+    <lastmod>2026-01-28</lastmod>
   </url>
 </urlset>
