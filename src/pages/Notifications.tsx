@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Bell, Check, CheckCheck, Loader2 } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Bell, Check, CheckCheck, Loader2, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -106,6 +106,15 @@ const Notifications = () => {
                       </div>
                       <h3 className="font-semibold mb-1">{notification.title}</h3>
                       <p className="text-sm text-muted-foreground">{notification.message}</p>
+                      {notification.target_type === 'link' && notification.target_value && (
+                        <Link 
+                          to={notification.target_value} 
+                          className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          تواصل معنا
+                        </Link>
+                      )}
                     </div>
                     
                     {!notification.is_read && (
