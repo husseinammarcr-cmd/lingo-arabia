@@ -54,6 +54,12 @@ const Auth = () => {
       } else if (view === 'signup') {
         const { error } = await signUp(email, password, name);
         if (error) throw error;
+        
+        // Track signup conversion for Google Ads
+        if (typeof window !== 'undefined' && (window as any).trackSignupConversion) {
+          (window as any).trackSignupConversion();
+        }
+        
         // حفظ البريد للصفحة التالية
         sessionStorage.setItem('pendingVerificationEmail', email);
         // توجيه لصفحة تأكيد البريد

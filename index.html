@@ -16,6 +16,16 @@
       gtag('js', new Date());
       gtag('config', 'G-7JVT2NRJX8');
       gtag('config', 'AW-17902393019');
+      
+      // Conversion tracking function for new user signups
+      window.trackSignupConversion = function() {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17902393019/signup',
+          'event_callback': function() {
+            console.log('Signup conversion tracked');
+          }
+        });
+      };
     </script>
     
     <!-- Google AdSense -->
