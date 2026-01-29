@@ -77,7 +77,12 @@ const SidebarNav = () => {
   }, [isOpen]);
 
   const handleNavClick = (href: string) => {
-    navigate(href);
+    // Redirect authenticated users to /app/courses for courses and levels pages
+    if (user && (href === '/courses' || href === '/learn')) {
+      navigate('/app/courses');
+    } else {
+      navigate(href);
+    }
     setIsOpen(false);
   };
 
