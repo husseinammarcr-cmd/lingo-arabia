@@ -89,6 +89,11 @@ const Auth = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    // Track Google signup conversion before redirect
+    if (typeof window !== 'undefined' && (window as any).trackSignupConversion) {
+      (window as any).trackSignupConversion();
+    }
+    
     const { error } = await signInWithGoogle();
     if (error) {
       toast({ title: 'خطأ', description: error.message, variant: 'destructive' });
