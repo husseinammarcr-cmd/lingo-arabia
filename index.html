@@ -19,12 +19,8 @@
       
       // Conversion tracking function for new user signups
       window.trackSignupConversion = function() {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17902393019/signup',
-          'event_callback': function() {
-            console.log('Signup conversion tracked');
-          }
-        });
+        gtag('event', 'ads_conversion_Sign_up_1', {});
+        console.log('Signup conversion tracked');
       };
     </script>
     
