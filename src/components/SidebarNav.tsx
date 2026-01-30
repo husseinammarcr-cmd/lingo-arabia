@@ -17,7 +17,8 @@ import {
   LogOut, 
   LogIn, 
   UserPlus,
-  GraduationCap
+  GraduationCap,
+  Award
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -45,6 +46,7 @@ const publicNavItems: NavItem[] = [
 const authNavItems: NavItem[] = [
   { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/app/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
   { label: 'Profile', labelAr: 'الملف الشخصي', href: '/profile', icon: <User className="w-5 h-5" />, requiresAuth: true },
+  { label: 'Certificate', labelAr: 'الشهادة', href: '/certificate', icon: <Award className="w-5 h-5" />, requiresAuth: true },
   { label: 'Settings', labelAr: 'الإعدادات', href: '/settings', icon: <Settings className="w-5 h-5" />, requiresAuth: true },
 ];
 
