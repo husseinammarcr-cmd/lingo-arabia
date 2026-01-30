@@ -40,6 +40,7 @@ import FreeLessons from "./pages/FreeLessons";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import CookiePolicy from "./pages/CookiePolicy";
+import VerifyCertificate from "./pages/VerifyCertificate";
 import SidebarNav from "./components/SidebarNav";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
@@ -105,6 +106,7 @@ const App = () => (
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/terms" element={<TermsAndConditions />} />
                   <Route path="/cookie-policy" element={<CookiePolicy />} />
+                  <Route path="/verify-certificate" element={<VerifyCertificate />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
