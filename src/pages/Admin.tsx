@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply, Award } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import BlogManager from '@/components/admin/BlogManager';
+import CertificatesManager from '@/components/admin/CertificatesManager';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
@@ -311,6 +312,10 @@ const Admin = () => {
               <FileText className="w-4 h-4" />
               المدونة
             </TabsTrigger>
+            <TabsTrigger value="certificates" className="flex items-center gap-2">
+              <Award className="w-4 h-4" />
+              الشهادات
+            </TabsTrigger>
           </TabsList>
 
           {/* Messages Tab */}
@@ -605,6 +610,10 @@ const Admin = () => {
 
           <TabsContent value="blog">
             <BlogManager />
+          </TabsContent>
+
+          <TabsContent value="certificates">
+            <CertificatesManager />
           </TabsContent>
         </Tabs>
 

@@ -148,6 +148,78 @@ export type Database = {
         }
         Relationships: []
       }
+      certificate_requests: {
+        Row: {
+          email: string
+          full_name: string
+          id: string
+          level: string
+          notes: string | null
+          requested_at: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          email: string
+          full_name: string
+          id?: string
+          level?: string
+          notes?: string | null
+          requested_at?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          email?: string
+          full_name?: string
+          id?: string
+          level?: string
+          notes?: string | null
+          requested_at?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          certificate_code: string
+          full_name: string
+          id: string
+          is_valid: boolean
+          issued_at: string
+          issued_by: string
+          level: string
+          user_id: string
+        }
+        Insert: {
+          certificate_code: string
+          full_name: string
+          id?: string
+          is_valid?: boolean
+          issued_at?: string
+          issued_by: string
+          level: string
+          user_id: string
+        }
+        Update: {
+          certificate_code?: string
+          full_name?: string
+          id?: string
+          is_valid?: boolean
+          issued_at?: string
+          issued_by?: string
+          level?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           challenge_type: string
@@ -672,6 +744,7 @@ export type Database = {
         }
         Returns: number
       }
+      generate_certificate_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

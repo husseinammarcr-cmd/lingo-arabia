@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Target, Star, Flame, BookOpen, Settings, TrendingUp } from 'lucide-react';
+import { Trophy, Target, Star, Flame, BookOpen, Settings, TrendingUp, Award } from 'lucide-react';
 import Header from '@/components/Header';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
@@ -19,6 +19,7 @@ import { MagneticButton, BouncingIcon } from '@/components/animations/MagneticBu
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { LottieAnimation } from '@/components/animations/LottieAnimation';
 import level1Banner from '@/assets/level1-banner.json';
+import CertificateRequestCard from '@/components/CertificateRequestCard';
 
 const getFlagEmoji = (countryCode: string | null) => {
   if (!countryCode) return '🌍';
@@ -204,6 +205,11 @@ const Profile = () => {
         {/* Achievements */}
         <FadeUp delay={0.25}>
           <AchievementsGrid />
+        </FadeUp>
+
+        {/* Certificate Request */}
+        <FadeUp delay={0.28}>
+          <CertificateRequestCard />
         </FadeUp>
 
         {/* Sign out */}
