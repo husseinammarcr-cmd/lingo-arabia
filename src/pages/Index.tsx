@@ -2,7 +2,7 @@ import React, { forwardRef, useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Award, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
@@ -237,6 +237,65 @@ const Index = () => {
               />
             ))}
           </div>
+        </section>
+
+        {/* Certificate Banner */}
+        <section className="container mx-auto px-4 py-8 md:py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-500 p-6 md:p-8 shadow-lg"
+          >
+            {/* Decorative elements */}
+            <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-1/2 translate-y-1/2" />
+            
+            <div className="relative flex flex-col md:flex-row items-center gap-6">
+              {/* Icon */}
+              <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                <Award className="w-10 h-10 md:w-12 md:h-12 text-white" />
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 text-center md:text-right">
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                  احصل على شهادة مجانية! 🎓
+                </h3>
+                <p className="text-white/90 mb-4 max-w-xl">
+                  عند إكمالك لمستوى C2، ستحصل على شهادة إتقان اللغة الإنجليزية معتمدة برمز تحقق فريد
+                </p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/80">
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    شهادة رسمية
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    رمز تحقق فريد
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    مجانية بالكامل
+                  </span>
+                </div>
+              </div>
+              
+              {/* CTA Button */}
+              <div className="flex-shrink-0">
+                <Button 
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => navigate(user ? '/app/courses' : '/auth')}
+                  className="bg-white text-amber-600 hover:bg-white/90 shadow-md"
+                >
+                  {user ? 'تابع التعلم' : 'ابدأ الآن'}
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </motion.div>
         </section>
 
         {/* CTA Section */}
