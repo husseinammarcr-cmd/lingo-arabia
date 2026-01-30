@@ -105,8 +105,8 @@ const Index = () => {
     },
     { 
       lottieData: trophyAnimation, 
-      titleAr: 'إنجازات', 
-      titleEn: 'Achievements' 
+      titleAr: 'شهادة مجانية', 
+      titleEn: 'Free Certificate' 
     },
   ];
 
