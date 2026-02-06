@@ -86,6 +86,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .eq('id', userId);
   };
 
+  // Log daily activity for retention tracking
+  const logDailyActivity = async (userId: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    await supabase
+      .from('user_activity_log')
+      .upsert(
+        { user_id: userId, activity_date: today, visit_count: 1 },
+        { onConflict: 'user_id,activity_date' }
+      );
+  };
+
   const checkAdminRole = async (userId: string) => {
     const { data, error } = await supabase
       .from('user_roles')
@@ -154,8 +165,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsAdmin(adminStatus);
             setIsLoading(false);
           });
-          // Update last active timestamp
+          // Update last active timestamp and log daily activity
           updateLastActive(session.user.id);
+          logDailyActivity(session.user.id);
         });
       } else {
         setIsLoading(false);
@@ -177,6 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && user) {
         updateLastActive(user.id);
+        logDailyActivity(user.id);
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);

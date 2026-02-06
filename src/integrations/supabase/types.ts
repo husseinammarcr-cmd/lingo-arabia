@@ -672,6 +672,33 @@ export type Database = {
           },
         ]
       }
+      user_activity_log: {
+        Row: {
+          activity_date: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          visit_count: number
+        }
+        Insert: {
+          activity_date?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          visit_count?: number
+        }
+        Update: {
+          activity_date?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          visit_count?: number
+        }
+        Relationships: []
+      }
       user_challenges: {
         Row: {
           challenge_id: string
