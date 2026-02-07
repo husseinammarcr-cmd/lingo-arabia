@@ -779,6 +779,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_daily_activity: { Args: { p_user_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "user" | "admin"
