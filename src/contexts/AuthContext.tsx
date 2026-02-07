@@ -86,15 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .eq('id', userId);
   };
 
-  // Log daily activity for retention tracking
+  // Log daily activity for retention tracking (uses DB function to increment visit_count)
   const logDailyActivity = async (userId: string) => {
-    const today = new Date().toISOString().split('T')[0];
-    await supabase
-      .from('user_activity_log')
-      .upsert(
-        { user_id: userId, activity_date: today, visit_count: 1 },
-        { onConflict: 'user_id,activity_date' }
-      );
+    await supabase.rpc('log_daily_activity', { p_user_id: userId });
   };
 
   const checkAdminRole = async (userId: string) => {
