@@ -1,12 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Book, ChevronLeft, GraduationCap, Star, Users } from 'lucide-react';
+import { Book, ChevronLeft, GraduationCap, Star, Users, BookOpen, Mic, PenTool, MessageCircle, Globe, Award } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CURRICULUM } from '@/lib/curriculum';
 import { useAuth } from '@/contexts/AuthContext';
+import Header from '@/components/Header';
 // Get first lesson of each unit for public preview
 const getFreeLessons = () => {
   const freeLessons: Array<{
@@ -58,6 +59,30 @@ const getLevelGradient = (color: string) => {
     fuchsia: 'from-fuchsia-500 to-fuchsia-600',
   };
   return gradients[color] || 'from-primary to-primary/80';
+};
+
+const getLevelIcon = (code: string) => {
+  const icons: Record<string, React.ReactNode> = {
+    A1: <BookOpen className="w-5 h-5 text-white" />,
+    A2: <Mic className="w-5 h-5 text-white" />,
+    B1: <PenTool className="w-5 h-5 text-white" />,
+    B2: <MessageCircle className="w-5 h-5 text-white" />,
+    C1: <Globe className="w-5 h-5 text-white" />,
+    C2: <Award className="w-5 h-5 text-white" />,
+  };
+  return icons[code] || <Book className="w-5 h-5 text-white" />;
+};
+
+const getLevelDescription = (code: string) => {
+  const descriptions: Record<string, string> = {
+    A1: 'الأساسيات والتحيات اليومية',
+    A2: 'المحادثات البسيطة والمواقف اليومية',
+    B1: 'التعبير عن الآراء والمواضيع المألوفة',
+    B2: 'النقاشات المتقدمة والنصوص المعقدة',
+    C1: 'الطلاقة والاستخدام الأكاديمي',
+    C2: 'الإتقان والتعبير الاحترافي',
+  };
+  return descriptions[code] || '';
 };
 
 const FreeLessons = () => {
@@ -130,6 +155,7 @@ const FreeLessons = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
       </Helmet>
 
+      <Header showBack showAuthButton />
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16 md:py-24">
@@ -197,12 +223,13 @@ const FreeLessons = () => {
                 >
                   <AccordionTrigger className="px-5 py-4 hover:no-underline hover:bg-muted/50">
                     <div className="flex items-center gap-4 w-full">
-                      <div className={`w-11 h-11 rounded-lg bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
-                        {level.levelCode}
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center shrink-0 shadow-md`}>
+                        {getLevelIcon(level.levelCode)}
                       </div>
                       <div className="text-right flex-1">
-                        <p className="font-semibold text-base">{level.levelTitleAr}</p>
+                        <p className="font-bold text-base">{level.levelTitleAr}</p>
                         <p className="text-xs text-muted-foreground ltr-text">{level.levelTitleEn}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{getLevelDescription(level.levelCode)}</p>
                       </div>
                       <Badge variant="outline" className="shrink-0">
                         {level.units.length} درس

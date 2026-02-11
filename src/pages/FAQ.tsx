@@ -100,10 +100,10 @@ const FAQ = () => {
     "logo": `${SITE_URL}/logo.png`,
     "description": "منصة تعلم اللغة الإنجليزية للناطقين بالعربية"
   }), []);
-      
-      <Header showBack showAuthButton />
+
   return (
     <div className="min-h-screen bg-background">
+      <Header showBack showAuthButton />
       <Helmet>
         <title>الأسئلة الشائعة - LingoArab | تعلم الإنجليزية للناطقين بالعربية</title>
         <meta name="description" content="إجابات على الأسئلة الأكثر شيوعاً حول منصة LingoArab لتعلم اللغة الإنجليزية. تعرف على كيفية استخدام المنصة، المستويات المتاحة، وطرق التعلم." />
