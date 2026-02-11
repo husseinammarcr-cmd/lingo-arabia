@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Star, LogOut, ChevronLeft, Shield } from 'lucide-react';
+import { Star, LogOut, ChevronLeft, Shield, Menu } from 'lucide-react';
 import { NotificationBell } from '@/components/NotificationBell';
 import EmailVerificationBanner from '@/components/EmailVerificationBanner';
 import ThemeToggle from '@/components/ThemeToggle';
+import SidebarNav, { SidebarNavRef } from '@/components/SidebarNav';
 import logo from '@/assets/logo.png';
 
 interface HeaderProps {
@@ -16,6 +18,7 @@ interface HeaderProps {
 const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false }: HeaderProps) => {
   const navigate = useNavigate();
   const { user, profile, signOut, isAdmin } = useAuth();
+  const sidebarRef = useRef<SidebarNavRef>(null);
 
   return (
     <>
@@ -86,9 +89,14 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
               تابع التعلم
             </Button>
           )}
+          
+          <Button variant="ghost" size="icon" onClick={() => sidebarRef.current?.open()}>
+            <Menu className="w-5 h-5" />
+          </Button>
         </div>
       </div>
     </header>
+    <SidebarNav ref={sidebarRef} />
     </>
   );
 };
