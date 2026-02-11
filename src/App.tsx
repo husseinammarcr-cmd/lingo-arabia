@@ -42,7 +42,7 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import CookiePolicy from "./pages/CookiePolicy";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import Certificate from "./pages/Certificate";
-import SidebarNav from "./components/SidebarNav";
+
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
@@ -65,7 +65,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <CookieConsentBanner />
-                <SidebarNav />
+                
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
