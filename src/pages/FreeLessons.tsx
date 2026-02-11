@@ -4,6 +4,7 @@ import { Book, ChevronLeft, GraduationCap, Star, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CURRICULUM } from '@/lib/curriculum';
 import { useAuth } from '@/contexts/AuthContext';
 // Get first lesson of each unit for public preview
@@ -183,62 +184,65 @@ const FreeLessons = () => {
           </div>
         </section>
 
-        {/* Lessons by Level */}
+        {/* Lessons by Level - Accordion */}
         <section className="py-12 md:py-16">
-          <div className="container mx-auto px-4">
-            <div className="space-y-12">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="text-2xl font-bold text-center mb-8">تصفح الدروس حسب المستوى</h2>
+            <Accordion type="single" collapsible className="space-y-3">
               {freeLessons.map((level) => (
-                <div key={level.levelCode} className="space-y-6">
-                  {/* Level Header */}
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center text-white font-bold text-lg`}>
-                      {level.levelCode}
+                <AccordionItem 
+                  key={level.levelCode} 
+                  value={level.levelCode}
+                  className="border rounded-xl overflow-hidden bg-card shadow-sm"
+                >
+                  <AccordionTrigger className="px-5 py-4 hover:no-underline hover:bg-muted/50">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className={`w-11 h-11 rounded-lg bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
+                        {level.levelCode}
+                      </div>
+                      <div className="text-right flex-1">
+                        <p className="font-semibold text-base">{level.levelTitleAr}</p>
+                        <p className="text-xs text-muted-foreground ltr-text">{level.levelTitleEn}</p>
+                      </div>
+                      <Badge variant="outline" className="shrink-0">
+                        {level.units.length} درس
+                      </Badge>
                     </div>
-                    <div>
-                      <h2 className="text-xl md:text-2xl font-bold">{level.levelTitleAr}</h2>
-                      <p className="text-muted-foreground ltr-text">{level.levelTitleEn}</p>
-                    </div>
-                    <Badge variant="outline" className="mr-auto">
-                      {level.units.length} درس
-                    </Badge>
-                  </div>
-
-                  {/* Lessons Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {level.units.map((unit) => (
-                      <Link
-                        key={unit.lessonId}
-                        to={`/preview/lesson/${unit.lessonId}`}
-                        className="block"
-                      >
-                        <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                          <CardHeader className="pb-2">
-                            <div className="flex items-start justify-between">
-                              <CardTitle className="text-base font-semibold group-hover:text-primary transition-colors">
-                                {unit.unitTitleAr}
-                              </CardTitle>
-                              <Badge variant="secondary" className="flex items-center gap-1 shrink-0">
+                  </AccordionTrigger>
+                  <AccordionContent className="px-5 pb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      {level.units.map((unit) => (
+                        <Link
+                          key={unit.lessonId}
+                          to={`/preview/lesson/${unit.lessonId}`}
+                          className="block"
+                        >
+                          <Card className="h-full hover:shadow-md transition-all duration-200 hover:border-primary/30 group">
+                            <CardContent className="p-4 flex items-center gap-3">
+                              <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center shrink-0 opacity-80`}>
+                                <Book className="w-4 h-4 text-white" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm group-hover:text-primary transition-colors truncate">
+                                  {unit.unitTitleAr}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate ltr-text">
+                                  {unit.lessonTitleEn}
+                                </p>
+                              </div>
+                              <Badge variant="secondary" className="flex items-center gap-1 shrink-0 text-xs">
                                 <Star className="w-3 h-3" />
                                 {unit.xpReward}
                               </Badge>
-                            </div>
-                          </CardHeader>
-                          <CardContent>
-                            <p className="text-sm text-muted-foreground ltr-text mb-3">
-                              {unit.unitTitleEn}
-                            </p>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <Book className="w-3 h-3" />
-                              <span>{unit.lessonTitleAr}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         </section>
 
