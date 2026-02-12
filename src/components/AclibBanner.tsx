@@ -10,6 +10,7 @@ declare global {
   interface Window {
     aclib?: {
       runBanner: (config: { zoneId: string }) => void;
+      runInterstitial: (config: { zoneId: string }) => void;
     };
   }
 }
