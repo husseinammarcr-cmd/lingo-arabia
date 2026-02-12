@@ -117,7 +117,7 @@ const CourseUnit = () => {
   const colors = levelColors[level.code] || levelColors['A1'];
 
   return (
-    <div className="min-h-screen bg-gradient-hero" dir="rtl">
+    <div className="min-h-screen bg-gradient-hero overflow-x-hidden" dir="rtl">
       {/* Header */}
       <Header showBack showUserInfo />
 

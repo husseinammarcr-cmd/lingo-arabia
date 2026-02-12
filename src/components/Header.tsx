@@ -23,7 +23,7 @@ const Header = ({ showBack = false, showUserInfo = false, showAuthButton = false
   return (
     <>
       {showUserInfo && <EmailVerificationBanner />}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border overflow-visible">
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border overflow-x-hidden">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {showBack && (
