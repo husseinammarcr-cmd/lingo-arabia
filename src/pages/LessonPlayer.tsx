@@ -18,15 +18,6 @@ import { MiniConfetti } from '@/components/animations/MiniConfetti';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { toast } from 'sonner';
 
-declare global {
-  interface Window {
-    aclib?: {
-      runBanner: (config: { zoneId: string }) => void;
-      runInterstitial: (config: { zoneId: string }) => void;
-    };
-  }
-}
-
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
 interface LessonProgress {
@@ -101,12 +92,6 @@ const LessonPlayer = () => {
   const initializedRef = useRef(false);
   const lessonIdRef = useRef(lessonId);
 
-  // Show interstitial ad when lesson opens
-  useEffect(() => {
-    if (window.aclib) {
-      window.aclib.runInterstitial({ zoneId: '10967390' });
-    }
-  }, []);
   
   // Load saved progress or use defaults
   const savedProgress = lessonId ? loadProgress(lessonId) : null;
