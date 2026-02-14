@@ -44,6 +44,7 @@ import VerifyCertificate from "./pages/VerifyCertificate";
 import Certificate from "./pages/Certificate";
 
 import CookieConsentBanner from "./components/CookieConsentBanner";
+import InterstitialAd from "./components/InterstitialAd";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <CookieConsentBanner />
+                <InterstitialAd />
                 
                 <Routes>
                   <Route path="/" element={<Index />} />
