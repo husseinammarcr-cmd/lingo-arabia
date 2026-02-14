@@ -23,6 +23,7 @@ import { TiltCard } from '@/components/animations/TiltCard';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
+import PrizeTicker from '@/components/PrizeTicker';
 
 
 // Static Course JSON-LD schema for SEO
@@ -189,6 +190,7 @@ const AppCourses = () => {
       <div dir="rtl">
       {/* Header */}
       <Header showUserInfo />
+      <PrizeTicker />
 
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Placement Test Required Banner - Shows when user hasn't taken the test */}
