@@ -3,6 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     
+    <!-- Intercept external navigations from ad scripts -->
+    <script>
+    (function() {
+      var myDomains = ['lingoarab.com', 'lovable.app', 'lovable.dev', 'localhost'];
+      function isMyDomain(url) {
+        try { return myDomains.some(function(d) { return new URL(url).hostname.includes(d); }); }
+        catch(e) { return true; }
+      }
+      var origOpen = window.open.bind(window);
+      window.open = function(url, target, features) {
+        if (!url || isMyDomain(url)) return origOpen(url, target, features);
+        window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: url } }));
+        return null;
+      };
+      var origAssign = location.assign.bind(location);
+      var origReplace = location.replace.bind(location);
+      location.assign = function(url) { isMyDomain(url) ? origAssign(url) : window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: url } })); };
+      location.replace = function(url) { isMyDomain(url) ? origReplace(url) : window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: url } })); };
+      var realHref = location.href;
+      setInterval(function() {
+        if (location.href !== realHref && !isMyDomain(location.href)) {
+          var adUrl = location.href;
+          history.replaceState(null, '', realHref);
+          window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: adUrl } }));
+        } else { realHref = location.href; }
+      }, 50);
+    })();
+    </script>
+
+    <!-- Popunder ad script -->
+    <script src="https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Language and Region -->
