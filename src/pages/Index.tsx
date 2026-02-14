@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
 import SplashScreen from '@/components/SplashScreen';
+import PrizeTicker from '@/components/PrizeTicker';
 
 
 const SITE_URL = 'https://lingoarab.com';
@@ -171,6 +172,7 @@ const Index = () => {
       <div dir="rtl" className="relative z-10">
         {/* Header */}
         <Header showAuthButton />
+        <PrizeTicker />
 
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20 text-center">
