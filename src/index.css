@@ -354,12 +354,13 @@
     animation: shake 0.5s ease-in-out;
   }
 
-  @keyframes marquee-loop {
+  @keyframes ticker-scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
 
-  .animate-marquee-loop {
-    animation: marquee-loop 25s linear infinite;
+  .ticker-track {
+    animation: ticker-scroll 30s linear infinite;
+    will-change: transform;
   }
 }
