@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import AdBanner from '@/components/AdBanner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLevelByCode, getUnitById } from '@/lib/curriculum';
@@ -122,6 +123,7 @@ const CourseUnit = () => {
       <Header showBack showUserInfo />
 
       <main className="container mx-auto px-4 py-6 max-w-2xl">
+        <AdBanner className="mb-6" />
         {/* Unit Header */}
         <FadeUp>
           <div className="mb-8 text-center">

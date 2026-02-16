@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import AdBanner from '@/components/AdBanner';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLevelByCode } from '@/lib/curriculum';
@@ -317,6 +318,7 @@ const CourseLevel = () => {
       <Header showBack showUserInfo />
 
       <main className="container mx-auto px-4 py-6 max-w-2xl">
+        <AdBanner className="mb-6" />
         {/* Level Header */}
         <div className="mb-8 text-center">
           <span className={cn("inline-block text-sm font-bold px-3 py-1 rounded-full mb-3", colors.accent, colors.text)}>
