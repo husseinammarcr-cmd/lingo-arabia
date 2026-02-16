@@ -12,17 +12,19 @@ const AdBanner = ({ className }: AdBannerProps) => {
     if (loadedRef.current || !containerRef.current) return;
     loadedRef.current = true;
 
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('data-aa', '2407488');
-    iframe.src = '//ad.a-ads.com/2407488?size=468x60';
-    iframe.style.width = '468px';
-    iframe.style.height = '60px';
-    iframe.style.border = '0';
-    iframe.style.padding = '0';
-    iframe.style.overflow = 'hidden';
-    iframe.style.backgroundColor = 'transparent';
-    iframe.loading = 'lazy';
-    containerRef.current.appendChild(iframe);
+    // Set atOptions on window
+    (window as any).atOptions = {
+      key: '8f0447ac83949ef99f1e15a0e4b8d2e7',
+      format: 'iframe',
+      height: 60,
+      width: 468,
+      params: {},
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://www.highperformanceformat.com/8f0447ac83949ef99f1e15a0e4b8d2e7/invoke.js';
+    script.async = true;
+    containerRef.current.appendChild(script);
   }, []);
 
   return (
