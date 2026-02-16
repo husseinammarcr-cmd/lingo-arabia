@@ -686,6 +686,7 @@ const LessonPlayer = () => {
   const renderPracticeSection = () => {
     const exercise = lessonContent.exercises[practiceIndex];
     return (
+      <>
       <AnimatePresence mode="wait">
         <motion.div
           key={practiceExerciseKey}
@@ -712,6 +713,8 @@ const LessonPlayer = () => {
           />
         </motion.div>
       </AnimatePresence>
+      <AdBanner className="mt-4" />
+      </>
     );
   };
 
@@ -719,6 +722,7 @@ const LessonPlayer = () => {
   const renderQuizSection = () => {
     const quiz = lessonContent.quiz[quizIndex];
     return (
+      <>
       <AnimatePresence mode="wait">
         <motion.div
           key={quizExerciseKey}
@@ -745,6 +749,8 @@ const LessonPlayer = () => {
           />
         </motion.div>
       </AnimatePresence>
+      <AdBanner className="mt-4" />
+      </>
     );
   };
 
