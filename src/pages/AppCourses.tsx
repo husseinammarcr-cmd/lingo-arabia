@@ -24,6 +24,7 @@ import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
 import PrizeTicker from '@/components/PrizeTicker';
+import AdBanner from '@/components/AdBanner';
 
 
 // Static Course JSON-LD schema for SEO
@@ -273,6 +274,8 @@ const AppCourses = () => {
           </div>
         </FadeUp>
 
+        {/* Ad Banner */}
+        <AdBanner className="mb-6" />
 
         {/* Levels Grid */}
         <StaggerContainer className="grid gap-6 md:grid-cols-2">
