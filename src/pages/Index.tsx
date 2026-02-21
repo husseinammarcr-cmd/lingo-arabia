@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState, useEffect } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import { motion } from 'framer-motion';
 import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
-import SplashScreen from '@/components/SplashScreen';
+
 import PrizeTicker from '@/components/PrizeTicker';
 import AdBanner from '@/components/AdBanner';
 
@@ -79,16 +79,6 @@ FeatureCard.displayName = 'FeatureCard';
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [showSplash, setShowSplash] = useState(() => {
-    // Check if user has already seen splash in this session
-    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
-    return !hasSeenSplash;
-  });
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('hasSeenSplash', 'true');
-    setShowSplash(false);
-  };
 
   const features = [
     { 
@@ -141,7 +131,7 @@ const Index = () => {
 
   return (
     <>
-      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
+      
       <PageBackground>
       <Helmet>
         <title>Lingo Arab – تعلم الإنجليزية مجانا</title>
