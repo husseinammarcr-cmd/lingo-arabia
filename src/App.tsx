@@ -44,7 +44,7 @@ import VerifyCertificate from "./pages/VerifyCertificate";
 import Certificate from "./pages/Certificate";
 import WeeklyPrize from "./pages/WeeklyPrize";
 
-import CookieConsentBanner from "./components/CookieConsentBanner";
+
 import InterstitialAd from "./components/InterstitialAd";
 
 const queryClient = new QueryClient();
@@ -66,7 +66,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <CookieConsentBanner />
+                
                 <InterstitialAd />
                 
                 <Routes>
