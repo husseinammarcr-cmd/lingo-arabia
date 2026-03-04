@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-const POPUNDER_SCRIPT_URL = 'https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js';
-
 const InterstitialAd = () => {
   const { user } = useAuth();
   const [adUrl, setAdUrl] = useState<string | null>(null);
@@ -11,20 +9,21 @@ const InterstitialAd = () => {
   const [countdown, setCountdown] = useState(5);
   const scriptLoadedRef = useRef(false);
 
-  // Load popunder script only for authenticated users
+  // Load popunder script via proxy only for authenticated users
   useEffect(() => {
     if (!user || scriptLoadedRef.current) return;
     scriptLoadedRef.current = true;
 
+    const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/serve-script?t=pop`;
     const script = document.createElement('script');
-    script.src = POPUNDER_SCRIPT_URL;
+    script.src = proxyUrl;
     script.async = true;
     document.head.appendChild(script);
   }, [user]);
 
   useEffect(() => {
     const handler = (e: Event) => {
-      if (!user) return; // Extra guard
+      if (!user) return;
       const detail = (e as CustomEvent).detail;
       if (detail?.url) {
         setAdUrl(detail.url);
@@ -53,7 +52,6 @@ const InterstitialAd = () => {
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
       dir="ltr"
     >
-      {/* Close / Countdown */}
       {canClose ? (
         <button
           onClick={() => setAdUrl(null)}
@@ -68,9 +66,7 @@ const InterstitialAd = () => {
         </div>
       )}
 
-      {/* Mini Browser */}
       <div className="w-full max-w-3xl h-[80vh] rounded-xl overflow-hidden shadow-2xl border border-border bg-background flex flex-col">
-        {/* Browser Header */}
         <div className="flex items-center gap-2 px-4 py-2.5 bg-muted border-b border-border shrink-0">
           <div className="flex gap-1.5">
             <span className="w-3 h-3 rounded-full bg-red-500" />
@@ -82,7 +78,6 @@ const InterstitialAd = () => {
           </div>
         </div>
 
-        {/* Iframe */}
         <iframe
           src={adUrl}
           className="flex-1 w-full border-0"
