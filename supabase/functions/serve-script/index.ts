@@ -45,7 +45,15 @@ serve(async (req) => {
     
     let scriptContent = await response.text();
 
+    console.log("serve-script", {
+      type,
+      targetUrl,
+      upstreamStatus: response.status,
+      contentLength: scriptContent.length,
+    });
+
     return new Response(scriptContent, {
+      status: response.ok ? 200 : response.status,
       headers: {
         ...corsHeaders,
         "Content-Type": "application/javascript",
