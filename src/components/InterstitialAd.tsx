@@ -31,7 +31,7 @@ const InterstitialAd = () => {
     return () => clearTimeout(t);
   }, [adUrl, countdown]);
 
-  if (!adUrl) return null;
+  if (!user || !adUrl) return null;
 
   return (
     <div
