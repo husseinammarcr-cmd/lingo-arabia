@@ -3,6 +3,8 @@ import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PROXY_BASE = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || 'qrbrilfuchxojsofzqwm'}.supabase.co/functions/v1/serve-script`;
+
+const InterstitialAd = () => {
   const { user } = useAuth();
   const [adUrl, setAdUrl] = useState<string | null>(null);
   const [canClose, setCanClose] = useState(false);
