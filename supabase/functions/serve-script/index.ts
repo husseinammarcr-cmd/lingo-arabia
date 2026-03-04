@@ -1,27 +1,49 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-serve(async (req) => {
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, authorization, x-client-info, apikey, content-type",
+};
 
+// Allowlist of ad script URLs mapped by short keys
+const SCRIPT_MAP: Record<string, string> = {
+  // Banner ad invoke script
+  "banner": "https://www.highperformanceformat.com/{id}/invoke.js",
+  // Popunder script
+  "pop": "https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js",
+  // AdSense
+  "adsense": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2521379140148689",
+};
+
+serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const url = new URL(req.url);
+    const type = url.searchParams.get("t") || "banner";
     const scriptKey = url.searchParams.get("k");
-    
-    if (!scriptKey) {
-      return new Response("Missing parameter", { status: 400, headers: corsHeaders });
+
+    let targetUrl: string;
+
+    if (type === "banner" && scriptKey) {
+      targetUrl = SCRIPT_MAP["banner"].replace("{id}", scriptKey);
+    } else if (SCRIPT_MAP[type]) {
+      targetUrl = SCRIPT_MAP[type];
+    } else {
+      return new Response("Invalid type", { status: 400, headers: corsHeaders });
     }
 
-    const targetUrl = `https://www.highperformanceformat.com/${scriptKey}/invoke.js`;
-    const response = await fetch(targetUrl);
-    const scriptContent = await response.text();
+    const response = await fetch(targetUrl, {
+      headers: {
+        "User-Agent": req.headers.get("user-agent") || "Mozilla/5.0",
+        "Referer": req.headers.get("referer") || "https://lingoarab.com/",
+      },
+    });
+    
+    let scriptContent = await response.text();
 
     return new Response(scriptContent, {
       headers: {
