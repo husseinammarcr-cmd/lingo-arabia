@@ -4,12 +4,49 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const PROXY_BASE = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || 'qrbrilfuchxojsofzqwm'}.supabase.co/functions/v1/serve-script`;
 
+const MY_DOMAINS = ['lingoarab.com', 'lovable.app', 'lovable.dev', 'localhost'];
+const isMyDomain = (url: string) => {
+  try { return MY_DOMAINS.some(d => new URL(url).hostname.includes(d)); }
+  catch { return true; }
+};
+
 const InterstitialAd = () => {
   const { user } = useAuth();
   const [adUrl, setAdUrl] = useState<string | null>(null);
   const [canClose, setCanClose] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const scriptLoadedRef = useRef(false);
+  const interceptInstalledRef = useRef(false);
+
+  // Install navigation interception ONLY for authenticated users
+  useEffect(() => {
+    if (!user || interceptInstalledRef.current) return;
+    interceptInstalledRef.current = true;
+
+    const origOpen = window.open.bind(window);
+    window.open = function (url?: string | URL, target?: string, features?: string) {
+      const urlStr = url?.toString() || '';
+      if (!urlStr || isMyDomain(urlStr)) return origOpen(urlStr, target, features);
+      window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
+      return null;
+    } as typeof window.open;
+
+    const origAssign = location.assign.bind(location);
+    const origReplace = location.replace.bind(location);
+    location.assign = (url: string | URL) => { const s = url.toString(); isMyDomain(s) ? origAssign(s) : window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: s } })); };
+    location.replace = (url: string | URL) => { const s = url.toString(); isMyDomain(s) ? origReplace(s) : window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: s } })); };
+
+    let realHref = location.href;
+    const interval = setInterval(() => {
+      if (location.href !== realHref && !isMyDomain(location.href)) {
+        const adUrl = location.href;
+        history.replaceState(null, '', realHref);
+        window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: adUrl } }));
+      } else { realHref = location.href; }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [user]);
 
   // Load popunder script via proxy only for authenticated users
   useEffect(() => {
