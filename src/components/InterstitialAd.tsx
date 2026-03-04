@@ -1,15 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+
+const POPUNDER_SCRIPT_URL = 'https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js';
 
 const InterstitialAd = () => {
   const { user } = useAuth();
   const [adUrl, setAdUrl] = useState<string | null>(null);
   const [canClose, setCanClose] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const scriptLoadedRef = useRef(false);
+
+  // Load popunder script only for authenticated users
+  useEffect(() => {
+    if (!user || scriptLoadedRef.current) return;
+    scriptLoadedRef.current = true;
+
+    const script = document.createElement('script');
+    script.src = POPUNDER_SCRIPT_URL;
+    script.async = true;
+    document.head.appendChild(script);
+  }, [user]);
 
   useEffect(() => {
     const handler = (e: Event) => {
+      if (!user) return; // Extra guard
       const detail = (e as CustomEvent).detail;
       if (detail?.url) {
         setAdUrl(detail.url);
@@ -19,7 +34,7 @@ const InterstitialAd = () => {
     };
     window.addEventListener('show-interstitial', handler);
     return () => window.removeEventListener('show-interstitial', handler);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (!adUrl) return;
