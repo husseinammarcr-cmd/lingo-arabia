@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-const InterstitialAd = () => {
+const PROXY_BASE = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || 'qrbrilfuchxojsofzqwm'}.supabase.co/functions/v1/serve-script`;
   const { user } = useAuth();
   const [adUrl, setAdUrl] = useState<string | null>(null);
   const [canClose, setCanClose] = useState(false);
@@ -14,7 +14,7 @@ const InterstitialAd = () => {
     if (!user || scriptLoadedRef.current) return;
     scriptLoadedRef.current = true;
 
-    const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/serve-script?t=pop&v=2`;
+    const proxyUrl = `${PROXY_BASE}?t=pop&v=2`;
     const script = document.createElement('script');
     script.src = proxyUrl;
     script.async = true;
