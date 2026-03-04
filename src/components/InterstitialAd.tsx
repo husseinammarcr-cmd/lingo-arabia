@@ -14,7 +14,7 @@ const InterstitialAd = () => {
     if (!user || scriptLoadedRef.current) return;
     scriptLoadedRef.current = true;
 
-    const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/serve-script?t=pop`;
+    const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/serve-script?t=pop&v=2`;
     const script = document.createElement('script');
     script.src = proxyUrl;
     script.async = true;

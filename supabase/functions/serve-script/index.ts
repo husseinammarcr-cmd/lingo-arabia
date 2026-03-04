@@ -3,56 +3,84 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Allowlist of ad script URLs mapped by short keys
-const SCRIPT_MAP: Record<string, string> = {
-  // Banner ad invoke script
-  "banner": "https://www.highperformanceformat.com/{id}/invoke.js",
-  // Popunder script
-  "pop": "https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js",
-  // AdSense
-  "adsense": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2521379140148689",
-};
+const POPUNDER_URL = "https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js";
+const ADSENSE_URL = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2521379140148689";
+
+const jsResponse = (code: string) =>
+  new Response(code, {
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/javascript; charset=utf-8",
+      "Cache-Control": "public, max-age=300",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
     const url = new URL(req.url);
     const type = url.searchParams.get("t") || "banner";
-    const scriptKey = url.searchParams.get("k");
+    const key = url.searchParams.get("k") || "";
 
-    let targetUrl: string;
+    if (type === "banner") {
+      if (!/^[a-z0-9]{16,64}$/i.test(key)) {
+        return new Response("Invalid banner key", { status: 400, headers: corsHeaders });
+      }
 
-    if (type === "banner" && scriptKey) {
-      targetUrl = SCRIPT_MAP["banner"].replace("{id}", scriptKey);
-    } else if (SCRIPT_MAP[type]) {
-      targetUrl = SCRIPT_MAP[type];
-    } else {
-      return new Response("Invalid type", { status: 400, headers: corsHeaders });
+      const target = `https://www.highperformanceformat.com/${key}/invoke.js`;
+      const bootstrap = `
+(function () {
+  try {
+    var s = document.createElement('script');
+    s.src = ${JSON.stringify(target)};
+    s.async = true;
+    var parent = document.currentScript && document.currentScript.parentNode;
+    (parent || document.head || document.documentElement).appendChild(s);
+  } catch (_) {}
+})();`;
+
+      return jsResponse(bootstrap);
     }
 
-    const response = await fetch(targetUrl, {
-      headers: {
-        "User-Agent": req.headers.get("user-agent") || "Mozilla/5.0",
-        "Referer": req.headers.get("referer") || "https://lingoarab.com/",
-      },
-    });
-    
-    let scriptContent = await response.text();
+    if (type === "pop") {
+      const bootstrap = `
+(function () {
+  try {
+    var s = document.createElement('script');
+    s.src = ${JSON.stringify(POPUNDER_URL)};
+    s.async = true;
+    (document.head || document.documentElement).appendChild(s);
+  } catch (_) {}
+})();`;
 
-    return new Response(scriptContent, {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/javascript",
-        "Cache-Control": "public, max-age=3600",
-      },
-    });
+      return jsResponse(bootstrap);
+    }
+
+    if (type === "adsense") {
+      const bootstrap = `
+(function () {
+  try {
+    var s = document.createElement('script');
+    s.src = ${JSON.stringify(ADSENSE_URL)};
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    (document.head || document.documentElement).appendChild(s);
+  } catch (_) {}
+})();`;
+
+      return jsResponse(bootstrap);
+    }
+
+    return new Response("Invalid type", { status: 400, headers: corsHeaders });
   } catch (error) {
+    console.error("serve-script error", error);
     return new Response("Error", { status: 500, headers: corsHeaders });
   }
 });
