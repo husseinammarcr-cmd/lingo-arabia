@@ -11,7 +11,6 @@ import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
 
 import PrizeTicker from '@/components/PrizeTicker';
-import AdBanner from '@/components/AdBanner';
 
 
 const SITE_URL = 'https://lingoarab.com';
@@ -207,9 +206,6 @@ const Index = () => {
             </div>
           </div>
         </section>
-
-        {/* Ad Banner - only for logged in users */}
-        {user && <AdBanner />}
 
         {/* Feature Cards Section */}
         <section className="container mx-auto px-4 py-12 md:py-16">
