@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const InterstitialAd = () => {
+  const { user } = useAuth();
   const [adUrl, setAdUrl] = useState<string | null>(null);
   const [canClose, setCanClose] = useState(false);
   const [countdown, setCountdown] = useState(5);
