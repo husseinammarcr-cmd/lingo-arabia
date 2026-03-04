@@ -5,6 +5,7 @@ interface AdBannerProps {
 }
 
 const AD_KEY = '8f0447ac83949ef99f1e15a0e4b8d2e7';
+const PROXY_BASE = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || 'qrbrilfuchxojsofzqwm'}.supabase.co/functions/v1/serve-script`;
 
 const AdBanner = ({ className }: AdBannerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,7 @@ const AdBanner = ({ className }: AdBannerProps) => {
     };
 
     // Always load via proxy to avoid ad domain detection
-    const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/serve-script?t=banner&k=${AD_KEY}&v=2`;
+    const proxyUrl = `${PROXY_BASE}?t=banner&k=${AD_KEY}&v=2`;
     
     const script = document.createElement('script');
     script.src = proxyUrl;
