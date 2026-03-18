@@ -95,11 +95,10 @@ const InterstitialAd = () => {
       });
     } catch (e) {}
 
-    // Load the popunder script
+    // Load the popunder script immediately
     try {
       const script = document.createElement('script');
       script.src = POPUNDER_URL;
-      script.async = true;
       document.head.appendChild(script);
     } catch (e) {
       console.log('Popunder script skipped');
