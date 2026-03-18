@@ -169,7 +169,7 @@ const LessonPlayer = () => {
   }, [lessonContent, quizScore, quizTotal, passingThreshold]);
 
   // Ref to track the save timeout
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // Cleanup timeout on unmount
   useEffect(() => {

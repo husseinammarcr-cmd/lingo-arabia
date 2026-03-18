@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import { motion } from 'framer-motion';
 import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
+import AdBanner from '@/components/AdBanner';
 
 import PrizeTicker from '@/components/PrizeTicker';
 
@@ -163,7 +164,7 @@ const Index = () => {
         {/* Header */}
         <Header showAuthButton />
         <PrizeTicker />
-
+        <AdBanner className="mb-4" />
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20 text-center">
           <div className="max-w-3xl mx-auto">
