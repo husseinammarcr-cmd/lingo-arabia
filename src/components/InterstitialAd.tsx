@@ -62,29 +62,42 @@ const InterstitialAd = () => {
       return null;
     };
 
-    // Override location.assign
-    const origAssign = location.assign.bind(location);
-    location.assign = (url: string | URL) => {
-      const urlStr = url.toString();
-      if (isMyDomain(urlStr)) {
-        origAssign(urlStr);
-      } else {
-        window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
-      }
-    };
+    // Try to override location methods (may fail in strict environments)
+    try {
+      const origAssign = location.assign.bind(location);
+      Object.defineProperty(location, 'assign', {
+        value: (url: string | URL) => {
+          const urlStr = url.toString();
+          if (isMyDomain(urlStr)) {
+            origAssign(urlStr);
+          } else {
+            window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
+          }
+        },
+        writable: true,
+        configurable: true
+      });
+    } catch (e) {
+      console.log('Could not override location.assign');
+    }
 
-    // Override location.replace
-    const origReplace = location.replace.bind(location);
-    location.replace = (url: string | URL) => {
-      const urlStr = url.toString();
-      if (isMyDomain(urlStr)) {
-        origReplace(urlStr);
-      } else {
-        window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
-      }
-    };
-
-    // Monitor location.href changes
+    try {
+      const origReplace = location.replace.bind(location);
+      Object.defineProperty(location, 'replace', {
+        value: (url: string | URL) => {
+          const urlStr = url.toString();
+          if (isMyDomain(urlStr)) {
+            origReplace(urlStr);
+          } else {
+            window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
+          }
+        },
+        writable: true,
+        configurable: true
+      });
+    } catch (e) {
+      console.log('Could not override location.replace');
+    }
     let lastHref = location.href;
     const hrefChecker = setInterval(() => {
       if (location.href !== lastHref) {
