@@ -11,50 +11,8 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  const url = new URL(req.url);
-  const type = url.searchParams.get("type") || "popunder";
-
-  try {
-    let scriptContent = "";
-
-    if (type === "banner") {
-      // Banner ad script
-      scriptContent = `
-        (function() {
-          try {
-            var s = document.createElement('script');
-            s.src = 'https://highperformanceformat.com/act/files/tag.min.js?z=8416498';
-            s.setAttribute('data-cfasync', 'false');
-            s.async = true;
-            document.currentScript.parentNode.appendChild(s);
-          } catch(e) {}
-        })();
-      `;
-    } else {
-      // Popunder ad script
-      scriptContent = `
-        (function() {
-          try {
-            var s = document.createElement('script');
-            s.src = 'https://effectivegatecpm.com/act/files/tag.min.js?z=8416504';
-            s.setAttribute('data-cfasync', 'false');
-            s.async = true;
-            document.head.appendChild(s);
-          } catch(e) {}
-        })();
-      `;
-    }
-
-    return new Response(scriptContent, {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/javascript",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-      },
-    });
-  } catch (error) {
-    return new Response("// error", {
-      headers: { ...corsHeaders, "Content-Type": "application/javascript" },
-    });
-  }
+  // Function kept as placeholder - ads now loaded directly in components
+  return new Response("// no-op", {
+    headers: { ...corsHeaders, "Content-Type": "application/javascript" },
+  });
 });

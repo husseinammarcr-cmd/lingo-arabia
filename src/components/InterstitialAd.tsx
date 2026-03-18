@@ -1,157 +1,168 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { X } from 'lucide-react';
+
+const POPUNDER_URL = 'https://pl28568529.effectivegatecpm.com/49/32/04/493204385b6c8fd92119aadfe195e983.js';
 
 const InterstitialAd = () => {
   const { user } = useAuth();
-  const interceptInstalledRef = useRef(false);
-  const [showAd, setShowAd] = useState(false);
-  const [adUrl, setAdUrl] = useState('');
+  const scriptLoadedRef = useRef(false);
+  const hasShownRef = useRef(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [canClose, setCanClose] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  const [adPageUrl, setAdPageUrl] = useState('');
 
-  // Load ad scripts via edge function proxy
+  // Load popunder script for authenticated users
   useEffect(() => {
-    if (!user) return;
+    if (!user || scriptLoadedRef.current) return;
+    scriptLoadedRef.current = true;
 
-    const loadAdScript = async () => {
-      try {
-        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-        const script = document.createElement('script');
-        script.src = `https://${projectId}.supabase.co/functions/v1/serve-script?t=${Date.now()}`;
-        script.async = true;
-        document.head.appendChild(script);
-      } catch (e) {
-        console.log('Ad script load skipped');
-      }
-    };
-
-    loadAdScript();
-  }, [user]);
-
-  // Navigation interception - only for authenticated users
-  useEffect(() => {
-    if (!user || interceptInstalledRef.current) return;
-    interceptInstalledRef.current = true;
-
-    const MY_DOMAINS = [
-      'lingoarab.com',
-      'lovable.app',
-      'lovable.dev',
-      'supabase.co',
-      'google.com',
-      'googletagmanager.com',
-      'google-analytics.com',
-      'googleapis.com'
-    ];
-
-    const isMyDomain = (url: string) => {
-      try {
-        const hostname = new URL(url).hostname;
-        return MY_DOMAINS.some(d => hostname === d || hostname.endsWith('.' + d));
-      } catch {
-        return true; // relative URLs are safe
-      }
-    };
-
-    // Override window.open
+    // Intercept window.open to capture the popunder URL
     const origOpen = window.open.bind(window);
     window.open = (url?: string | URL, target?: string, features?: string) => {
       const urlStr = url?.toString() || '';
-      if (!urlStr || isMyDomain(urlStr)) {
+      
+      // Allow our own domains
+      const safeDomains = ['lingoarab.com', 'lovable.app', 'lovable.dev', 'supabase.co', 'google.com', 'googleapis.com', 'googletagmanager.com', 'google-analytics.com'];
+      try {
+        const hostname = new URL(urlStr).hostname;
+        const isSafe = safeDomains.some(d => hostname === d || hostname.endsWith('.' + d));
+        if (isSafe || !urlStr) {
+          return origOpen(urlStr, target, features);
+        }
+      } catch {
         return origOpen(urlStr, target, features);
       }
-      window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
+
+      // Instead of opening a new window, show in-app overlay
+      if (!hasShownRef.current) {
+        hasShownRef.current = true;
+        setAdPageUrl(urlStr);
+        setShowOverlay(true);
+        setCanClose(false);
+        setCountdown(5);
+      }
       return null;
     };
 
-    // Try to override location methods (may fail in strict environments)
+    // Also intercept location changes
     try {
       const origAssign = location.assign.bind(location);
       Object.defineProperty(location, 'assign', {
         value: (url: string | URL) => {
           const urlStr = url.toString();
-          if (isMyDomain(urlStr)) {
-            origAssign(urlStr);
-          } else {
-            window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
+          const safeDomains = ['lingoarab.com', 'lovable.app', 'lovable.dev', 'supabase.co'];
+          try {
+            const hostname = new URL(urlStr).hostname;
+            const isSafe = safeDomains.some(d => hostname === d || hostname.endsWith('.' + d));
+            if (isSafe) { origAssign(urlStr); return; }
+          } catch { origAssign(urlStr); return; }
+          
+          if (!hasShownRef.current) {
+            hasShownRef.current = true;
+            setAdPageUrl(urlStr);
+            setShowOverlay(true);
+            setCanClose(false);
+            setCountdown(5);
           }
         },
-        writable: true,
-        configurable: true
+        writable: true, configurable: true
       });
-    } catch (e) {
-      console.log('Could not override location.assign');
-    }
+    } catch (e) {}
 
     try {
       const origReplace = location.replace.bind(location);
       Object.defineProperty(location, 'replace', {
         value: (url: string | URL) => {
           const urlStr = url.toString();
-          if (isMyDomain(urlStr)) {
-            origReplace(urlStr);
-          } else {
-            window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: urlStr } }));
+          const safeDomains = ['lingoarab.com', 'lovable.app', 'lovable.dev', 'supabase.co'];
+          try {
+            const hostname = new URL(urlStr).hostname;
+            const isSafe = safeDomains.some(d => hostname === d || hostname.endsWith('.' + d));
+            if (isSafe) { origReplace(urlStr); return; }
+          } catch { origReplace(urlStr); return; }
+          
+          if (!hasShownRef.current) {
+            hasShownRef.current = true;
+            setAdPageUrl(urlStr);
+            setShowOverlay(true);
+            setCanClose(false);
+            setCountdown(5);
           }
         },
-        writable: true,
-        configurable: true
+        writable: true, configurable: true
       });
+    } catch (e) {}
+
+    // Load the popunder script
+    try {
+      const script = document.createElement('script');
+      script.src = POPUNDER_URL;
+      script.async = true;
+      document.head.appendChild(script);
     } catch (e) {
-      console.log('Could not override location.replace');
+      console.log('Popunder script skipped');
     }
-    let lastHref = location.href;
-    const hrefChecker = setInterval(() => {
-      if (location.href !== lastHref) {
-        const newHref = location.href;
-        if (!isMyDomain(newHref)) {
-          history.replaceState(null, '', lastHref);
-          window.dispatchEvent(new CustomEvent('show-interstitial', { detail: { url: newHref } }));
-        } else {
-          lastHref = newHref;
-        }
-      }
-    }, 50);
-
-    // Listen for interstitial events
-    const handleShowInterstitial = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.url) {
-        setAdUrl(detail.url);
-        setShowAd(true);
-      }
-    };
-    window.addEventListener('show-interstitial', handleShowInterstitial);
-
-    return () => {
-      clearInterval(hrefChecker);
-      window.removeEventListener('show-interstitial', handleShowInterstitial);
-    };
   }, [user]);
 
-  if (!showAd) return null;
+  // Countdown timer
+  useEffect(() => {
+    if (!showOverlay) return;
+    
+    if (countdown <= 0) {
+      setCanClose(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [showOverlay, countdown]);
+
+  // Reset for next click after closing
+  const handleClose = () => {
+    setShowOverlay(false);
+    setAdPageUrl('');
+    // Allow showing again on next click
+    setTimeout(() => {
+      hasShownRef.current = false;
+    }, 30000); // 30 seconds cooldown before showing again
+  };
+
+  if (!showOverlay || !adPageUrl) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-background/90 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-6 text-center">
-        <p className="text-lg font-bold text-foreground mb-4">جاري التحميل...</p>
-        <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center mb-4">
-          <p className="text-muted-foreground text-sm">مساحة إعلانية</p>
+    <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative w-full max-w-lg h-[70vh] bg-card rounded-2xl shadow-2xl overflow-hidden border border-border flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 bg-muted/50 border-b border-border">
+          <span className="text-sm text-muted-foreground">إعلان</span>
+          {canClose ? (
+            <button
+              onClick={handleClose}
+              className="flex items-center gap-1 px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <X className="w-4 h-4" />
+              إغلاق
+            </button>
+          ) : (
+            <span className="px-3 py-1.5 bg-muted text-muted-foreground rounded-lg text-sm">
+              إغلاق بعد {countdown} ثوانٍ
+            </span>
+          )}
         </div>
-        <div className="flex gap-3 justify-center">
-          <button
-            onClick={() => {
-              setShowAd(false);
-              window.open(adUrl, '_blank');
-            }}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm"
-          >
-            متابعة
-          </button>
-          <button
-            onClick={() => setShowAd(false)}
-            className="px-4 py-2 bg-muted text-muted-foreground rounded-lg text-sm"
-          >
-            إغلاق
-          </button>
+        
+        {/* Ad iframe */}
+        <div className="flex-1">
+          <iframe
+            src={adPageUrl}
+            className="w-full h-full border-0"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            title="إعلان"
+          />
         </div>
       </div>
     </div>

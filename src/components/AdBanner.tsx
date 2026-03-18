@@ -14,11 +14,17 @@ const AdBanner = ({ className }: AdBannerProps) => {
     loadedRef.current = true;
 
     try {
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      
-      // Load banner ad script via proxy
+      // Set atOptions on window
+      (window as any).atOptions = {
+        key: '8f0447ac83949ef99f1e15a0e4b8d2e7',
+        format: 'iframe',
+        height: 60,
+        width: 468,
+        params: {}
+      };
+
       const script = document.createElement('script');
-      script.src = `https://${projectId}.supabase.co/functions/v1/serve-script?type=banner&t=${Date.now()}`;
+      script.src = 'https://www.highperformanceformat.com/8f0447ac83949ef99f1e15a0e4b8d2e7/invoke.js';
       script.async = true;
       adRef.current.appendChild(script);
     } catch (e) {
@@ -27,10 +33,10 @@ const AdBanner = ({ className }: AdBannerProps) => {
   }, []);
 
   return (
-    <div 
+    <div
       ref={adRef}
       className={cn(
-        "w-full min-h-[90px] flex items-center justify-center overflow-hidden rounded-xl bg-muted/30",
+        "w-full min-h-[60px] flex items-center justify-center overflow-hidden rounded-xl",
         className
       )}
     />
