@@ -5,6 +5,17 @@ interface AdBannerProps {
   className?: string;
 }
 
+// Pre-set atOptions immediately so the script can use it as soon as it loads
+if (typeof window !== 'undefined') {
+  (window as any).atOptions = {
+    key: '8f0447ac83949ef99f1e15a0e4b8d2e7',
+    format: 'iframe',
+    height: 60,
+    width: 468,
+    params: {}
+  };
+}
+
 const AdBanner = ({ className }: AdBannerProps) => {
   const adRef = useRef<HTMLDivElement>(null);
   const loadedRef = useRef(false);
@@ -14,18 +25,8 @@ const AdBanner = ({ className }: AdBannerProps) => {
     loadedRef.current = true;
 
     try {
-      // Set atOptions on window
-      (window as any).atOptions = {
-        key: '8f0447ac83949ef99f1e15a0e4b8d2e7',
-        format: 'iframe',
-        height: 60,
-        width: 468,
-        params: {}
-      };
-
       const script = document.createElement('script');
       script.src = 'https://www.highperformanceformat.com/8f0447ac83949ef99f1e15a0e4b8d2e7/invoke.js';
-      script.async = true;
       adRef.current.appendChild(script);
     } catch (e) {
       console.log('Banner ad skipped');
