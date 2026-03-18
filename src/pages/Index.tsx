@@ -164,7 +164,7 @@ const Index = () => {
         {/* Header */}
         <Header showAuthButton />
         <PrizeTicker />
-
+        <AdBanner className="mb-4" />
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20 text-center">
           <div className="max-w-3xl mx-auto">
