@@ -15,7 +15,8 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
