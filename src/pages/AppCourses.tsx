@@ -191,7 +191,7 @@ const AppCourses = () => {
   return (
     <PageBackground>
       {/* Welcome Back Overlay */}
-      {showWelcome && <WelcomeBackOverlay onContinue={() => setShowWelcome(false)} />}
+      {showWelcome && <WelcomeBackOverlay onContinue={handleWelcomeContinue} />}
       
       <Helmet>
         <title>الدورات التعليمية | LingoArab</title>
