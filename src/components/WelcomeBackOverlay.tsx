@@ -51,7 +51,7 @@ const WelcomeBackOverlay = ({ onContinue }: { onContinue: () => void }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              مرحباً بعودتك! 👋
+              مرحباً بعودتك{userName ? ` يا ${userName}` : ''}! 👋
             </motion.h2>
             <motion.p
               className="text-muted-foreground text-base sm:text-lg mb-8"
