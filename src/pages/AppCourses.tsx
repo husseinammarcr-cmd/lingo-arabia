@@ -15,7 +15,8 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
@@ -116,6 +117,7 @@ const AppCourses = () => {
   const { user, profile, isLoading, isAdmin } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { data: progressData } = useUserProgress();
+  const [showWelcome, setShowWelcome] = useState(true);
 
   // Check if user has taken placement test
   const hasTakenPlacement = profile?.has_taken_placement ?? false;
@@ -179,7 +181,9 @@ const AppCourses = () => {
 
   return (
     <PageBackground>
-      {/* SEO - JSON-LD Course Schema */}
+      {/* Welcome Back Overlay */}
+      {showWelcome && <WelcomeBackOverlay onContinue={() => setShowWelcome(false)} />}
+      
       <Helmet>
         <title>الدورات التعليمية | LingoArab</title>
         <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى الإتقان - 300 درس تفاعلي في 6 مستويات CEFR" />
