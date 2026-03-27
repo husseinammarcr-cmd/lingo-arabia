@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/button';
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
 import sayHiAnimation from '@/assets/say-hi.json';
 import { ChevronLeft } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const WelcomeBackOverlay = ({ onContinue }: { onContinue: () => void }) => {
+  const { profile } = useAuth();
+  const userName = profile?.display_name || profile?.name || '';
   const [visible, setVisible] = useState(true);
 
   const handleContinue = () => {
