@@ -181,7 +181,9 @@ const AppCourses = () => {
 
   return (
     <PageBackground>
-      {/* SEO - JSON-LD Course Schema */}
+      {/* Welcome Back Overlay */}
+      {showWelcome && <WelcomeBackOverlay onContinue={() => setShowWelcome(false)} />}
+      
       <Helmet>
         <title>الدورات التعليمية | LingoArab</title>
         <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى الإتقان - 300 درس تفاعلي في 6 مستويات CEFR" />
