@@ -117,7 +117,16 @@ const AppCourses = () => {
   const { user, profile, isLoading, isAdmin } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { data: progressData } = useUserProgress();
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    const lastShown = localStorage.getItem('welcome_back_date');
+    const today = new Date().toDateString();
+    return lastShown !== today;
+  });
+
+  const handleWelcomeContinue = () => {
+    localStorage.setItem('welcome_back_date', new Date().toDateString());
+    setShowWelcome(false);
+  };
 
   // Check if user has taken placement test
   const hasTakenPlacement = profile?.has_taken_placement ?? false;
