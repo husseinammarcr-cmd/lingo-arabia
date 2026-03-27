@@ -117,6 +117,7 @@ const AppCourses = () => {
   const { user, profile, isLoading, isAdmin } = useAuth();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { data: progressData } = useUserProgress();
+  const [showWelcome, setShowWelcome] = useState(true);
 
   // Check if user has taken placement test
   const hasTakenPlacement = profile?.has_taken_placement ?? false;
