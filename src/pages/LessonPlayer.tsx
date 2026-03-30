@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import AdBanner from '@/components/AdBanner';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -551,8 +551,6 @@ const LessonPlayer = () => {
             )}
           </motion.div>
 
-          {/* Ad Banner */}
-          <AdBanner className="mt-4" />
         </motion.div>
       </div>
     );
@@ -679,7 +677,6 @@ const LessonPlayer = () => {
           </Button>
         </motion.div>
 
-        <AdBanner className="mt-4" />
       </div>
     );
   };
@@ -715,7 +712,6 @@ const LessonPlayer = () => {
           />
         </motion.div>
       </AnimatePresence>
-      <AdBanner className="mt-4" />
       </>
     );
   };
@@ -751,7 +747,7 @@ const LessonPlayer = () => {
           />
         </motion.div>
       </AnimatePresence>
-      <AdBanner className="mt-4" />
+      
       </>
     );
   };

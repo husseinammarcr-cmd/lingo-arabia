@@ -45,7 +45,7 @@ import Certificate from "./pages/Certificate";
 import WeeklyPrize from "./pages/WeeklyPrize";
 
 
-import InterstitialAd from "./components/InterstitialAd";
+
 
 const queryClient = new QueryClient();
 
@@ -67,7 +67,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 
-                <InterstitialAd />
+                
                 
                 <Routes>
                   <Route path="/" element={<Index />} />
