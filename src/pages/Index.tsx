@@ -9,8 +9,6 @@ import Header from '@/components/Header';
 import { motion } from 'framer-motion';
 import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
-import AdBanner from '@/components/AdBanner';
-
 import PrizeTicker from '@/components/PrizeTicker';
 
 
