@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import AdBanner from '@/components/AdBanner';
+
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLevelByCode } from '@/lib/curriculum';
