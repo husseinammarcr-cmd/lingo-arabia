@@ -551,8 +551,6 @@ const LessonPlayer = () => {
             )}
           </motion.div>
 
-          {/* Ad Banner */}
-          <AdBanner className="mt-4" />
         </motion.div>
       </div>
     );
