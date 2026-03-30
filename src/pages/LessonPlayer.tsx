@@ -712,7 +712,6 @@ const LessonPlayer = () => {
           />
         </motion.div>
       </AnimatePresence>
-      <AdBanner className="mt-4" />
       </>
     );
   };
