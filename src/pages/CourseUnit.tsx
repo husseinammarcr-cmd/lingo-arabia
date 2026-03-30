@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import AdBanner from '@/components/AdBanner';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLevelByCode, getUnitById } from '@/lib/curriculum';
