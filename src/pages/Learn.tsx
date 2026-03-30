@@ -55,8 +55,6 @@ const Learn = () => {
           className="mb-6"
         />
 
-        {/* Ad Slot */}
-        {!profile?.is_premium && <AdSlot variant="banner" className="mb-6" />}
 
         {/* Units List */}
         <h2 className="text-xl font-bold mb-4">وحدات التعلم</h2>

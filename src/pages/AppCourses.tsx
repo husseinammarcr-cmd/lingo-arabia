@@ -287,8 +287,6 @@ const AppCourses = () => {
           </div>
         </FadeUp>
 
-        {/* Ad Banner */}
-        <AdBanner className="mb-6" />
 
         {/* Levels Grid */}
         <StaggerContainer className="grid gap-6 md:grid-cols-2">
