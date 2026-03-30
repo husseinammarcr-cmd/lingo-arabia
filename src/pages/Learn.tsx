@@ -5,7 +5,7 @@ import { useUnits, useLessons } from '@/hooks/useUnits';
 import { useUserProgress } from '@/hooks/useProgress';
 import { UnitCard } from '@/components/UnitCard';
 import { StreakWidget } from '@/components/StreakWidget';
-import { AdSlot } from '@/components/AdSlot';
+
 import Header from '@/components/Header';
 
 const Learn = () => {
