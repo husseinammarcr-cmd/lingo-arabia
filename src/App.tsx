@@ -67,7 +67,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 
-                <InterstitialAd />
+                
                 
                 <Routes>
                   <Route path="/" element={<Index />} />
