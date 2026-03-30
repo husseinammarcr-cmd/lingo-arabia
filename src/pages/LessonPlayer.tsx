@@ -677,7 +677,6 @@ const LessonPlayer = () => {
           </Button>
         </motion.div>
 
-        <AdBanner className="mt-4" />
       </div>
     );
   };
