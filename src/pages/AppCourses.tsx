@@ -25,7 +25,7 @@ import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
 import PrizeTicker from '@/components/PrizeTicker';
-import AdBanner from '@/components/AdBanner';
+
 
 
 // Static Course JSON-LD schema for SEO
