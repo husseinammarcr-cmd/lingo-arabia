@@ -98,8 +98,12 @@ const Blog = () => {
   const categorySlug = searchParams.get('category') || undefined;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: articles, isLoading: articlesLoading } = useArticles(categorySlug);
-  const { data: categories, isLoading: categoriesLoading } = useCategories();
+  const articles = categorySlug 
+    ? staticArticles.filter(a => a.category?.slug === categorySlug)
+    : staticArticles;
+  const categories = staticCategories;
+  const articlesLoading = false;
+  const categoriesLoading = false;
 
   const totalPages = Math.ceil((articles?.length || 0) / POSTS_PER_PAGE);
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;

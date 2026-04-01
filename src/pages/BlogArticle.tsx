@@ -15,16 +15,14 @@ const SITE_URL = 'https://lingoarab.com';
 
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { data: article, isLoading, error } = useArticle(slug || '');
-  const { data: relatedArticles } = useArticles(article?.category?.slug);
-  const incrementViews = useIncrementViews();
+  const article = useMemo(() => staticArticles.find(a => a.slug === slug) || null, [slug]);
+  const relatedArticles = useMemo(() => 
+    article?.category ? staticArticles.filter(a => a.category?.slug === article.category?.slug) : [],
+    [article]
+  );
+  const isLoading = false;
+  const error = !article && slug ? true : false;
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (article?.id) {
-      incrementViews.mutate(article.id);
-    }
-  }, [article?.id]);
 
   const shareUrl = window.location.href;
   const shareTitle = article?.title_ar || '';
