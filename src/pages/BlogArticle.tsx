@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, User, Eye, Tag, Share2, Facebook, Twitter, Linkedin, Copy, Check } from 'lucide-react';
@@ -9,22 +9,20 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import PageBackground from '@/components/PageBackground';
-import { useArticle, useIncrementViews, useArticles } from '@/hooks/useBlog';
+import { staticArticles } from '@/lib/staticBlogData';
 
 const SITE_URL = 'https://lingoarab.com';
 
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { data: article, isLoading, error } = useArticle(slug || '');
-  const { data: relatedArticles } = useArticles(article?.category?.slug);
-  const incrementViews = useIncrementViews();
+  const article = useMemo(() => staticArticles.find(a => a.slug === slug) || null, [slug]);
+  const relatedArticles = useMemo(() => 
+    article?.category ? staticArticles.filter(a => a.category?.slug === article.category?.slug) : [],
+    [article]
+  );
+  const isLoading = false;
+  const error = !article && slug ? true : false;
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (article?.id) {
-      incrementViews.mutate(article.id);
-    }
-  }, [article?.id]);
 
   const shareUrl = window.location.href;
   const shareTitle = article?.title_ar || '';
