@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { useArticles, useCategories } from '@/hooks/useBlog';
+import { staticArticles, staticCategories } from '@/lib/staticBlogData';
 
 const SITE_URL = 'https://lingoarab.com';
 
