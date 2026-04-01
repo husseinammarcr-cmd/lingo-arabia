@@ -1,4 +1,5 @@
 export interface StaticBlogCategory {
+  id: string;
   name_ar: string;
   name_en: string;
   slug: string;
@@ -25,31 +26,31 @@ export interface StaticBlogArticle {
 
 export const staticCategories: StaticBlogCategory[] = [
   {
-    "name_ar": "قصص نجاح",
+    "id": "cat-3", "name_ar": "قصص نجاح",
     "name_en": "Success Stories",
     "slug": "success-stories",
     "color": "#06b6d4"
   },
   {
-    "name_ar": "الثقافة العربية",
+    "id": "cat-1", "name_ar": "الثقافة العربية",
     "name_en": "Arabic Culture",
     "slug": "culture",
     "color": "#ec4899"
   },
   {
-    "name_ar": "قواعد اللغة",
+    "id": "cat-4", "name_ar": "قواعد اللغة",
     "name_en": "Grammar",
     "slug": "grammar",
     "color": "#8b5cf6"
   },
   {
-    "name_ar": "نصائح التعلم",
+    "id": "cat-5", "name_ar": "نصائح التعلم",
     "name_en": "Learning Tips",
     "slug": "learning-tips",
     "color": "#10b981"
   },
   {
-    "name_ar": "المفردات",
+    "id": "cat-2", "name_ar": "المفردات",
     "name_en": "Vocabulary",
     "slug": "vocabulary",
     "color": "#f59e0b"
@@ -69,13 +70,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/success-career-change.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "قصص نجاح",
+      "id": "cat-3", "name_ar": "قصص نجاح",
       "name_en": "Success Stories",
       "slug": "success-stories",
       "color": "#06b6d4"
     },
     "views_count": 127,
-    "published_at": "2025-01-01T10:00:00Z"
+    "published_at": "2025-01-01T10:00:00Z",
+  "created_at": "2025-01-01T10:00:00Z",
+  "updated_at": "2025-01-01T10:00:00Z"
   },
   {
     "id": "static-2",
@@ -89,13 +92,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/success-zero-to-fluency.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "قصص نجاح",
+      "id": "cat-3", "name_ar": "قصص نجاح",
       "name_en": "Success Stories",
       "slug": "success-stories",
       "color": "#06b6d4"
     },
     "views_count": 254,
-    "published_at": "2025-02-02T10:00:00Z"
+    "published_at": "2025-02-02T10:00:00Z",
+  "created_at": "2025-02-02T10:00:00Z",
+  "updated_at": "2025-02-02T10:00:00Z"
   },
   {
     "id": "static-3",
@@ -109,13 +114,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/culture-movies-without-subtitles.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "الثقافة العربية",
+      "id": "cat-1", "name_ar": "الثقافة العربية",
       "name_en": "Arabic Culture",
       "slug": "culture",
       "color": "#ec4899"
     },
     "views_count": 381,
-    "published_at": "2025-03-03T10:00:00Z"
+    "published_at": "2025-03-03T10:00:00Z",
+  "created_at": "2025-03-03T10:00:00Z",
+  "updated_at": "2025-03-03T10:00:00Z"
   },
   {
     "id": "static-4",
@@ -129,13 +136,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/culture-everyday-phrases.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "الثقافة العربية",
+      "id": "cat-1", "name_ar": "الثقافة العربية",
       "name_en": "Arabic Culture",
       "slug": "culture",
       "color": "#ec4899"
     },
     "views_count": 508,
-    "published_at": "2025-04-04T10:00:00Z"
+    "published_at": "2025-04-04T10:00:00Z",
+  "created_at": "2025-04-04T10:00:00Z",
+  "updated_at": "2025-04-04T10:00:00Z"
   },
   {
     "id": "static-5",
@@ -149,13 +158,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/culture-british-vs-american.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "الثقافة العربية",
+      "id": "cat-1", "name_ar": "الثقافة العربية",
       "name_en": "Arabic Culture",
       "slug": "culture",
       "color": "#ec4899"
     },
     "views_count": 635,
-    "published_at": "2025-05-05T10:00:00Z"
+    "published_at": "2025-05-05T10:00:00Z",
+  "created_at": "2025-05-05T10:00:00Z",
+  "updated_at": "2025-05-05T10:00:00Z"
   },
   {
     "id": "static-6",
@@ -169,13 +180,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/grammar-common-mistakes.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "قواعد اللغة",
+      "id": "cat-4", "name_ar": "قواعد اللغة",
       "name_en": "Grammar",
       "slug": "grammar",
       "color": "#8b5cf6"
     },
     "views_count": 762,
-    "published_at": "2025-06-06T10:00:00Z"
+    "published_at": "2025-06-06T10:00:00Z",
+  "created_at": "2025-06-06T10:00:00Z",
+  "updated_at": "2025-06-06T10:00:00Z"
   },
   {
     "id": "static-7",
@@ -189,13 +202,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/grammar-similar-tenses.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "قواعد اللغة",
+      "id": "cat-4", "name_ar": "قواعد اللغة",
       "name_en": "Grammar",
       "slug": "grammar",
       "color": "#8b5cf6"
     },
     "views_count": 889,
-    "published_at": "2025-07-07T10:00:00Z"
+    "published_at": "2025-07-07T10:00:00Z",
+  "created_at": "2025-07-07T10:00:00Z",
+  "updated_at": "2025-07-07T10:00:00Z"
   },
   {
     "id": "static-8",
@@ -209,13 +224,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/grammar-english-tenses-guide.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "قواعد اللغة",
+      "id": "cat-4", "name_ar": "قواعد اللغة",
       "name_en": "Grammar",
       "slug": "grammar",
       "color": "#8b5cf6"
     },
     "views_count": 1016,
-    "published_at": "2025-08-08T10:00:00Z"
+    "published_at": "2025-08-08T10:00:00Z",
+  "created_at": "2025-08-08T10:00:00Z",
+  "updated_at": "2025-08-08T10:00:00Z"
   },
   {
     "id": "static-9",
@@ -229,13 +246,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/learning-tips-memorize-words.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "نصائح التعلم",
+      "id": "cat-5", "name_ar": "نصائح التعلم",
       "name_en": "Learning Tips",
       "slug": "learning-tips",
       "color": "#10b981"
     },
     "views_count": 1143,
-    "published_at": "2025-09-09T10:00:00Z"
+    "published_at": "2025-09-09T10:00:00Z",
+  "created_at": "2025-09-09T10:00:00Z",
+  "updated_at": "2025-09-09T10:00:00Z"
   },
   {
     "id": "static-10",
@@ -249,13 +268,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/learning-tips-golden-tips.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "نصائح التعلم",
+      "id": "cat-5", "name_ar": "نصائح التعلم",
       "name_en": "Learning Tips",
       "slug": "learning-tips",
       "color": "#10b981"
     },
     "views_count": 1270,
-    "published_at": "2025-10-10T10:00:00Z"
+    "published_at": "2025-10-10T10:00:00Z",
+  "created_at": "2025-10-10T10:00:00Z",
+  "updated_at": "2025-10-10T10:00:00Z"
   },
   {
     "id": "static-11",
@@ -269,13 +290,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/vocabulary-9-learn-english-business-and-workplace-terminology.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "المفردات",
+      "id": "cat-2", "name_ar": "المفردات",
       "name_en": "Vocabulary",
       "slug": "vocabulary",
       "color": "#f59e0b"
     },
     "views_count": 1397,
-    "published_at": "2025-11-11T10:00:00Z"
+    "published_at": "2025-11-11T10:00:00Z",
+  "created_at": "2025-11-11T10:00:00Z",
+  "updated_at": "2025-11-11T10:00:00Z"
   },
   {
     "id": "static-12",
@@ -289,13 +312,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/vocabulary-8-english-travel-vocabulary-everything-you-need-at-t.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "المفردات",
+      "id": "cat-2", "name_ar": "المفردات",
       "name_en": "Vocabulary",
       "slug": "vocabulary",
       "color": "#f59e0b"
     },
     "views_count": 1524,
-    "published_at": "2025-12-12T10:00:00Z"
+    "published_at": "2025-12-12T10:00:00Z",
+  "created_at": "2025-12-12T10:00:00Z",
+  "updated_at": "2025-12-12T10:00:00Z"
   },
   {
     "id": "static-13",
@@ -309,13 +334,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/vocabulary-7-500-essential-english-words-every-beginner-should-.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "المفردات",
+      "id": "cat-2", "name_ar": "المفردات",
       "name_en": "Vocabulary",
       "slug": "vocabulary",
       "color": "#f59e0b"
     },
     "views_count": 1651,
-    "published_at": "2025-01-13T10:00:00Z"
+    "published_at": "2025-01-13T10:00:00Z",
+  "created_at": "2025-01-13T10:00:00Z",
+  "updated_at": "2025-01-13T10:00:00Z"
   },
   {
     "id": "static-14",
@@ -329,13 +356,15 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/learning-tips-2-how-to-build-a-daily-english-learning-habit-in-30-.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "نصائح التعلم",
+      "id": "cat-5", "name_ar": "نصائح التعلم",
       "name_en": "Learning Tips",
       "slug": "learning-tips",
       "color": "#10b981"
     },
     "views_count": 1778,
-    "published_at": "2025-02-14T10:00:00Z"
+    "published_at": "2025-02-14T10:00:00Z",
+  "created_at": "2025-02-14T10:00:00Z",
+  "updated_at": "2025-02-14T10:00:00Z"
   },
   {
     "id": "static-15",
@@ -349,12 +378,14 @@ export const staticArticles: StaticBlogArticle[] = [
     "featured_image": "/blog/learn-arabic-quickly.jpg",
     "author_name": "فريق LingoArab",
     "category": {
-      "name_ar": "نصائح التعلم",
+      "id": "cat-5", "name_ar": "نصائح التعلم",
       "name_en": "Learning Tips",
       "slug": "learning-tips",
       "color": "#10b981"
     },
     "views_count": 1905,
-    "published_at": "2025-03-15T10:00:00Z"
+    "published_at": "2025-03-15T10:00:00Z",
+  "created_at": "2025-03-15T10:00:00Z",
+  "updated_at": "2025-03-15T10:00:00Z"
   }
 ];
