@@ -19,6 +19,8 @@ export interface StaticBlogArticle {
   category: StaticBlogCategory | null;
   views_count: number;
   published_at: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export const staticCategories: StaticBlogCategory[] = [
