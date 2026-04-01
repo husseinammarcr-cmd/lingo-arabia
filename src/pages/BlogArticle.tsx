@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, User, Eye, Tag, Share2, Facebook, Twitter, Linkedin, Copy, Check } from 'lucide-react';
