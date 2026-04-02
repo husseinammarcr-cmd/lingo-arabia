@@ -412,5 +412,6 @@ export const staticArticles: StaticBlogArticle[] = [
     "published_at": "2026-01-22T11:00:00Z",
     "created_at": "2026-01-22T11:00:00Z",
     "updated_at": "2026-01-22T11:00:00Z"
-  }
+  },
+  ...extraArticles
 ];
