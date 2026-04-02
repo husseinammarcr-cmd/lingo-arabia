@@ -57,6 +57,8 @@ export const staticCategories: StaticBlogCategory[] = [
   }
 ];
 
+import { extraArticles } from './staticBlogDataExtra';
+
 export const staticArticles: StaticBlogArticle[] = [
   {
     "id": "static-1",
