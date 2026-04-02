@@ -57,6 +57,8 @@ export const staticCategories: StaticBlogCategory[] = [
   }
 ];
 
+import { extraArticles } from './staticBlogDataExtra';
+
 export const staticArticles: StaticBlogArticle[] = [
   {
     "id": "static-1",
@@ -410,5 +412,6 @@ export const staticArticles: StaticBlogArticle[] = [
     "published_at": "2026-01-22T11:00:00Z",
     "created_at": "2026-01-22T11:00:00Z",
     "updated_at": "2026-01-22T11:00:00Z"
-  }
+  },
+  ...extraArticles
 ];
