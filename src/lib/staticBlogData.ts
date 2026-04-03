@@ -389,3 +389,6 @@ export const staticArticles: StaticBlogArticle[] = [
   "updated_at": "2025-03-15T10:00:00Z"
   }
 ];
+
+import { staticArticlesPart2 } from './staticBlogDataPart2';
+export const allStaticArticles = [...staticArticles, ...staticArticlesPart2];
