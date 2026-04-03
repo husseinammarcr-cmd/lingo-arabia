@@ -43,6 +43,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import Certificate from "./pages/Certificate";
 import WeeklyPrize from "./pages/WeeklyPrize";
+import AiTutor from "./pages/AiTutor";
 
 
 
@@ -113,6 +114,7 @@ const App = () => (
                   <Route path="/weekly-prize" element={<WeeklyPrize />} />
                   <Route path="/certificate" element={<Certificate />} />
                   <Route path="/verify-certificate" element={<VerifyCertificate />} />
+                  <Route path="/ai-tutor" element={<AiTutor />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
