@@ -114,6 +114,7 @@ const App = () => (
                   <Route path="/weekly-prize" element={<WeeklyPrize />} />
                   <Route path="/certificate" element={<Certificate />} />
                   <Route path="/verify-certificate" element={<VerifyCertificate />} />
+                  <Route path="/ai-tutor" element={<AiTutor />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
