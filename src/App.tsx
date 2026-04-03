@@ -43,6 +43,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import Certificate from "./pages/Certificate";
 import WeeklyPrize from "./pages/WeeklyPrize";
+import AiTutor from "./pages/AiTutor";
 
 
 
