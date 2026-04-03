@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import PageBackground from '@/components/PageBackground';
-import { staticArticles } from '@/lib/staticBlogData';
+import { allStaticArticles as staticArticles } from '@/lib/staticBlogData';
 
 const SITE_URL = 'https://lingoarab.com';
 
