@@ -37,10 +37,7 @@ serve(async (req) => {
       });
     }
 
-    const QWEN_API_KEY = Deno.env.get("QWEN_API_KEY");
-    if (!QWEN_API_KEY) {
-      throw new Error("QWEN_API_KEY is not configured");
-    }
+    const QWEN_API_KEY = "sk-ws-djI.JxPS9bQ91ImllSAfJDIGXOIbJawdvryDbQKiTxz0WUd2wqzX2hdsaqR8YufwUNY8lFJ5G4XIncAxOC7WYctFFgeLbxpo8hDNT2ssB9sV8nQULsL9_mJfVNfvM4HEZSIN.MEUCIQClBCmXfQ9hY--CqILP8u2k16DBoqkrtKt6lLYw8yWT2AIgWoSkJIERmXCaPF8T6HDZ6D6qMa_Q3qigysmCSQyG6l0";
 
     const response = await fetch(
       "https://ws-wx9ta73sr81o5bda.eu-central-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
