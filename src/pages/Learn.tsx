@@ -7,6 +7,8 @@ import { UnitCard } from '@/components/UnitCard';
 import { StreakWidget } from '@/components/StreakWidget';
 
 import Header from '@/components/Header';
+import { Bot } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Learn = () => {
   const navigate = useNavigate();
@@ -55,6 +57,20 @@ const Learn = () => {
           className="mb-6"
         />
 
+
+        {/* AI Tutor Banner */}
+        <button
+          onClick={() => navigate('/ai-tutor')}
+          className="w-full mb-6 p-4 rounded-2xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors flex items-center gap-3 text-right"
+        >
+          <div className="p-3 rounded-xl bg-primary/10">
+            <Bot className="w-6 h-6 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-foreground">المعلم الذكي 🤖</h3>
+            <p className="text-sm text-muted-foreground">تعلّم الإنجليزية مع مدرس ذكاء اصطناعي متخصص</p>
+          </div>
+        </button>
 
         {/* Units List */}
         <h2 className="text-xl font-bold mb-4">وحدات التعلم</h2>
