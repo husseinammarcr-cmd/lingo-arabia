@@ -7,6 +7,8 @@ import { UnitCard } from '@/components/UnitCard';
 import { StreakWidget } from '@/components/StreakWidget';
 
 import Header from '@/components/Header';
+import { Bot } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Learn = () => {
   const navigate = useNavigate();
