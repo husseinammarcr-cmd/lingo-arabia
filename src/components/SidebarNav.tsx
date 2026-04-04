@@ -18,7 +18,8 @@ import {
   LogIn, 
   UserPlus,
   GraduationCap,
-  Award
+  Award,
+  Bot
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
