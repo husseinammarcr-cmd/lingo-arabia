@@ -46,6 +46,7 @@ const publicNavItems: NavItem[] = [
 
 const authNavItems: NavItem[] = [
   { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/app/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
+  { label: 'AI Tutor', labelAr: 'المعلم الذكي', href: '/ai-tutor', icon: <Bot className="w-5 h-5" />, requiresAuth: true },
   { label: 'Profile', labelAr: 'الملف الشخصي', href: '/profile', icon: <User className="w-5 h-5" />, requiresAuth: true },
   { label: 'Certificate', labelAr: 'الشهادة', href: '/certificate', icon: <Award className="w-5 h-5" />, requiresAuth: true },
   { label: 'Settings', labelAr: 'الإعدادات', href: '/settings', icon: <Settings className="w-5 h-5" />, requiresAuth: true },
