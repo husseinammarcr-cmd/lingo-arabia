@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
 import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
 import PrizeTicker from '@/components/PrizeTicker';
+import aiTutorBanner from '@/assets/ai-tutor-banner.jpeg';
 
 
 const SITE_URL = 'https://lingoarab.com';
