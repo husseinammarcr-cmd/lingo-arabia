@@ -9,6 +9,7 @@ import { StreakWidget } from '@/components/StreakWidget';
 import Header from '@/components/Header';
 import { Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import aiTutorBanner from '@/assets/ai-tutor-banner.jpeg';
 
 const Learn = () => {
   const navigate = useNavigate();
