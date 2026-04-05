@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Send, Bot, User, Trash2, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Trash2 } from 'lucide-react';
+import { LottieAnimation } from '@/components/animations/LottieAnimation';
+import aiTutorLogo from '@/assets/ai-tutor-logo.json';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Header from '@/components/Header';
