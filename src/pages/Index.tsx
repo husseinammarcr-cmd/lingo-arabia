@@ -163,6 +163,20 @@ const Index = () => {
         {/* Header */}
         <Header showAuthButton />
         <PrizeTicker />
+        
+        {/* AI Tutor Banner */}
+        <div className="container mx-auto px-4 mt-4">
+          <a
+            href="https://lingoarab.com/ai-tutor"
+            className="block w-full rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+          >
+            <img 
+              src={aiTutorBanner} 
+              alt="تعلم الإنجليزية مع معلمك الذكي - ابدأ الآن" 
+              className="w-full h-auto object-cover"
+            />
+          </a>
+        </div>
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20 text-center">
           <div className="max-w-3xl mx-auto">
