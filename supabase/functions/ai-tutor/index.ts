@@ -45,6 +45,17 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Parse body early (before consuming it)
+    const body = await req.json();
+    const { messages } = body;
+    
+    if (!messages || !Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: "messages array is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Check rate limit using service role client
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
     const now = new Date();
