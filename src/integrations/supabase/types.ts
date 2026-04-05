@@ -53,6 +53,30 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_tutor_usage: {
+        Row: {
+          created_at: string
+          id: string
+          message_count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       blog_articles: {
         Row: {
           author_id: string | null

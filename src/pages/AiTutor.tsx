@@ -10,9 +10,12 @@ import ReactMarkdown from 'react-markdown';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
+const MAX_MESSAGES = 20;
+const WINDOW_HOURS = 4;
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
 
 const suggestedPrompts = [
@@ -23,13 +26,14 @@ const suggestedPrompts = [
 ];
 
 const AiTutor = () => {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, session, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [remaining, setRemaining] = useState<number | null>(null);
+  const [resetMinutes, setResetMinutes] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/auth');
@@ -39,8 +43,46 @@ const AiTutor = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Fetch remaining on mount
+  useEffect(() => {
+    if (!user) return;
+    const fetchUsage = async () => {
+      const { data } = await supabase
+        .from('ai_tutor_usage')
+        .select('message_count, window_start')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (!data) {
+        setRemaining(MAX_MESSAGES);
+        return;
+      }
+
+      const now = new Date();
+      const windowStart = new Date(data.window_start);
+      const windowEnd = new Date(windowStart.getTime() + WINDOW_HOURS * 60 * 60 * 1000);
+
+      if (now > windowEnd) {
+        setRemaining(MAX_MESSAGES);
+        setResetMinutes(null);
+      } else {
+        const left = Math.max(0, MAX_MESSAGES - data.message_count);
+        setRemaining(left);
+        if (left === 0) {
+          setResetMinutes(Math.ceil((windowEnd.getTime() - now.getTime()) / 60000));
+        }
+      }
+    };
+    fetchUsage();
+  }, [user]);
+
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
+    if (remaining !== null && remaining <= 0) {
+      toast({ title: 'حد الرسائل', description: `وصلت للحد الأقصى. يتم التجديد بعد ${resetMinutes ?? '?'} دقيقة.`, variant: 'destructive' });
+      return;
+    }
+
     const userMsg: Message = { role: 'user', content: text.trim() };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
@@ -54,14 +96,25 @@ const AiTutor = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ messages: newMessages }),
       });
 
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({ error: 'خطأ غير معروف' }));
+        if (err.rateLimited) {
+          setRemaining(0);
+          setResetMinutes(err.resetMinutes);
+        }
         throw new Error(err.error || 'حدث خطأ');
+      }
+
+      // Update remaining from header
+      const remainingHeader = resp.headers.get('X-Remaining-Messages');
+      if (remainingHeader !== null) {
+        setRemaining(parseInt(remainingHeader, 10));
+        if (parseInt(remainingHeader, 10) > 0) setResetMinutes(null);
       }
 
       if (!resp.body) throw new Error('No response body');
@@ -97,7 +150,7 @@ const AiTutor = () => {
               });
             }
           } catch {
-            // partial JSON, wait for more
+            // partial JSON
           }
         }
       }
@@ -120,6 +173,8 @@ const AiTutor = () => {
     return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-pulse text-primary text-xl">جاري التحميل...</div></div>;
   }
 
+  const isRateLimited = remaining !== null && remaining <= 0;
+
   return (
     <div className="min-h-screen bg-background flex flex-col" dir="rtl">
       <Helmet>
@@ -129,6 +184,17 @@ const AiTutor = () => {
       <Header showBack showUserInfo />
 
       <main className="flex-1 flex flex-col max-w-3xl mx-auto w-full">
+        {/* Remaining messages badge */}
+        {remaining !== null && (
+          <div className="flex justify-center pt-3 px-4">
+            <div className={`text-xs px-3 py-1 rounded-full ${isRateLimited ? 'bg-destructive/10 text-destructive' : 'bg-secondary text-secondary-foreground'}`}>
+              {isRateLimited
+                ? `⏳ وصلت للحد الأقصى — يتجدد بعد ${resetMinutes ?? '?'} دقيقة`
+                : `💬 ${remaining} رسالة متبقية من ${MAX_MESSAGES}`}
+            </div>
+          </div>
+        )}
+
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && (
@@ -150,7 +216,8 @@ const AiTutor = () => {
                   <button
                     key={i}
                     onClick={() => sendMessage(prompt)}
-                    className="text-sm text-right p-3 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors text-foreground"
+                    disabled={isRateLimited}
+                    className="text-sm text-right p-3 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors text-foreground disabled:opacity-50"
                   >
                     {prompt}
                   </button>
@@ -204,19 +271,18 @@ const AiTutor = () => {
           )}
           <div className="flex gap-2 items-end">
             <Textarea
-              ref={textareaRef}
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="اكتب سؤالك هنا..."
+              placeholder={isRateLimited ? "وصلت للحد الأقصى، انتظر التجديد..." : "اكتب سؤالك هنا..."}
               className="resize-none min-h-[44px] max-h-32 rounded-xl"
               rows={1}
-              disabled={isLoading}
+              disabled={isLoading || isRateLimited}
             />
             <Button
               size="icon"
               onClick={() => sendMessage(input)}
-              disabled={!input.trim() || isLoading}
+              disabled={!input.trim() || isLoading || isRateLimited}
               className="rounded-xl h-11 w-11 flex-shrink-0"
             >
               <Send className="w-5 h-5 rotate-180" />
