@@ -59,18 +59,16 @@ const Learn = () => {
 
 
         {/* AI Tutor Banner */}
-        <button
-          onClick={() => navigate('/ai-tutor')}
-          className="w-full mb-6 p-4 rounded-2xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors flex items-center gap-3 text-right"
+        <a
+          href="https://lingoarab.com/ai-tutor"
+          className="block w-full mb-6 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
         >
-          <div className="p-3 rounded-xl bg-primary/10">
-            <Bot className="w-6 h-6 text-primary" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-foreground">المعلم الذكي 🤖</h3>
-            <p className="text-sm text-muted-foreground">تعلّم الإنجليزية مع مدرس ذكاء اصطناعي متخصص</p>
-          </div>
-        </button>
+          <img 
+            src={aiTutorBanner} 
+            alt="تعلم الإنجليزية مع معلمك الذكي - ابدأ الآن" 
+            className="w-full h-auto object-cover"
+          />
+        </a>
 
         {/* Units List */}
         <h2 className="text-xl font-bold mb-4">وحدات التعلم</h2>
