@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Send, Bot, User, Trash2, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Trash2 } from 'lucide-react';
+import { LottieAnimation } from '@/components/animations/LottieAnimation';
+import aiTutorLogo from '@/assets/ai-tutor-logo.json';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Header from '@/components/Header';
@@ -131,8 +133,13 @@ const AiTutor = () => {
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full gap-6 py-12">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                <Sparkles className="w-10 h-10 text-primary" />
+              <div className="w-24 h-24">
+                <LottieAnimation 
+                  animationData={aiTutorLogo}
+                  loop={true}
+                  autoplay={true}
+                  className="w-full h-full"
+                />
               </div>
               <div className="text-center space-y-2">
                 <h2 className="text-2xl font-bold text-foreground">المعلم الذكي</h2>
