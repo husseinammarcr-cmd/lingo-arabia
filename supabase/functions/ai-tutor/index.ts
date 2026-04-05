@@ -18,7 +18,7 @@ const SYSTEM_PROMPT = `أنت معلم إنجليزية اسمك "معلم Lingo
 
 أسلوبك: مختصر، واضح، ودود.`;
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
