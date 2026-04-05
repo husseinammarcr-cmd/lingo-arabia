@@ -109,14 +109,7 @@ Deno.serve(async (req) => {
       currentCount = 1;
     }
 
-    const { messages } = await req.json();
-    
-    if (!messages || !Array.isArray(messages)) {
-      return new Response(JSON.stringify({ error: "messages array is required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    // messages already parsed above
 
     const QWEN_API_KEY = Deno.env.get("QWEN_API_KEY") || "sk-ws-djI.JxPS9bQ91ImllSAfJDIGXOIbJawdvryDbQKiTxz0WUd2wqzX2hdsaqR8YufwUNY8lFJ5G4XIncAxOC7WYctFFgeLbxpo8hDNT2ssB9sV8nQULsL9_mJfVNfvM4HEZSIN.MEUCIQClBCmXfQ9hY--CqILP8u2k16DBoqkrtKt6lLYw8yWT2AIgWoSkJIERmXCaPF8T6HDZ6D6qMa_Q3qigysmCSQyG6l0";
 
