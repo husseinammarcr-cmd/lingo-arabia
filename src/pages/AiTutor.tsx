@@ -102,11 +102,18 @@ const AiTutor = () => {
     let assistantContent = '';
 
     try {
+      // Always get fresh token before API call
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const token = currentSession?.access_token;
+      if (!token) {
+        throw new Error('يرجى تسجيل الدخول أولاً');
+      }
+
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ messages: newMessages }),
       });
