@@ -40,13 +40,13 @@ Deno.serve(async (req) => {
     const { data: { user }, error: userError } = await userClient.auth.getUser();
     
     if (userError || !user) {
+      console.error("Auth error:", userError);
       return new Response(JSON.stringify({ error: "غير مصرح" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Parse body early (before consuming it)
     const body = await req.json();
     const { messages } = body;
     
@@ -57,18 +57,24 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check rate limit using service role client
+    // Use service role client for usage tracking (bypasses RLS)
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
     const now = new Date();
     const windowStart = new Date(now.getTime() - WINDOW_HOURS * 60 * 60 * 1000);
 
-    const { data: usage } = await adminClient
+    // Get current usage
+    const { data: usage, error: usageError } = await adminClient
       .from("ai_tutor_usage")
       .select("*")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
+
+    if (usageError) {
+      console.error("Usage fetch error:", usageError);
+    }
 
     let currentCount = 0;
+    let remaining = MAX_MESSAGES;
 
     if (usage) {
       const usageWindowStart = new Date(usage.window_start);
@@ -88,31 +94,40 @@ Deno.serve(async (req) => {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
-        // Increment
-        await adminClient
+        // Increment count
+        const { error: updateError } = await adminClient
           .from("ai_tutor_usage")
           .update({ message_count: currentCount + 1 })
-          .eq("user_id", user.id);
+          .eq("id", usage.id);
+        if (updateError) {
+          console.error("Usage update error:", updateError);
+        }
         currentCount += 1;
       } else {
         // Window expired, reset
-        await adminClient
+        const { error: resetError } = await adminClient
           .from("ai_tutor_usage")
           .update({ message_count: 1, window_start: now.toISOString() })
-          .eq("user_id", user.id);
+          .eq("id", usage.id);
+        if (resetError) {
+          console.error("Usage reset error:", resetError);
+        }
         currentCount = 1;
       }
     } else {
-      // First time
-      await adminClient
+      // First time user - insert new record
+      const { error: insertError } = await adminClient
         .from("ai_tutor_usage")
         .insert({ user_id: user.id, message_count: 1, window_start: now.toISOString() });
+      if (insertError) {
+        console.error("Usage insert error:", insertError);
+      }
       currentCount = 1;
     }
 
-    // messages already parsed above
+    remaining = MAX_MESSAGES - currentCount;
 
-    const QWEN_API_KEY = Deno.env.get("QWEN_API_KEY") || "sk-ws-djI.JxPS9bQ91ImllSAfJDIGXOIbJawdvryDbQKiTxz0WUd2wqzX2hdsaqR8YufwUNY8lFJ5G4XIncAxOC7WYctFFgeLbxpo8hDNT2ssB9sV8nQULsL9_mJfVNfvM4HEZSIN.MEUCIQClBCmXfQ9hY--CqILP8u2k16DBoqkrtKt6lLYw8yWT2AIgWoSkJIERmXCaPF8T6HDZ6D6qMa_Q3qigysmCSQyG6l0";
+    const QWEN_API_KEY = Deno.env.get("QWEN_API_KEY")!;
 
     const response = await fetch(
       "https://ws-wx9ta73sr81o5bda.eu-central-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
@@ -150,9 +165,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Add remaining count as a custom header
-    const remaining = MAX_MESSAGES - currentCount;
-    
     return new Response(response.body, {
       headers: { 
         ...corsHeaders, 
