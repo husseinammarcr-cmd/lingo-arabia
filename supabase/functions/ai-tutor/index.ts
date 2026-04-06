@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Expose-Headers": "X-Remaining-Messages",
 };
 
-const MAX_MESSAGES = 20;
+const MAX_MESSAGES = 5;
 const WINDOW_HOURS = 4;
 
 const SYSTEM_PROMPT = `أنت معلم إنجليزية اسمك "معلم LingoArab". تعلّم الإنجليزية للناطقين بالعربية فقط.
