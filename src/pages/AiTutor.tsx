@@ -110,11 +110,15 @@ const AiTutor = () => {
         throw new Error(err.error || 'حدث خطأ');
       }
 
-      // Update remaining from header
+      // Update remaining from header or decrement locally
       const remainingHeader = resp.headers.get('X-Remaining-Messages');
       if (remainingHeader !== null) {
-        setRemaining(parseInt(remainingHeader, 10));
-        if (parseInt(remainingHeader, 10) > 0) setResetMinutes(null);
+        const val = parseInt(remainingHeader, 10);
+        setRemaining(val);
+        if (val > 0) setResetMinutes(null);
+      } else {
+        // Fallback: decrement locally
+        setRemaining(prev => prev !== null ? Math.max(0, prev - 1) : null);
       }
 
       if (!resp.body) throw new Error('No response body');
