@@ -14,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
-const MAX_MESSAGES = 20;
+const MAX_MESSAGES = 5;
 const WINDOW_HOURS = 4;
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
 
