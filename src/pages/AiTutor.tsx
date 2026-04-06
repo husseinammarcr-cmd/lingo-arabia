@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Send, Bot, User, Trash2 } from 'lucide-react';
 import { LottieAnimation } from '@/components/animations/LottieAnimation';
@@ -43,38 +43,48 @@ const AiTutor = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Fetch remaining on mount
-  useEffect(() => {
+  // Fetch remaining from database on mount
+  const fetchUsage = useCallback(async () => {
     if (!user) return;
-    const fetchUsage = async () => {
-      const { data } = await supabase
-        .from('ai_tutor_usage')
-        .select('message_count, window_start')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (!data) {
-        setRemaining(MAX_MESSAGES);
-        return;
-      }
+    const { data, error } = await supabase
+      .from('ai_tutor_usage')
+      .select('message_count, window_start')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    
+    if (error) {
+      console.error('Usage fetch error:', error);
+      setRemaining(MAX_MESSAGES);
+      return;
+    }
 
-      const now = new Date();
-      const windowStart = new Date(data.window_start);
-      const windowEnd = new Date(windowStart.getTime() + WINDOW_HOURS * 60 * 60 * 1000);
+    if (!data) {
+      setRemaining(MAX_MESSAGES);
+      setResetMinutes(null);
+      return;
+    }
 
-      if (now > windowEnd) {
-        setRemaining(MAX_MESSAGES);
-        setResetMinutes(null);
+    const now = new Date();
+    const windowStart = new Date(data.window_start);
+    const windowEnd = new Date(windowStart.getTime() + WINDOW_HOURS * 60 * 60 * 1000);
+
+    if (now > windowEnd) {
+      setRemaining(MAX_MESSAGES);
+      setResetMinutes(null);
+    } else {
+      const left = Math.max(0, MAX_MESSAGES - data.message_count);
+      setRemaining(left);
+      if (left === 0) {
+        setResetMinutes(Math.ceil((windowEnd.getTime() - now.getTime()) / 60000));
       } else {
-        const left = Math.max(0, MAX_MESSAGES - data.message_count);
-        setRemaining(left);
-        if (left === 0) {
-          setResetMinutes(Math.ceil((windowEnd.getTime() - now.getTime()) / 60000));
-        }
+        setResetMinutes(null);
       }
-    };
-    fetchUsage();
+    }
   }, [user]);
+
+  useEffect(() => {
+    fetchUsage();
+  }, [fetchUsage]);
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -110,15 +120,15 @@ const AiTutor = () => {
         throw new Error(err.error || 'حدث خطأ');
       }
 
-      // Update remaining from header or decrement locally
+      // After successful response, re-fetch usage from DB for accuracy
+      // Also try header as immediate feedback
       const remainingHeader = resp.headers.get('X-Remaining-Messages');
       if (remainingHeader !== null) {
         const val = parseInt(remainingHeader, 10);
-        setRemaining(val);
-        if (val > 0) setResetMinutes(null);
-      } else {
-        // Fallback: decrement locally
-        setRemaining(prev => prev !== null ? Math.max(0, prev - 1) : null);
+        if (!isNaN(val)) {
+          setRemaining(val);
+          if (val > 0) setResetMinutes(null);
+        }
       }
 
       if (!resp.body) throw new Error('No response body');
@@ -158,9 +168,14 @@ const AiTutor = () => {
           }
         }
       }
+
+      // Re-fetch from DB after stream completes for accurate count
+      await fetchUsage();
     } catch (e) {
       console.error(e);
       toast({ title: 'خطأ', description: e instanceof Error ? e.message : 'حدث خطأ', variant: 'destructive' });
+      // Re-fetch usage even on error to stay in sync
+      await fetchUsage();
     } finally {
       setIsLoading(false);
     }
