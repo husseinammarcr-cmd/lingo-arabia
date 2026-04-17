@@ -127,7 +127,15 @@ Deno.serve(async (req) => {
 
     remaining = MAX_MESSAGES - currentCount;
 
-    const QWEN_API_KEY = Deno.env.get("QWEN_API_KEY")!;
+const QWEN_API_KEY = Deno.env.get("QWEN_API_KEY");
+
+if (!QWEN_API_KEY) {
+  console.error("Missing QWEN_API_KEY");
+  return new Response(
+    JSON.stringify({ error: "AI key not configured" }),
+    { status: 500, headers: corsHeaders }
+  );
+}
 
     const response = await fetch(
       "https://ws-wx9ta73sr81o5bda.eu-central-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
