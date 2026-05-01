@@ -36,8 +36,45 @@ const WeeklyPrize = () => {
   return (
     <>
       <Helmet>
-        <title>الجائزة الأسبوعية | LingoArab</title>
-        <meta name="description" content="تنافس أسبوعياً واربح 25 دولار كل يوم جمعة! تعرف على شروط المسابقة والفائزين." />
+        <title>الجائزة الأسبوعية – اربح 25$ كل جمعة | Lingo Arab</title>
+        <meta name="description" content="تنافس أسبوعياً واربح 25 دولار كل يوم جمعة! تعرف على شروط المسابقة والفائزين على Lingo Arab." />
+        <link rel="canonical" href="https://lingoarab.com/weekly-prize" />
+        <link rel="alternate" hrefLang="ar" href="https://lingoarab.com/weekly-prize" />
+        <link rel="alternate" hrefLang="x-default" href="https://lingoarab.com/weekly-prize" />
+        <meta property="og:title" content="الجائزة الأسبوعية – اربح 25$ كل جمعة | Lingo Arab" />
+        <meta property="og:description" content="تنافس مع المتعلمين واحصل على 25$ كل يوم جمعة." />
+        <meta property="og:url" content="https://lingoarab.com/weekly-prize" />
+        <meta property="og:site_name" content="Lingo Arab" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="الجائزة الأسبوعية – اربح 25$ كل جمعة | Lingo Arab" />
+        <meta name="twitter:description" content="تنافس مع المتعلمين واحصل على 25$ كل يوم جمعة." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "Lingo Arab",
+              "url": "https://lingoarab.com",
+              "logo": "https://lingoarab.com/logo.png"
+            },
+            {
+              "@type": "WebPage",
+              "name": "الجائزة الأسبوعية",
+              "url": "https://lingoarab.com/weekly-prize",
+              "description": "مسابقة أسبوعية بجائزة 25 دولار للمتصدر.",
+              "inLanguage": "ar",
+              "isPartOf": { "@type": "WebSite", "name": "Lingo Arab", "url": "https://lingoarab.com" }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://lingoarab.com/" },
+                { "@type": "ListItem", "position": 2, "name": "الجائزة الأسبوعية", "item": "https://lingoarab.com/weekly-prize" }
+              ]
+            }
+          ]
+        })}</script>
       </Helmet>
 
       <div dir="rtl" className="min-h-screen bg-background">
