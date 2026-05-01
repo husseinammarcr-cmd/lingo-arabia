@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Search, Award, CheckCircle, XCircle, Loader2, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,47 @@ const VerifyCertificate = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>التحقق من الشهادة | Lingo Arab</title>
+        <meta name="description" content="تحقق من صحة شهادات Lingo Arab الإلكترونية بإدخال رمز الشهادة." />
+        <link rel="canonical" href="https://lingoarab.com/verify-certificate" />
+        <link rel="alternate" hrefLang="ar" href="https://lingoarab.com/verify-certificate" />
+        <link rel="alternate" hrefLang="x-default" href="https://lingoarab.com/verify-certificate" />
+        <meta property="og:title" content="التحقق من الشهادة | Lingo Arab" />
+        <meta property="og:description" content="تحقق من صحة شهادات Lingo Arab برمز الشهادة." />
+        <meta property="og:url" content="https://lingoarab.com/verify-certificate" />
+        <meta property="og:site_name" content="Lingo Arab" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="التحقق من الشهادة | Lingo Arab" />
+        <meta name="twitter:description" content="تحقق من صحة شهادات Lingo Arab برمز الشهادة." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "Lingo Arab",
+              "url": "https://lingoarab.com",
+              "logo": "https://lingoarab.com/logo.png"
+            },
+            {
+              "@type": "WebPage",
+              "name": "التحقق من الشهادة",
+              "url": "https://lingoarab.com/verify-certificate",
+              "description": "خدمة التحقق من صحة شهادات Lingo Arab.",
+              "inLanguage": "ar",
+              "isPartOf": { "@type": "WebSite", "name": "Lingo Arab", "url": "https://lingoarab.com" }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://lingoarab.com/" },
+                { "@type": "ListItem", "position": 2, "name": "التحقق من الشهادة", "item": "https://lingoarab.com/verify-certificate" }
+              ]
+            }
+          ]
+        })}</script>
+      </Helmet>
       <Header showBack showAuthButton />
       
       <main className="container mx-auto px-4 py-12 max-w-2xl">
