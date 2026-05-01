@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Cookie } from 'lucide-react';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 
 const CookiePolicy = () => {
   const sections = [
@@ -62,6 +63,7 @@ const CookiePolicy = () => {
 
   return (
     <div dir="rtl" className="min-h-screen bg-background">
+      <SeoBreadcrumbs items={[{ name: 'سياسة ملفات تعريف الارتباط', url: 'https://lingoarab.com/cookie-policy' }]} />
       <Header showBack showAuthButton />
       
       <main className="container mx-auto px-4 py-8 md:py-12">

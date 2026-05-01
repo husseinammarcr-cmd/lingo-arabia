@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import PageBackground from '@/components/PageBackground';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 

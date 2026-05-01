@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 
 const TermsAndConditions = () => {
   const sections = [
@@ -124,6 +125,7 @@ const TermsAndConditions = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SeoBreadcrumbs items={[{ name: 'الشروط والأحكام', url: 'https://lingoarab.com/terms' }]} />
       <Header showBack showAuthButton />
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
