@@ -166,6 +166,33 @@
     <lastmod>2026-05-01</lastmod>
   </url>
 
+  <!-- AI Tutor -->
+  <url>
+    <loc>https://lingoarab.com/ai-tutor</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/ai-tutor" />
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+
+  <!-- Weekly Prize -->
+  <url>
+    <loc>https://lingoarab.com/weekly-prize</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/weekly-prize" />
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+
+  <!-- Verify Certificate -->
+  <url>
+    <loc>https://lingoarab.com/verify-certificate</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/verify-certificate" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+
   <!-- Legal Pages -->
   <url>
     <loc>https://lingoarab.com/privacy-policy</loc>
