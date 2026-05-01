@@ -69,6 +69,7 @@ const PlacementTest = () => {
     <PageBackground>
       <div dir="rtl" className="min-h-screen">
         {/* Header */}
+        <SeoBreadcrumbs items={[{ name: 'اختبار تحديد المستوى', url: 'https://lingoarab.com/placement-test' }]} />
         <Header showBack />
 
         <main className="container mx-auto px-4 py-8 max-w-2xl">
