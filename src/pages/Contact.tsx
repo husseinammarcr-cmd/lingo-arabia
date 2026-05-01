@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Send, Clock, CheckCircle2, MessageSquare } from 'lucide-react';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -91,6 +92,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SeoBreadcrumbs items={[{ name: 'اتصل بنا', url: 'https://lingoarab.com/contact' }]} />
       <Header showBack showAuthButton />
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">

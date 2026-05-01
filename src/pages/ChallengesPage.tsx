@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChallengesList } from '@/components/ChallengesList';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
+      <SeoBreadcrumbs items={[{ name: 'التحديات', url: 'https://lingoarab.com/challenges' }]} />
       <Header />
       
       <main className="container max-w-2xl mx-auto px-4 py-6">

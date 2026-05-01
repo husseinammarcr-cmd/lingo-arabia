@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 import PageBackground from '@/components/PageBackground';
 import { Target, Eye, Heart, Users, Award, BookOpen } from 'lucide-react';
 
@@ -71,6 +72,7 @@ const About = () => {
   return (
     <PageBackground>
       <div className="min-h-screen" dir="rtl">
+        <SeoBreadcrumbs items={[{ name: 'من نحن', url: 'https://lingoarab.com/about' }]} />
         <Header showAuthButton />
         
         <main className="container mx-auto px-4 py-12 md:py-20">

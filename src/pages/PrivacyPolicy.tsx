@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
 import Header from '@/components/Header';
+import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 
 const PrivacyPolicy = () => {
   const sections = [
@@ -111,6 +112,7 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SeoBreadcrumbs items={[{ name: 'سياسة الخصوصية', url: 'https://lingoarab.com/privacy-policy' }]} />
       <Header showBack showAuthButton />
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
