@@ -204,8 +204,45 @@ const AiTutor = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col" dir="rtl">
       <Helmet>
-        <title>المعلم الذكي - LingoArab</title>
-        <meta name="description" content="تعلم اللغة الإنجليزية مع معلم ذكاء اصطناعي متخصص للناطقين بالعربية" />
+        <title>المعلم الذكي بالذكاء الاصطناعي | Lingo Arab</title>
+        <meta name="description" content="تعلم اللغة الإنجليزية مع معلم ذكاء اصطناعي متخصص للناطقين بالعربية. اطرح أسئلتك واحصل على شرح فوري." />
+        <link rel="canonical" href="https://lingoarab.com/ai-tutor" />
+        <link rel="alternate" hrefLang="ar" href="https://lingoarab.com/ai-tutor" />
+        <link rel="alternate" hrefLang="x-default" href="https://lingoarab.com/ai-tutor" />
+        <meta property="og:title" content="المعلم الذكي بالذكاء الاصطناعي | Lingo Arab" />
+        <meta property="og:description" content="معلم إنجليزي ذكي يجيب على أسئلتك فوراً بالعربية." />
+        <meta property="og:url" content="https://lingoarab.com/ai-tutor" />
+        <meta property="og:site_name" content="Lingo Arab" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="المعلم الذكي بالذكاء الاصطناعي | Lingo Arab" />
+        <meta name="twitter:description" content="معلم إنجليزي ذكي يجيب على أسئلتك فوراً بالعربية." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "Lingo Arab",
+              "url": "https://lingoarab.com",
+              "logo": "https://lingoarab.com/logo.png"
+            },
+            {
+              "@type": "WebPage",
+              "name": "المعلم الذكي بالذكاء الاصطناعي",
+              "url": "https://lingoarab.com/ai-tutor",
+              "description": "معلم ذكاء اصطناعي لتعلم الإنجليزية بالعربية.",
+              "inLanguage": "ar",
+              "isPartOf": { "@type": "WebSite", "name": "Lingo Arab", "url": "https://lingoarab.com" }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://lingoarab.com/" },
+                { "@type": "ListItem", "position": 2, "name": "المعلم الذكي", "item": "https://lingoarab.com/ai-tutor" }
+              ]
+            }
+          ]
+        })}</script>
       </Helmet>
       <Header showBack showUserInfo />
 
