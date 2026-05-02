@@ -2,121 +2,146 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import { CURRICULUM, getTotalLessonsCount } from '@/lib/curriculum';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { 
-  ChevronLeft, 
+import { CURRICULUM, getTotalLessonsCount, getLessonById } from '@/lib/curriculum';
+import {
+  Home,
   BookOpen,
-  GraduationCap,
+  CheckCircle2,
+  BarChart3,
+  Settings as SettingsIcon,
+  HelpCircle,
+  BookMarked,
+  Mic2,
+  ScrollText,
   Lock,
-  CheckCircle,
   Target,
-  Sparkles
+  Sparkles,
+  GraduationCap,
+  Trophy,
+  ChevronLeft,
+  Menu as MenuIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
-import PageBackground from '@/components/PageBackground';
-import Header from '@/components/Header';
-import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
-import { TiltCard } from '@/components/animations/TiltCard';
-import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
-import { usePrefersReducedMotion } from '@/hooks/useAnimations';
-import { useUserProgress, isLevelUnlocked, getLevelIndex } from '@/hooks/useProgress';
-import PrizeTicker from '@/components/PrizeTicker';
+import { useUserProgress, isLevelUnlocked } from '@/hooks/useProgress';
+import { useNavigate as useNav } from 'react-router-dom';
+import SidebarNav, { SidebarNavRef } from '@/components/SidebarNav';
 
-
-
-// Static Course JSON-LD schema for SEO
+// ============= Course JSON-LD =============
 const COURSE_SCHEMA = {
-  "@context": "https://schema.org",
-  "@type": "Course",
-  "name": "Learn English for Arabic Speakers",
-  "description": "Interactive English courses designed for Arabic speakers from A1 to C2 levels. 300 lessons covering vocabulary, grammar, listening, and conversation skills.",
-  "provider": {
-    "@type": "Organization",
-    "name": "LingoArab",
-    "sameAs": "https://lingoarab.com",
-    "url": "https://lingoarab.com"
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'Learn English for Arabic Speakers',
+  description:
+    'Interactive English courses designed for Arabic speakers from A1 to C2 levels. 300 lessons covering vocabulary, grammar, listening, and conversation skills.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Lingo Arab',
+    sameAs: 'https://lingoarab.com',
+    url: 'https://lingoarab.com',
   },
-  "inLanguage": ["en", "ar"],
-  "isAccessibleForFree": true,
-  "audience": {
-    "@type": "EducationalAudience",
-    "educationalRole": "student"
+  inLanguage: ['en', 'ar'],
+  isAccessibleForFree: true,
+};
+
+// Sidebar nav items mapped to existing app routes
+const NAV_ITEMS = [
+  { icon: Home, labelAr: 'الرئيسية', labelEn: 'Home', path: '/app/courses', active: true },
+  { icon: BookOpen, labelAr: 'الدروس', labelEn: 'Lessons', path: '/app/courses', active: false },
+  { icon: CheckCircle2, labelAr: 'التحديات', labelEn: 'Practice', path: '/challenges', active: false },
+  { icon: BarChart3, labelAr: 'التقدم', labelEn: 'Progress', path: '/leaderboard', active: false },
+  { icon: SettingsIcon, labelAr: 'الإعدادات', labelEn: 'Settings', path: '/settings', active: false },
+];
+
+// Level → vibrant card color (cycles through 3 colors from the requested design)
+const LEVEL_CARD_THEME: Record<
+  string,
+  { gradient: string; circle: string; textColor: string; trackFill: string; accent: string }
+> = {
+  A1: {
+    gradient: 'linear-gradient(145deg, #cdff4f, #a7e31b)',
+    circle: '#dcff82',
+    textColor: '#111111',
+    trackFill: '#cdff4f',
+    accent: 'text-[#cdff4f]',
   },
-  "hasCourseInstance": [
-    {
-      "@type": "CourseInstance",
-      "name": "A1 - Beginner English",
-      "description": "Foundation level for complete beginners",
-      "courseMode": "online"
-    },
-    {
-      "@type": "CourseInstance", 
-      "name": "A2 - Elementary English",
-      "description": "Elementary level for basic communication",
-      "courseMode": "online"
-    },
-    {
-      "@type": "CourseInstance",
-      "name": "B1 - Intermediate English", 
-      "description": "Intermediate level for independent users",
-      "courseMode": "online"
-    },
-    {
-      "@type": "CourseInstance",
-      "name": "B2 - Upper Intermediate English",
-      "description": "Upper intermediate level for advanced communication",
-      "courseMode": "online"
-    },
-    {
-      "@type": "CourseInstance",
-      "name": "C1 - Advanced English",
-      "description": "Advanced level for proficient users",
-      "courseMode": "online"
-    },
-    {
-      "@type": "CourseInstance",
-      "name": "C2 - Proficiency English",
-      "description": "Mastery level for near-native proficiency",
-      "courseMode": "online"
-    }
-  ]
+  A2: {
+    gradient: 'linear-gradient(145deg, #a574ff, #753aeb)',
+    circle: '#8b52ff',
+    textColor: '#ffffff',
+    trackFill: '#a574ff',
+    accent: 'text-[#a574ff]',
+  },
+  B1: {
+    gradient: 'linear-gradient(145deg, #ff9dcb, #ed5f9f)',
+    circle: '#ffb8da',
+    textColor: '#111111',
+    trackFill: '#ff9dcb',
+    accent: 'text-[#ff9dcb]',
+  },
+  B2: {
+    gradient: 'linear-gradient(145deg, #cdff4f, #a7e31b)',
+    circle: '#dcff82',
+    textColor: '#111111',
+    trackFill: '#cdff4f',
+    accent: 'text-[#cdff4f]',
+  },
+  C1: {
+    gradient: 'linear-gradient(145deg, #a574ff, #753aeb)',
+    circle: '#8b52ff',
+    textColor: '#ffffff',
+    trackFill: '#a574ff',
+    accent: 'text-[#a574ff]',
+  },
+  C2: {
+    gradient: 'linear-gradient(145deg, #ff9dcb, #ed5f9f)',
+    circle: '#ffb8da',
+    textColor: '#111111',
+    trackFill: '#ff9dcb',
+    accent: 'text-[#ff9dcb]',
+  },
 };
 
-// Import level illustrations
-import levelA1Books from '@/assets/level-a1-books.jpeg';
-import levelA2Books from '@/assets/level-a2-books.jpeg';
-import levelB1Books from '@/assets/level-b1-books.jpeg';
-import levelB2Books from '@/assets/level-b2-books.jpeg';
-import levelC1Books from '@/assets/level-c1-books.jpeg';
-import levelC2Books from '@/assets/level-c2-books.jpeg';
-
-const levelColors: Record<string, string> = {
-  'A1': 'from-emerald-500 to-emerald-600',
-  'A2': 'from-sky-500 to-sky-600',
-  'B1': 'from-violet-500 to-violet-600',
-  'B2': 'from-amber-500 to-amber-600',
-  'C1': 'from-rose-500 to-rose-600',
-  'C2': 'from-fuchsia-500 to-fuchsia-600',
-};
-
-const levelImages: Record<string, string> = {
-  'A1': levelA1Books,
-  'A2': levelA2Books,
-  'B1': levelB1Books,
-  'B2': levelB2Books,
-  'C1': levelC1Books,
-  'C2': levelC2Books,
-};
+const ACTION_CARDS = [
+  {
+    titleAr: 'ابدأ\nدرسًا جديدًا',
+    icon: BookMarked,
+    style: {
+      gradient: 'linear-gradient(145deg, #cdff4f, #a7e31b)',
+      circle: '#dcff82',
+      textColor: '#111111',
+    },
+    action: 'lesson' as const,
+  },
+  {
+    titleAr: 'تدرّب على\nالمحادثة',
+    icon: Mic2,
+    style: {
+      gradient: 'linear-gradient(145deg, #a574ff, #753aeb)',
+      circle: '#8b52ff',
+      textColor: '#ffffff',
+    },
+    action: 'tutor' as const,
+  },
+  {
+    titleAr: 'مراجعة\nالقواعد',
+    icon: ScrollText,
+    style: {
+      gradient: 'linear-gradient(145deg, #ff9dcb, #ed5f9f)',
+      circle: '#ffb8da',
+      textColor: '#111111',
+    },
+    action: 'placement' as const,
+  },
+];
 
 const AppCourses = () => {
   const navigate = useNavigate();
-  const { user, profile, isLoading, isAdmin } = useAuth();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { user, profile, isLoading, isAdmin, signOut } = useAuth();
   const { data: progressData } = useUserProgress();
+  const sidebarRef = useRef<SidebarNavRef>(null);
+
   const [showWelcome, setShowWelcome] = useState(() => {
     const lastShown = localStorage.getItem('welcome_back_date');
     const today = new Date().toDateString();
@@ -128,55 +153,78 @@ const AppCourses = () => {
     setShowWelcome(false);
   };
 
-  // Check if user has taken placement test
   const hasTakenPlacement = profile?.has_taken_placement ?? false;
 
-  // Get completed lesson IDs
   const completedLessonIds = useMemo(() => {
     if (!progressData) return [];
-    return progressData
-      .filter(p => p.completed)
-      .map(p => p.lesson_id);
+    return progressData.filter((p) => p.completed).map((p) => p.lesson_id);
   }, [progressData]);
 
-  // Calculate progress for each level
+  // Per-level progress
   const levelProgressMap = useMemo(() => {
     const map: Record<string, { completed: number; total: number; progress: number }> = {};
-    
     for (const level of CURRICULUM) {
       let completed = 0;
       let total = 0;
-      
       for (const unit of level.units) {
         for (const lesson of unit.lessons) {
           total++;
-          if (completedLessonIds.includes(lesson.id)) {
-            completed++;
-          }
+          if (completedLessonIds.includes(lesson.id)) completed++;
         }
       }
-      
       map[level.code] = {
         completed,
         total,
-        progress: total > 0 ? Math.round((completed / total) * 100) : 0
+        progress: total > 0 ? Math.round((completed / total) * 100) : 0,
       };
     }
-    
     return map;
   }, [completedLessonIds]);
 
+  // Recent activity = last completed lessons (max 3) — uses curriculum lookup for titles
+  const recentActivity = useMemo(() => {
+    if (!progressData) return [];
+    return [...progressData]
+      .filter((p) => p.completed)
+      .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+      .slice(0, 3)
+      .map((p, i) => {
+        const lesson = getLessonById(p.lesson_id);
+        const themeColors = ['#cdff4f', '#a574ff', '#ff9dcb'];
+        return {
+          id: p.id,
+          title: lesson?.titleAr ?? p.lesson_id,
+          percent: p.score ?? 100,
+          color: themeColors[i % 3],
+        };
+      });
+  }, [progressData]);
+
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/auth');
-    }
+    if (!isLoading && !user) navigate('/auth');
   }, [user, isLoading, navigate]);
+
+  const handleActionCard = (action: 'lesson' | 'tutor' | 'placement') => {
+    if (action === 'lesson') {
+      // Jump to first level user can access
+      const firstUnlocked =
+        CURRICULUM.find((lvl) =>
+          isAdmin
+            ? true
+            : isLevelUnlocked(lvl.code, profile?.placement_level, profile?.current_level),
+        ) ?? CURRICULUM[0];
+      navigate(`/app/courses/${firstUnlocked.code.toLowerCase()}`);
+    } else if (action === 'tutor') {
+      navigate('/ai-tutor');
+    } else if (action === 'placement') {
+      navigate('/placement-test');
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <motion.div 
-          className="text-primary text-xl"
+      <div className="min-h-screen flex items-center justify-center bg-[#161618] text-white">
+        <motion.div
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
@@ -187,220 +235,390 @@ const AppCourses = () => {
   }
 
   const totalLessons = getTotalLessonsCount();
+  const firstName = profile?.name?.split(' ')[0] ?? 'بك';
 
   return (
-    <PageBackground>
-      {/* Welcome Back Overlay */}
-      {showWelcome && <WelcomeBackOverlay onContinue={handleWelcomeContinue} />}
-      
+    <>
       <Helmet>
-        <title>الدورات التعليمية | LingoArab</title>
-        <meta name="description" content="تعلم الإنجليزية من المبتدئ إلى الإتقان - 300 درس تفاعلي في 6 مستويات CEFR" />
-        <script type="application/ld+json">
-          {JSON.stringify(COURSE_SCHEMA)}
-        </script>
+        <title>لوحة التعلم | Lingo Arab</title>
+        <meta
+          name="description"
+          content="لوحة التعلم الخاصة بك - تابع دروسك، تدرب على المحادثة، وراجع القواعد في Lingo Arab."
+        />
+        <script type="application/ld+json">{JSON.stringify(COURSE_SCHEMA)}</script>
       </Helmet>
 
-      <div dir="rtl">
-      {/* Header */}
-      <Header showUserInfo />
-      <PrizeTicker />
+      {showWelcome && <WelcomeBackOverlay onContinue={handleWelcomeContinue} />}
 
-      <main className="container mx-auto px-4 py-6 max-w-4xl">
-        {/* Placement Test Required Banner - Shows when user hasn't taken the test */}
-        {!hasTakenPlacement && (
-          <FadeUp>
-            <Card className="mb-8 overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10">
-              <CardContent className="p-6 sm:p-8">
-                <div className="flex flex-col items-center text-center">
-                  {/* Icon with animation */}
-                  <motion.div 
-                    className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4 shadow-lg"
-                    animate={prefersReducedMotion ? {} : { 
-                      scale: [1, 1.05, 1],
-                      rotate: [0, 2, -2, 0]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
-                    <Target className="w-10 h-10 text-primary-foreground" />
-                  </motion.div>
-                  
-                  {/* Title */}
-                  <h2 className="text-2xl font-bold text-foreground mb-2">
-                    ابدأ رحلة التعلم!
-                  </h2>
-                  
-                  {/* Description */}
-                  <p className="text-muted-foreground mb-6 max-w-md">
-                    قم بتحديد مستواك في اللغة الإنجليزية لفتح الدروس المناسبة لك.
-                    الاختبار سريع ويستغرق فقط 5-7 دقائق.
-                  </p>
-                  
-                  {/* Features */}
-                  <div className="flex flex-wrap justify-center gap-4 mb-6 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Sparkles className="w-4 h-4 text-primary" />
-                      <span>21 سؤال متنوع</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <GraduationCap className="w-4 h-4 text-primary" />
-                      <span>تحديد دقيق للمستوى</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <BookOpen className="w-4 h-4 text-primary" />
-                      <span>فتح الدروس فوراً</span>
-                    </div>
-                  </div>
-                  
-                  {/* CTA Button */}
-                  <Button 
-                    variant="hero" 
-                    size="xl"
-                    onClick={() => navigate('/placement-test')}
-                    className="text-lg gap-2"
-                  >
-                    <Target className="w-5 h-5" />
-                    حدد مستواك الآن
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </FadeUp>
-        )}
+      {/* Hidden mobile drawer reused for the existing sidebar nav */}
+      <SidebarNav ref={sidebarRef} />
 
-        {/* Page Title */}
-        <FadeUp delay={0.1}>
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-2">مستويات التعلم</h2>
-             {isAdmin && (
-               <p className="text-sm text-primary font-medium">وضع الأدمن مفعّل</p>
-             )}
-            <p className="text-muted-foreground">
-              {totalLessons} درس في 6 مستويات - من المبتدئ إلى الإتقان
-            </p>
-            {!hasTakenPlacement && (
-              <p className="text-sm text-primary mt-2">
-                قم بتحديد مستواك أولاً لفتح الدروس
-              </p>
-            )}
-          </div>
-        </FadeUp>
+      {/* Force a dark surface only for this page (does NOT toggle the global theme) */}
+      <div
+        dir="rtl"
+        className="flex h-screen w-full overflow-hidden bg-[#161618] text-white"
+        style={{ fontFamily: "'Inter', 'Cairo', sans-serif" }}
+      >
+        {/* ============= Vertical icon sidebar (LTR-style icon strip) ============= */}
+        <nav
+          dir="ltr"
+          className="hidden md:flex w-[70px] shrink-0 flex-col items-center bg-[#0c0c0c] py-5 z-20"
+        >
+          {/* Logo */}
+          <button
+            onClick={() => navigate('/')}
+            className="text-[#cdff4f] mb-10 flex items-center justify-center"
+            aria-label="الرئيسية"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+          </button>
 
-
-        {/* Levels Grid */}
-        <StaggerContainer className="grid gap-6 md:grid-cols-2">
-          {CURRICULUM.map((level, index) => {
-            const totalUnits = level.units.length;
-            const totalLevelLessons = level.units.reduce((sum, unit) => sum + unit.lessons.length, 0);
-            const levelProgress = levelProgressMap[level.code];
-            const progress = levelProgress?.progress ?? 0;
-            
-            // If user hasn't taken placement test, all levels are locked (unless admin)
-            // Admin bypasses all restrictions - levels are always unlocked
-            const isUnlocked = isAdmin || (hasTakenPlacement && isLevelUnlocked(level.code, profile?.placement_level, profile?.current_level));
-            const levelImage = levelImages[level.code];
-            const isCompleted = levelProgress?.completed === levelProgress?.total && levelProgress?.total > 0;
-
-            return (
-              <StaggerItem key={level.id}>
-                <TiltCard
-                  onClick={isUnlocked ? () => navigate(`/app/courses/${level.code.toLowerCase()}`) : undefined}
-                  className={cn("h-full", !isUnlocked && "opacity-60 cursor-not-allowed")}
+          {/* Nav items */}
+          <div className="flex flex-col gap-7 w-full">
+            {NAV_ITEMS.map((item, idx) => {
+              const Icon = item.icon;
+              const active = item.active;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => navigate(item.path)}
+                  className={cn(
+                    'relative flex flex-col items-center gap-1.5 w-full text-[10px] font-medium transition-colors',
+                    active ? 'text-[#cdff4f]' : 'text-[#8a8a8a] hover:text-white',
+                  )}
                 >
-                  <Card className={cn(
-                    "group overflow-hidden transition-all duration-300 h-full",
-                    isUnlocked && "cursor-pointer hover:shadow-elevated",
-                    isCompleted && "ring-2 ring-success"
-                  )}>
-                    {/* Gradient Header with Illustration */}
-                    <div className={cn("h-28 sm:h-32 bg-gradient-to-br relative overflow-hidden", levelColors[level.code])}>
-                      {/* Background Image */}
-                      <img 
-                        src={levelImage} 
-                        alt={`${level.code} illustration`}
-                        className={cn(
-                          "absolute inset-0 w-full h-full object-cover",
-                          isUnlocked ? "opacity-90" : "opacity-50 grayscale"
-                        )}
+                  {active && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-9 w-[3px] rounded-r bg-[#cdff4f]" />
+                  )}
+                  <Icon className="h-[18px] w-[18px]" />
+                  <span>{item.labelEn}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Bottom: help + avatar */}
+          <div className="mt-auto flex flex-col items-center gap-5">
+            <button
+              onClick={() => navigate('/faq')}
+              className="text-[#8a8a8a] hover:text-white transition-colors"
+              aria-label="مساعدة"
+            >
+              <HelpCircle className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => navigate('/profile')}
+              className="h-8 w-8 rounded-full bg-gradient-to-br from-[#a574ff] to-[#753aeb] flex items-center justify-center font-bold text-white text-sm overflow-hidden"
+              aria-label="الملف الشخصي"
+            >
+              {profile?.name?.charAt(0)?.toUpperCase() ?? 'U'}
+            </button>
+          </div>
+        </nav>
+
+        {/* ============= Main content ============= */}
+        <main className="flex-1 relative overflow-y-auto overflow-x-hidden px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 bg-[#141414]">
+          {/* Aurora background */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+            <div
+              className="absolute -top-24 -right-12 rounded-full"
+              style={{
+                width: '60vw',
+                height: '60vw',
+                background:
+                  'radial-gradient(circle, rgba(186,243,58,0.30) 0%, transparent 60%)',
+                filter: 'blur(60px)',
+              }}
+            />
+            <div
+              className="absolute"
+              style={{
+                top: 50,
+                right: '25vw',
+                width: '50vw',
+                height: '50vw',
+                background:
+                  'radial-gradient(circle, rgba(138,78,255,0.20) 0%, transparent 50%)',
+                filter: 'blur(70px)',
+                borderRadius: '50%',
+              }}
+            />
+          </div>
+
+          {/* Mobile top bar */}
+          <div className="md:hidden relative z-10 flex items-center justify-between mb-4">
+            <button
+              onClick={() => navigate('/')}
+              className="text-[#cdff4f]"
+              aria-label="الرئيسية"
+            >
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 6h16M4 12h16M4 18h7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => sidebarRef.current?.open()}
+              className="text-white p-2 rounded-lg bg-white/5"
+              aria-label="القائمة"
+            >
+              <MenuIcon className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Content wrapper */}
+          <div className="relative z-10 mx-auto w-full max-w-[900px]">
+            {/* Greeting */}
+            <div
+              className="text-right text-lg sm:text-xl font-bold text-white mb-3"
+              style={{ fontFamily: "'Tajawal', 'Cairo', sans-serif" }}
+            >
+              مرحباً، {firstName}
+              {isAdmin && (
+                <span className="mr-2 text-xs font-medium text-[#cdff4f]">• وضع الأدمن</span>
+              )}
+            </div>
+            <h1
+              dir="ltr"
+              className="text-white font-bold leading-[1.1] mb-8 sm:mb-10"
+              style={{ fontSize: 'min(7vw, 48px)' }}
+            >
+              How may I help
+              <br />
+              you today?
+            </h1>
+
+            {/* ============= Action cards ============= */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-10">
+              {ACTION_CARDS.map((card, i) => {
+                const Icon = card.icon;
+                return (
+                  <motion.button
+                    key={i}
+                    whileHover={{ y: -4 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => handleActionCard(card.action)}
+                    className="relative h-[160px] sm:h-[200px] rounded-3xl p-4 sm:p-5 flex flex-col text-right overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
+                    style={{
+                      background: card.style.gradient,
+                      color: card.style.textColor,
+                    }}
+                  >
+                    {/* Decorative circle */}
+                    <span
+                      className="absolute rounded-full pointer-events-none"
+                      style={{
+                        bottom: -30,
+                        left: -30,
+                        width: 130,
+                        height: 130,
+                        backgroundColor: card.style.circle,
+                        zIndex: 1,
+                      }}
+                    />
+                    <h3 className="relative z-[5] text-[15px] sm:text-[18px] font-bold leading-[1.25] whitespace-pre-line">
+                      {card.titleAr}
+                    </h3>
+                    <Icon
+                      className="absolute z-[5] h-6 w-6 sm:h-7 sm:w-7"
+                      style={{ bottom: 20, left: 20 }}
+                    />
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* ============= Placement Test prompt (kept) ============= */}
+            {!hasTakenPlacement && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-10 rounded-2xl p-5 sm:p-6 border border-[#cdff4f]/30 bg-gradient-to-br from-[#cdff4f]/10 via-[#a574ff]/5 to-transparent"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-[#cdff4f]/20 flex items-center justify-center shrink-0">
+                    <Target className="h-6 w-6 text-[#cdff4f]" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-white mb-1">حدّد مستواك أولاً</h3>
+                    <p className="text-sm text-[#bdbdbd] mb-3">
+                      اختبار سريع (5-7 دقائق) لفتح الدروس المناسبة لك.
+                    </p>
+                    <button
+                      onClick={() => navigate('/placement-test')}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#cdff4f] text-[#111] font-bold text-sm hover:brightness-110 transition"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      ابدأ الاختبار
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ============= Levels grid ============= */}
+            <section className="mb-10">
+              <div className="flex items-baseline justify-between mb-5">
+                <h2 className="text-xl font-semibold text-white">مستويات التعلم</h2>
+                <span className="text-xs text-[#8a8a8a]">
+                  {totalLessons} درس · 6 مستويات
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {CURRICULUM.map((level) => {
+                  const theme = LEVEL_CARD_THEME[level.code];
+                  const levelProgress = levelProgressMap[level.code];
+                  const progress = levelProgress?.progress ?? 0;
+                  const totalLevelLessons = level.units.reduce(
+                    (s, u) => s + u.lessons.length,
+                    0,
+                  );
+                  const unlocked =
+                    isAdmin ||
+                    (hasTakenPlacement &&
+                      isLevelUnlocked(
+                        level.code,
+                        profile?.placement_level,
+                        profile?.current_level,
+                      ));
+                  const isCompleted =
+                    levelProgress &&
+                    levelProgress.completed === levelProgress.total &&
+                    levelProgress.total > 0;
+
+                  return (
+                    <motion.button
+                      key={level.id}
+                      whileHover={unlocked ? { y: -3 } : {}}
+                      whileTap={unlocked ? { scale: 0.98 } : {}}
+                      onClick={() =>
+                        unlocked && navigate(`/app/courses/${level.code.toLowerCase()}`)
+                      }
+                      disabled={!unlocked}
+                      className={cn(
+                        'relative text-right rounded-2xl p-5 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition',
+                        !unlocked && 'opacity-60 cursor-not-allowed',
+                      )}
+                      style={{
+                        background: theme.gradient,
+                        color: theme.textColor,
+                      }}
+                    >
+                      {/* Decorative circle */}
+                      <span
+                        className="absolute rounded-full pointer-events-none"
+                        style={{
+                          bottom: -40,
+                          left: -40,
+                          width: 140,
+                          height: 140,
+                          backgroundColor: theme.circle,
+                          zIndex: 1,
+                        }}
                       />
-                      
-                      {/* Overlay for better blending */}
-                      <div className={cn("absolute inset-0 bg-gradient-to-t from-black/10 to-transparent")} />
-                      
-                      {/* Level Badge */}
-                      <div className="absolute top-3 right-3 flex items-center gap-2">
-                        <span className="text-sm font-bold px-3 py-1 rounded-full bg-white/90 text-foreground shadow-sm">
+
+                      <div className="relative z-[5] flex items-start justify-between mb-2">
+                        <span
+                          className="text-xs font-bold px-2.5 py-1 rounded-full bg-black/20 backdrop-blur-sm"
+                          style={{ color: theme.textColor }}
+                        >
                           {level.code}
                         </span>
-                        {!isUnlocked && (
-                          <span className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
-                            <Lock className="w-4 h-4 text-muted-foreground" />
-                          </span>
-                        )}
-                        {isCompleted && (
-                          <span className="w-8 h-8 rounded-full bg-success/90 flex items-center justify-center shadow-sm">
-                            <CheckCircle className="w-4 h-4 text-white" />
-                          </span>
-                        )}
+                        {!unlocked && <Lock className="h-4 w-4 opacity-80" />}
+                        {isCompleted && <CheckCircle2 className="h-5 w-5" />}
                       </div>
-                      
-                      {/* Shine effect */}
-                      <motion.div 
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                        initial={{ x: '-100%' }}
-                        whileHover={prefersReducedMotion ? {} : { x: '100%' }}
-                        transition={{ duration: 0.6 }}
-                      />
-                    </div>
 
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-lg font-bold text-foreground">{level.titleAr}</h3>
-                            {!isUnlocked && (
-                              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                                مقفل
-                              </span>
-                            )}
-                            {isCompleted && (
-                              <span className="text-xs bg-success/10 text-success px-2 py-0.5 rounded-full">
-                                مكتمل
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground ltr-text">{level.titleEn}</p>
-                        </div>
-                        <motion.div
-                          whileHover={isUnlocked && !prefersReducedMotion ? { x: -4 } : {}}
-                          transition={{ type: 'spring', stiffness: 300 }}
+                      <h3 className="relative z-[5] text-base sm:text-lg font-bold mb-1">
+                        {level.titleAr}
+                      </h3>
+                      <p
+                        dir="ltr"
+                        className="relative z-[5] text-xs opacity-80 mb-4"
+                        style={{ unicodeBidi: 'isolate' }}
+                      >
+                        {level.titleEn}
+                      </p>
+
+                      <div className="relative z-[5] flex items-center justify-between text-[11px] font-semibold mb-2 opacity-90">
+                        <span>{level.units.length} وحدات</span>
+                        <span>
+                          {levelProgress?.completed ?? 0} / {totalLevelLessons}
+                        </span>
+                      </div>
+
+                      <div className="relative z-[5] w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-black/60 transition-all"
+                          style={{ width: `${unlocked ? progress : 0}%` }}
+                        />
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* ============= Recent activity ============= */}
+            <section className="pb-10">
+              <h2 className="text-xl font-semibold text-white mb-5">النشاط الأخير</h2>
+
+              {recentActivity.length === 0 ? (
+                <div className="rounded-2xl p-6 text-center text-[#8a8a8a] bg-[#242424]">
+                  <Trophy className="h-8 w-8 mx-auto mb-2 opacity-60" />
+                  <p className="text-sm">لم تُكمل أي درس بعد. ابدأ الآن!</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {recentActivity.map((a) => (
+                    <div
+                      key={a.id}
+                      className="bg-[#242424] rounded-2xl px-5 py-4 flex flex-col gap-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#e0e0e0]">{a.title}</span>
+                        <span
+                          className="font-semibold text-sm"
+                          style={{ color: a.color }}
                         >
-                          <ChevronLeft className={cn(
-                            "w-5 h-5 transition-colors",
-                            isUnlocked ? "text-muted-foreground group-hover:text-primary" : "text-muted-foreground/50"
-                          )} />
-                        </motion.div>
+                          {a.percent}%
+                        </span>
                       </div>
-
-                      <p className="text-sm text-muted-foreground mb-4">{level.descriptionAr}</p>
-
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                        <span>{totalUnits} وحدات</span>
-                        <span>{levelProgress?.completed ?? 0} / {totalLevelLessons} درس</span>
+                      <div className="w-full h-1.5 bg-[#383838] rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${a.percent}%`, backgroundColor: a.color }}
+                        />
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
 
-                      <AnimatedProgress value={isUnlocked ? progress : 0} />
-                    </CardContent>
-                  </Card>
-                </TiltCard>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
-      </main>
+            {/* Footer breadcrumbs / quick links */}
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-[#8a8a8a] pb-8">
+              <button onClick={() => navigate('/about')} className="hover:text-white">
+                من نحن
+              </button>
+              <span>·</span>
+              <button onClick={() => navigate('/contact')} className="hover:text-white">
+                تواصل
+              </button>
+              <span>·</span>
+              <button onClick={() => navigate('/profile')} className="hover:text-white">
+                الملف الشخصي
+              </button>
+              <span>·</span>
+              <button onClick={() => signOut()} className="hover:text-white">
+                تسجيل الخروج
+              </button>
+            </div>
+          </div>
+        </main>
       </div>
-    </PageBackground>
+    </>
   );
 };
 
