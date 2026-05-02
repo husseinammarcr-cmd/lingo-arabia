@@ -189,11 +189,11 @@ const AppCourses = () => {
       .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
       .slice(0, 3)
       .map((p, i) => {
-        const lesson = getLessonById(p.lesson_id);
+        const found = getLessonById(p.lesson_id);
         const themeColors = ['#cdff4f', '#a574ff', '#ff9dcb'];
         return {
           id: p.id,
-          title: lesson?.titleAr ?? p.lesson_id,
+          title: found?.lesson.titleAr ?? p.lesson_id,
           percent: p.score ?? 100,
           color: themeColors[i % 3],
         };
