@@ -287,25 +287,8 @@ const AppCourses = () => {
             />
           </div>
 
-          {/* Mobile top bar */}
-          <div className="md:hidden relative z-10 flex items-center justify-between mb-4">
-            <button
-              onClick={() => navigate('/')}
-              className="text-[#cdff4f]"
-              aria-label="الرئيسية"
-            >
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h7" />
-              </svg>
-            </button>
-            <button
-              onClick={() => sidebarRef.current?.open()}
-              className="text-white p-2 rounded-lg bg-white/5"
-              aria-label="القائمة"
-            >
-              <MenuIcon className="h-5 w-5" />
-            </button>
-          </div>
+          {/* Spacer for floating sidebar toggle button */}
+          <div className="h-12" />
 
           {/* Content wrapper */}
           <div className="relative z-10 mx-auto w-full max-w-[900px]">
