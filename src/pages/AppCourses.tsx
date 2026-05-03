@@ -22,11 +22,10 @@ import {
   Menu as MenuIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
 import { useUserProgress, isLevelUnlocked } from '@/hooks/useProgress';
-import { useNavigate as useNav } from 'react-router-dom';
-import SidebarNav, { SidebarNavRef } from '@/components/SidebarNav';
+import SidebarDashboard from '@/components/SidebarDashboard';
 
 // ============= Course JSON-LD =============
 const COURSE_SCHEMA = {
