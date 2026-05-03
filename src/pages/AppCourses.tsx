@@ -139,7 +139,7 @@ const AppCourses = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading, isAdmin, signOut } = useAuth();
   const { data: progressData } = useUserProgress();
-  const sidebarRef = useRef<SidebarNavRef>(null);
+  
 
   const [showWelcome, setShowWelcome] = useState(() => {
     const lastShown = localStorage.getItem('welcome_back_date');
