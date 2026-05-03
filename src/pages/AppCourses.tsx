@@ -268,14 +268,52 @@ const AppCourses = () => {
       {/* Collapsible icon sidebar (toggled via floating button) */}
       <SidebarDashboard />
 
+      {/* ===== Fixed Lottie background (behind everything) ===== */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#141414]">
+        <Lottie
+          animationData={dashboardBgAnimation}
+          loop
+          autoplay
+          rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            opacity: 0.22,
+          }}
+        />
+        {/* Dark gradient veil to keep contrast */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(ellipse at top, rgba(20,20,20,0.55) 0%, rgba(20,20,20,0.85) 60%, rgba(20,20,20,0.95) 100%)',
+          }}
+        />
+        {/* Strong grid overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(205,255,79,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(205,255,79,0.10) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            maskImage:
+              'radial-gradient(ellipse at center, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse at center, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)',
+          }}
+        />
+      </div>
+
       {/* Force a dark surface only for this page (does NOT toggle the global theme) */}
       <div
         dir="rtl"
-        className="flex min-h-[100dvh] w-full bg-[#141414] text-white"
+        className="relative z-10 flex min-h-[100dvh] w-full text-white"
         style={{ fontFamily: "'Inter', 'Cairo', sans-serif" }}
       >
         {/* ============= Main content ============= */}
-        <main className="flex-1 relative px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 bg-[#141414] overflow-x-hidden">
+        <main className="flex-1 relative px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 overflow-x-hidden">
           {/* ===== Lottie background ===== */}
           <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
             <Lottie
