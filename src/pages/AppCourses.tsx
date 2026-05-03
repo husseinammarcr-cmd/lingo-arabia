@@ -22,11 +22,10 @@ import {
   Menu as MenuIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
 import { useUserProgress, isLevelUnlocked } from '@/hooks/useProgress';
-import { useNavigate as useNav } from 'react-router-dom';
-import SidebarNav, { SidebarNavRef } from '@/components/SidebarNav';
+import SidebarDashboard from '@/components/SidebarDashboard';
 
 // ============= Course JSON-LD =============
 const COURSE_SCHEMA = {
@@ -140,7 +139,7 @@ const AppCourses = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading, isAdmin, signOut } = useAuth();
   const { data: progressData } = useUserProgress();
-  const sidebarRef = useRef<SidebarNavRef>(null);
+  
 
   const [showWelcome, setShowWelcome] = useState(() => {
     const lastShown = localStorage.getItem('welcome_back_date');
@@ -250,8 +249,8 @@ const AppCourses = () => {
 
       {showWelcome && <WelcomeBackOverlay onContinue={handleWelcomeContinue} />}
 
-      {/* Hidden mobile drawer reused for the existing sidebar nav */}
-      <SidebarNav ref={sidebarRef} />
+      {/* Collapsible icon sidebar (toggled via floating button) */}
+      <SidebarDashboard />
 
       {/* Force a dark surface only for this page (does NOT toggle the global theme) */}
       <div
@@ -259,65 +258,6 @@ const AppCourses = () => {
         className="flex h-screen w-full overflow-hidden bg-[#161618] text-white"
         style={{ fontFamily: "'Inter', 'Cairo', sans-serif" }}
       >
-        {/* ============= Vertical icon sidebar (LTR-style icon strip) ============= */}
-        <nav
-          dir="ltr"
-          className="hidden md:flex w-[70px] shrink-0 flex-col items-center bg-[#0c0c0c] py-5 z-20"
-        >
-          {/* Logo */}
-          <button
-            onClick={() => navigate('/')}
-            className="text-[#cdff4f] mb-10 flex items-center justify-center"
-            aria-label="الرئيسية"
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 6h16M4 12h16M4 18h7" />
-            </svg>
-          </button>
-
-          {/* Nav items */}
-          <div className="flex flex-col gap-7 w-full">
-            {NAV_ITEMS.map((item, idx) => {
-              const Icon = item.icon;
-              const active = item.active;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => navigate(item.path)}
-                  className={cn(
-                    'relative flex flex-col items-center gap-1.5 w-full text-[10px] font-medium transition-colors',
-                    active ? 'text-[#cdff4f]' : 'text-[#8a8a8a] hover:text-white',
-                  )}
-                >
-                  {active && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-9 w-[3px] rounded-r bg-[#cdff4f]" />
-                  )}
-                  <Icon className="h-[18px] w-[18px]" />
-                  <span>{item.labelEn}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Bottom: help + avatar */}
-          <div className="mt-auto flex flex-col items-center gap-5">
-            <button
-              onClick={() => navigate('/faq')}
-              className="text-[#8a8a8a] hover:text-white transition-colors"
-              aria-label="مساعدة"
-            >
-              <HelpCircle className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => navigate('/profile')}
-              className="h-8 w-8 rounded-full bg-gradient-to-br from-[#a574ff] to-[#753aeb] flex items-center justify-center font-bold text-white text-sm overflow-hidden"
-              aria-label="الملف الشخصي"
-            >
-              {profile?.name?.charAt(0)?.toUpperCase() ?? 'U'}
-            </button>
-          </div>
-        </nav>
-
         {/* ============= Main content ============= */}
         <main className="flex-1 relative overflow-y-auto overflow-x-hidden px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 bg-[#141414]">
           {/* Aurora background */}
@@ -347,25 +287,8 @@ const AppCourses = () => {
             />
           </div>
 
-          {/* Mobile top bar */}
-          <div className="md:hidden relative z-10 flex items-center justify-between mb-4">
-            <button
-              onClick={() => navigate('/')}
-              className="text-[#cdff4f]"
-              aria-label="الرئيسية"
-            >
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h7" />
-              </svg>
-            </button>
-            <button
-              onClick={() => sidebarRef.current?.open()}
-              className="text-white p-2 rounded-lg bg-white/5"
-              aria-label="القائمة"
-            >
-              <MenuIcon className="h-5 w-5" />
-            </button>
-          </div>
+          {/* Spacer for floating sidebar toggle button */}
+          <div className="h-12" />
 
           {/* Content wrapper */}
           <div className="relative z-10 mx-auto w-full max-w-[900px]">
