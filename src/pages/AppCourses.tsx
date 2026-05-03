@@ -314,44 +314,6 @@ const AppCourses = () => {
       >
         {/* ============= Main content ============= */}
         <main className="flex-1 relative px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 overflow-x-hidden">
-          {/* ===== Lottie background ===== */}
-          <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-            <Lottie
-              animationData={dashboardBgAnimation}
-              loop
-              autoplay
-              rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                opacity: 0.18,
-              }}
-            />
-            {/* Dark gradient veil to keep contrast */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  'radial-gradient(ellipse at top, rgba(20,20,20,0.55) 0%, rgba(20,20,20,0.85) 60%, rgba(20,20,20,0.95) 100%)',
-              }}
-            />
-            {/* Strong grid overlay */}
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  'linear-gradient(rgba(205,255,79,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(205,255,79,0.08) 1px, transparent 1px)',
-                backgroundSize: '48px 48px',
-                maskImage:
-                  'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)',
-                WebkitMaskImage:
-                  'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)',
-              }}
-            />
-          </div>
-
           {/* Aurora glows */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
             <div
