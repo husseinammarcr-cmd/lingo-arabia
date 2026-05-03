@@ -26,6 +26,8 @@ import { useEffect, useMemo, useState } from 'react';
 import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
 import { useUserProgress, isLevelUnlocked } from '@/hooks/useProgress';
 import SidebarDashboard from '@/components/SidebarDashboard';
+import Lottie from 'lottie-react';
+import dashboardBgAnimation from '@/assets/dashboard-bg.json';
 
 // ============= Course JSON-LD =============
 const COURSE_SCHEMA = {
@@ -203,6 +205,20 @@ const AppCourses = () => {
     if (!isLoading && !user) navigate('/auth');
   }, [user, isLoading, navigate]);
 
+  // Force dark background on html/body so iOS overscroll & rubber-band areas don't show white
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtml = html.style.backgroundColor;
+    const prevBody = body.style.backgroundColor;
+    html.style.backgroundColor = '#141414';
+    body.style.backgroundColor = '#141414';
+    return () => {
+      html.style.backgroundColor = prevHtml;
+      body.style.backgroundColor = prevBody;
+    };
+  }, []);
+
   const handleActionCard = (action: 'lesson' | 'tutor' | 'placement') => {
     if (action === 'lesson') {
       // Jump to first level user can access
@@ -255,12 +271,50 @@ const AppCourses = () => {
       {/* Force a dark surface only for this page (does NOT toggle the global theme) */}
       <div
         dir="rtl"
-        className="flex h-screen w-full overflow-hidden bg-[#161618] text-white"
+        className="flex min-h-[100dvh] w-full bg-[#141414] text-white"
         style={{ fontFamily: "'Inter', 'Cairo', sans-serif" }}
       >
         {/* ============= Main content ============= */}
-        <main className="flex-1 relative overflow-y-auto overflow-x-hidden px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 bg-[#141414]">
-          {/* Aurora background */}
+        <main className="flex-1 relative px-4 sm:px-8 lg:px-[4vw] py-6 sm:py-8 bg-[#141414] overflow-x-hidden">
+          {/* ===== Lottie background ===== */}
+          <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+            <Lottie
+              animationData={dashboardBgAnimation}
+              loop
+              autoplay
+              rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                opacity: 0.18,
+              }}
+            />
+            {/* Dark gradient veil to keep contrast */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(ellipse at top, rgba(20,20,20,0.55) 0%, rgba(20,20,20,0.85) 60%, rgba(20,20,20,0.95) 100%)',
+              }}
+            />
+            {/* Strong grid overlay */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(205,255,79,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(205,255,79,0.08) 1px, transparent 1px)',
+                backgroundSize: '48px 48px',
+                maskImage:
+                  'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)',
+                WebkitMaskImage:
+                  'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)',
+              }}
+            />
+          </div>
+
+          {/* Aurora glows */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
             <div
               className="absolute -top-24 -right-12 rounded-full"
@@ -268,7 +322,7 @@ const AppCourses = () => {
                 width: '60vw',
                 height: '60vw',
                 background:
-                  'radial-gradient(circle, rgba(186,243,58,0.30) 0%, transparent 60%)',
+                  'radial-gradient(circle, rgba(186,243,58,0.22) 0%, transparent 60%)',
                 filter: 'blur(60px)',
               }}
             />
@@ -280,7 +334,7 @@ const AppCourses = () => {
                 width: '50vw',
                 height: '50vw',
                 background:
-                  'radial-gradient(circle, rgba(138,78,255,0.20) 0%, transparent 50%)',
+                  'radial-gradient(circle, rgba(138,78,255,0.18) 0%, transparent 50%)',
                 filter: 'blur(70px)',
                 borderRadius: '50%',
               }}
