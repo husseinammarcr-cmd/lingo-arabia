@@ -561,6 +561,7 @@ const LessonPlayer = () => {
 
         </motion.div>
       </div>
+      </DashboardBackground>
     );
   }
 
