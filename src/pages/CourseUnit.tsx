@@ -1,30 +1,27 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLevelByCode, getUnitById } from '@/lib/curriculum';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  ChevronLeft, 
+import {
   ChevronRight,
-  Star, 
+  Star,
   Lock,
   CheckCircle,
   PlayCircle,
   BookOpen,
   Headphones,
   MessageCircle,
-  PenLine
+  PenLine,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
-import Header from '@/components/Header';
 import { useUserProgress, isLessonUnlocked } from '@/hooks/useProgress';
-import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
-import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { toast } from 'sonner';
+import DashboardBackground from '@/components/DashboardBackground';
+import SidebarDashboard from '@/components/SidebarDashboard';
 
 const lessonIcons: Record<string, React.ElementType> = {
   'المفردات': BookOpen,
@@ -34,17 +31,24 @@ const lessonIcons: Record<string, React.ElementType> = {
   'التمارين': PlayCircle,
 };
 
-const levelColors: Record<string, { bg: string; text: string; accent: string }> = {
-  'A1': { bg: 'bg-emerald-500', text: 'text-emerald-700 dark:text-emerald-400', accent: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  'A2': { bg: 'bg-sky-500', text: 'text-sky-700 dark:text-sky-400', accent: 'bg-sky-100 dark:bg-sky-900/30' },
-  'B1': { bg: 'bg-violet-500', text: 'text-violet-700 dark:text-violet-400', accent: 'bg-violet-100 dark:bg-violet-900/30' },
-  'B2': { bg: 'bg-amber-500', text: 'text-amber-700 dark:text-amber-400', accent: 'bg-amber-100 dark:bg-amber-900/30' },
+const LESSON_PALETTES = [
+  { c1: '#cdff4f', c2: '#14b8a6', text: 'text-[#cdff4f]', glow: 'rgba(205,255,79,0.8)', bg: 'bg-[#cdff4f]/10', border: 'border-[#cdff4f]/20', shadow: 'shadow-[0_0_20px_rgba(205,255,79,0.3)]' },
+  { c1: '#a574ff', c2: '#ff9dcb', text: 'text-[#a574ff]', glow: 'rgba(165,116,255,0.8)', bg: 'bg-[#a574ff]/10', border: 'border-[#a574ff]/20', shadow: 'shadow-[0_0_20px_rgba(165,116,255,0.3)]' },
+  { c1: '#ff9dcb', c2: '#a574ff', text: 'text-[#ff9dcb]', glow: 'rgba(255,157,203,0.8)', bg: 'bg-[#ff9dcb]/10', border: 'border-[#ff9dcb]/20', shadow: 'shadow-[0_0_20px_rgba(255,157,203,0.3)]' },
+];
+
+const levelAccent: Record<string, { text: string; bg: string }> = {
+  A1: { text: 'text-[#cdff4f]', bg: 'bg-[#cdff4f]/10' },
+  A2: { text: 'text-[#a574ff]', bg: 'bg-[#a574ff]/10' },
+  B1: { text: 'text-[#ff9dcb]', bg: 'bg-[#ff9dcb]/10' },
+  B2: { text: 'text-[#cdff4f]', bg: 'bg-[#cdff4f]/10' },
+  C1: { text: 'text-[#a574ff]', bg: 'bg-[#a574ff]/10' },
+  C2: { text: 'text-[#ff9dcb]', bg: 'bg-[#ff9dcb]/10' },
 };
 
-// Shake animation for locked lessons
 const shakeAnimation = {
   x: [0, -10, 10, -10, 10, 0],
-  transition: { duration: 0.4 }
+  transition: { duration: 0.4 },
 };
 
 const CourseUnit = () => {
@@ -58,25 +62,19 @@ const CourseUnit = () => {
   const level = getLevelByCode(levelParam || '');
   const unit = level ? getUnitById(level.code, unitParam || '') : undefined;
 
-  // Get completed lesson IDs
   const completedLessons = useMemo(() => {
     if (!progressData) return [];
-    return progressData
-      .filter(p => p.completed)
-      .map(p => p.lesson_id);
+    return progressData.filter((p) => p.completed).map((p) => p.lesson_id);
   }, [progressData]);
 
-  // Calculate unit progress
   const unitProgress = useMemo(() => {
     if (!unit) return 0;
-    const completed = unit.lessons.filter(l => completedLessons.includes(l.id)).length;
+    const completed = unit.lessons.filter((l) => completedLessons.includes(l.id)).length;
     return Math.round((completed / unit.lessons.length) * 100);
   }, [unit, completedLessons]);
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/auth');
-    }
+    if (!isLoading && !user) navigate('/auth');
   }, [user, isLoading, navigate]);
 
   const handleLockedClick = (lessonId: string) => {
@@ -87,182 +85,175 @@ const CourseUnit = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <motion.div 
-          className="text-primary text-xl"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
+      <DashboardBackground>
+        <div className="min-h-[100dvh] flex items-center justify-center text-[#cdff4f] text-xl animate-pulse">
           جاري التحميل...
-        </motion.div>
-      </div>
+        </div>
+      </DashboardBackground>
     );
   }
 
-  // Unit not found - show friendly empty state
   if (!level || !unit) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center" dir="rtl">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">الوحدة غير موجودة</h2>
-          <p className="text-muted-foreground mb-6">عذراً، لم نتمكن من العثور على هذه الوحدة</p>
-          <Button onClick={() => navigate('/app/courses')}>
-            <ChevronRight className="w-4 h-4 ml-2" />
-            العودة للمستويات
-          </Button>
+      <DashboardBackground>
+        <SidebarDashboard />
+        <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4" dir="rtl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">الوحدة غير موجودة</h2>
+            <p className="text-gray-400 mb-6">عذراً، لم نتمكن من العثور على هذه الوحدة</p>
+            <Button onClick={() => navigate('/app/courses')} className="bg-[#cdff4f] text-black hover:brightness-110">
+              <ChevronRight className="w-4 h-4 ml-2" />
+              العودة للمستويات
+            </Button>
+          </div>
         </div>
-      </div>
+      </DashboardBackground>
     );
   }
 
-  const colors = levelColors[level.code] || levelColors['A1'];
+  const accent = levelAccent[level.code] || levelAccent.A1;
+  const accentGlow = accent.text.includes('cdff4f') ? 'rgba(205,255,79,0.3)'
+                  : accent.text.includes('a574ff') ? 'rgba(165,116,255,0.3)'
+                  : 'rgba(255,157,203,0.3)';
 
   return (
-    <div className="min-h-screen bg-gradient-hero overflow-x-hidden" dir="rtl">
-      {/* Header */}
-      <Header showBack showUserInfo />
+    <DashboardBackground>
+      <SidebarDashboard />
+      <div dir="rtl" className="min-h-[100dvh] text-white pb-24 selection:bg-[#cdff4f] selection:text-black" style={{ fontFamily: "'Tajawal','Cairo',sans-serif" }}>
+        <main className="container mx-auto px-4 pt-20 max-w-2xl">
+          <button
+            onClick={() => navigate(`/app/courses/${level.code.toLowerCase()}`)}
+            className="mb-6 inline-flex items-center gap-2 text-sm text-gray-300 hover:text-[#cdff4f] transition"
+          >
+            <ChevronRight className="w-4 h-4" />
+            العودة للوحدات
+          </button>
 
-      <main className="container mx-auto px-4 py-6 max-w-2xl">
-        
-        {/* Unit Header */}
-        <FadeUp>
-          <div className="mb-8 text-center">
-            <motion.span 
-              className={cn("inline-block text-sm font-bold px-3 py-1 rounded-full mb-3", colors.accent, colors.text)}
-              initial={prefersReducedMotion ? {} : { scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', delay: 0.2 }}
+          {/* Unit Hero */}
+          <section className="flex flex-col items-start mb-10 animate-slideRightIn" style={{ animationDelay: '0.1s' }}>
+            <span className={cn('inline-block text-sm font-bold px-3 py-1 rounded-full mb-3 border border-white/10', accent.bg, accent.text)}>
+              {level.code} · الوحدة
+            </span>
+            <h1
+              className={cn('text-[2.25rem] leading-[1.15] sm:text-5xl font-black mb-3 text-right', accent.text)}
+              style={{ filter: `drop-shadow(0 0 15px ${accentGlow})` }}
             >
-              {level.code}
-            </motion.span>
-            <h2 className="text-3xl font-bold text-foreground mb-2">{unit.titleAr}</h2>
-            <p className="text-muted-foreground ltr-text">{unit.titleEn}</p>
-            <p className="text-sm text-muted-foreground mt-2">{unit.descriptionAr}</p>
-            
-            {/* Progress bar */}
-            <div className="mt-4 max-w-xs mx-auto">
-              <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                <span>التقدم</span>
-                <span>{unitProgress}%</span>
+              {unit.titleAr}
+            </h1>
+            <p className="text-gray-300 ltr-text font-inter">{unit.titleEn}</p>
+            <p className="text-sm text-gray-400 mt-2 text-right">{unit.descriptionAr}</p>
+
+            {/* Progress */}
+            <div className="w-full mt-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className={cn('text-base font-black font-inter animate-pulseGlow', accent.text)} style={{ filter: `drop-shadow(0 0 8px ${accentGlow})` }}>
+                  {unitProgress}%
+                </span>
+                <span className="text-xs font-bold text-gray-400">التقدم في الوحدة</span>
               </div>
-              <AnimatedProgress value={unitProgress} />
-            </div>
-          </div>
-        </FadeUp>
-
-        {/* Lessons List */}
-        <StaggerContainer className="space-y-3">
-          {unit.lessons.map((lesson, index) => {
-            const IconComponent = lessonIcons[lesson.titleAr] || BookOpen;
-            const isCompleted = completedLessons.includes(lesson.id);
-            const isUnlocked = isLessonUnlocked(
-              lesson.id, 
-              completedLessons,
-              profile?.placement_level,
-              profile?.current_level,
-              isAdmin
-            );
-            const hasExercises = lesson.hasRealExercises;
-            const isLocked = !isUnlocked && !hasExercises;
-            const isShaking = shakingLessonId === lesson.id;
-
-            return (
-              <StaggerItem key={lesson.id}>
-                <motion.div
-                  animate={isShaking && !prefersReducedMotion ? shakeAnimation : {}}
-                  whileHover={!isLocked && !prefersReducedMotion ? { scale: 1.02, y: -2 } : {}}
-                  whileTap={!isLocked && !prefersReducedMotion ? { scale: 0.98 } : {}}
+              <div className="w-full h-3 bg-black/60 rounded-full overflow-hidden relative border border-white/5">
+                <div
+                  className="absolute top-0 right-0 h-full rounded-full overflow-hidden"
+                  style={{
+                    width: `${unitProgress}%`,
+                    background: `linear-gradient(to left, ${accent.text.includes('cdff4f') ? '#cdff4f' : accent.text.includes('a574ff') ? '#a574ff' : '#ff9dcb'}, transparent)`,
+                    boxShadow: `0 0 15px ${accentGlow}`,
+                  }}
                 >
-                  <Card
-                    onClick={!isLocked ? () => navigate(`/lesson/${lesson.id}`) : () => handleLockedClick(lesson.id)}
-                    className={cn(
-                      "relative overflow-hidden cursor-pointer transition-all duration-200",
-                      isLocked && "opacity-50",
-                      isCompleted && "ring-2 ring-success",
-                      hasExercises && !isCompleted && "ring-2 ring-primary"
-                    )}
+                  <div className="absolute inset-0 bg-white/30 w-1/2 -skew-x-12 animate-shimmerBg" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Lessons List */}
+          <section className="flex flex-col gap-4">
+            {unit.lessons.map((lesson, index) => {
+              const IconComponent = lessonIcons[lesson.titleAr] || BookOpen;
+              const isCompleted = completedLessons.includes(lesson.id);
+              const isUnlocked = isLessonUnlocked(
+                lesson.id,
+                completedLessons,
+                profile?.placement_level,
+                profile?.current_level,
+                isAdmin,
+              );
+              const hasExercises = lesson.hasRealExercises;
+              const isLocked = !isUnlocked && !hasExercises;
+              const isShaking = shakingLessonId === lesson.id;
+              const palette = LESSON_PALETTES[index % LESSON_PALETTES.length];
+
+              if (isLocked) {
+                return (
+                  <motion.div
+                    key={lesson.id}
+                    animate={isShaking && !prefersReducedMotion ? shakeAnimation : {}}
+                    onClick={() => handleLockedClick(lesson.id)}
+                    className="animate-slideUpIn cursor-not-allowed"
+                    style={{ animationDelay: `${0.15 + index * 0.04}s` }}
                   >
-                    {/* Hover glow effect */}
-                    {!isLocked && (
-                      <motion.div 
-                        className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-0"
-                        whileHover={{ opacity: 1 }}
-                      />
-                    )}
-                    
-                    <CardContent className="p-4 relative">
-                      <div className="flex items-center gap-4">
-                        {/* Icon */}
-                        <motion.div 
-                          className={cn(
-                            "flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center",
-                            isCompleted ? "bg-success/10 text-success" : 
-                            hasExercises ? "bg-primary/10 text-primary" :
-                            cn(colors.accent, colors.text)
-                          )}
-                          whileHover={!isLocked && !prefersReducedMotion ? { rotate: 5 } : {}}
-                        >
-                          {isLocked ? (
-                            <Lock className="w-5 h-5" />
-                          ) : isCompleted ? (
-                            <CheckCircle className="w-5 h-5" />
-                          ) : (
-                            <IconComponent className="w-5 h-5" />
-                          )}
-                        </motion.div>
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">الدرس {index + 1}</span>
-                            {isCompleted && (
-                              <motion.span 
-                                className="text-xs bg-success/10 text-success px-2 py-0.5 rounded-full"
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                              >
-                                مكتمل
-                              </motion.span>
-                            )}
-                            {hasExercises && !isCompleted && (
-                              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                                تمارين حقيقية
-                              </span>
-                            )}
-                          </div>
-                          <h3 className="text-base font-bold text-foreground truncate">
-                            {lesson.titleAr}
-                          </h3>
-                          <p className="text-sm text-muted-foreground ltr-text truncate">
-                            {lesson.titleEn}
-                          </p>
-                        </div>
-
-                        {/* XP Badge */}
-                        <motion.div 
-                          className="flex items-center gap-1 text-xp text-sm font-bold"
-                          whileHover={!prefersReducedMotion ? { scale: 1.1 } : {}}
-                        >
-                          <Star className="w-4 h-4 fill-current" />
-                          <span>+{lesson.xpReward}</span>
-                        </motion.div>
-
-                        {/* Arrow */}
-                        <motion.div
-                          whileHover={!isLocked && !prefersReducedMotion ? { x: -4 } : {}}
-                        >
-                          <ChevronLeft className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                        </motion.div>
+                    <div className="glass-card bg-[#0f110f]/80 rounded-[22px] p-5 border border-white/5 opacity-60 flex items-center gap-4 group">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-white/5 text-gray-600">
+                        <Lock className="w-5 h-5" />
                       </div>
-                    </CardContent>
-                  </Card>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs text-gray-500 font-bold tracking-wider">الدرس {index + 1}</span>
+                        <h3 className="text-base font-bold text-gray-500 truncate">{lesson.titleAr}</h3>
+                        <p className="text-xs text-gray-600 ltr-text truncate">{lesson.titleEn}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              }
+
+              return (
+                <motion.div
+                  key={lesson.id}
+                  whileHover={!prefersReducedMotion ? { y: -3, scale: 1.01 } : {}}
+                  whileTap={!prefersReducedMotion ? { scale: 0.98 } : {}}
+                  onClick={() => navigate(`/lesson/${lesson.id}`)}
+                  className="animate-slideUpIn animated-border rounded-[24px]"
+                  style={{
+                    animationDelay: `${0.15 + index * 0.04}s`,
+                    ['--c1' as string]: palette.c1,
+                    ['--c2' as string]: palette.c2,
+                  } as React.CSSProperties}
+                >
+                  <div className="glass-card bg-[rgba(18,21,18,0.7)] rounded-[22px] p-5 relative overflow-hidden cursor-pointer flex items-center gap-4 group">
+                    <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border animate-floatY group-hover:rotate-12 transition-transform', palette.bg, palette.border, palette.shadow)}>
+                      {isCompleted ? (
+                        <CheckCircle className={cn('w-5 h-5', palette.text)} style={{ filter: `drop-shadow(0 0 8px ${palette.glow})` }} />
+                      ) : (
+                        <IconComponent className={cn('w-5 h-5', palette.text)} style={{ filter: `drop-shadow(0 0 8px ${palette.glow})` }} />
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className={cn('text-xs font-bold tracking-wider', palette.text)}>الدرس {index + 1}</span>
+                        {isCompleted && (
+                          <span className="text-[10px] bg-[#cdff4f]/15 text-[#cdff4f] px-2 py-0.5 rounded-full">مكتمل</span>
+                        )}
+                        {hasExercises && !isCompleted && (
+                          <span className={cn('text-[10px] px-2 py-0.5 rounded-full', palette.bg, palette.text)}>تمارين</span>
+                        )}
+                      </div>
+                      <h3 className="text-base font-bold text-white truncate">{lesson.titleAr}</h3>
+                      <p className="text-xs text-gray-400 ltr-text truncate">{lesson.titleEn}</p>
+                    </div>
+
+                    <div className="flex items-center gap-1 text-[#cdff4f] text-sm font-bold shrink-0">
+                      <Star className="w-4 h-4 fill-current" />
+                      <span>+{lesson.xpReward}</span>
+                    </div>
+                  </div>
                 </motion.div>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
-      </main>
-    </div>
+              );
+            })}
+          </section>
+        </main>
+      </div>
+    </DashboardBackground>
   );
 };
 
