@@ -762,26 +762,28 @@ const LessonPlayer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col" dir="rtl">
+    <DashboardBackground>
+    <div className="min-h-[100dvh] flex flex-col text-white" dir="rtl">
       {/* Header with animated progress */}
-      <header className="sticky top-0 z-50 bg-background border-b border-border px-4 py-3">
+      <header className="sticky top-0 z-50 bg-[#070907]/80 backdrop-blur-md border-b border-white/10 px-4 py-3">
         <div className="flex items-center gap-4 max-w-2xl mx-auto">
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button type="button" variant="ghost" size="icon" onClick={handleClose}>
+            <Button type="button" variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/10">
               <X className="w-5 h-5" />
             </Button>
           </motion.div>
-          
+
           <div className="flex-1">
             <AnimatedProgress value={getSectionProgress()} className="h-3" />
           </div>
-          
-          <motion.div 
-            className="flex items-center gap-1 text-hearts font-bold"
+
+          <motion.div
+            className="flex items-center gap-1 text-[#ff9dcb] font-bold"
             animate={hearts < 3 ? { scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 0.3 }}
+            style={{ filter: 'drop-shadow(0 0 6px rgba(255,157,203,0.6))' }}
           >
-            <Heart className={cn("w-5 h-5", hearts > 0 && "fill-current")} />
+            <Heart className={cn('w-5 h-5', hearts > 0 && 'fill-current')} />
             <span>{hearts}</span>
           </motion.div>
         </div>
@@ -790,12 +792,13 @@ const LessonPlayer = () => {
       {/* Main content */}
       <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl">
         {renderSectionTabs()}
-        
+
         {section === 'learn' && renderLearnSection()}
         {section === 'practice' && renderPracticeSection()}
         {section === 'quiz' && renderQuizSection()}
       </main>
     </div>
+    </DashboardBackground>
   );
 };
 
