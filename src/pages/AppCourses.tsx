@@ -269,7 +269,11 @@ const AppCourses = () => {
       <SidebarDashboard />
 
       {/* ===== Fixed Lottie background (behind everything) ===== */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#141414]">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 overflow-hidden bg-[#141414]"
+        style={{ zIndex: 0 }}
+      >
         <Lottie
           animationData={dashboardBgAnimation}
           loop
@@ -280,28 +284,28 @@ const AppCourses = () => {
             inset: 0,
             width: '100%',
             height: '100%',
-            opacity: 0.22,
+            opacity: 0.85,
           }}
         />
-        {/* Dark gradient veil to keep contrast */}
+        {/* Subtle vignette only — keeps Lottie clearly visible on mobile */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(ellipse at top, rgba(20,20,20,0.55) 0%, rgba(20,20,20,0.85) 60%, rgba(20,20,20,0.95) 100%)',
+              'radial-gradient(ellipse at center, rgba(20,20,20,0) 0%, rgba(20,20,20,0.35) 70%, rgba(20,20,20,0.6) 100%)',
           }}
         />
-        {/* Strong grid overlay */}
+        {/* Light grid overlay */}
         <div
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(205,255,79,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(205,255,79,0.10) 1px, transparent 1px)',
+              'linear-gradient(rgba(205,255,79,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(205,255,79,0.06) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
             maskImage:
-              'radial-gradient(ellipse at center, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)',
+              'radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
             WebkitMaskImage:
-              'radial-gradient(ellipse at center, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)',
+              'radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
           }}
         />
       </div>
