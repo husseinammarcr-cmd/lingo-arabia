@@ -425,7 +425,8 @@ const LessonPlayer = () => {
     const scorePercent = quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 0;
     
     return (
-      <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center relative" dir="rtl">
+      <DashboardBackground>
+      <div className="min-h-[100dvh] flex flex-col items-center justify-center relative" dir="rtl">
         <MiniConfetti trigger={showConfetti && passed} onComplete={() => setShowConfetti(false)} />
         
         <motion.div 
