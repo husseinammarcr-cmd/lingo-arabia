@@ -18,6 +18,7 @@ import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MiniConfetti } from '@/components/animations/MiniConfetti';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { toast } from 'sonner';
+import DashboardBackground from '@/components/DashboardBackground';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
@@ -248,52 +249,58 @@ const LessonPlayer = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <motion.div 
-          className="text-primary text-xl"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          جاري التحميل...
-        </motion.div>
-      </div>
+      <DashboardBackground>
+        <div className="min-h-[100dvh] flex items-center justify-center">
+          <motion.div
+            className="text-[#cdff4f] text-xl"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            جاري التحميل...
+          </motion.div>
+        </div>
+      </DashboardBackground>
     );
   }
 
   if (!lessonData) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center" dir="rtl">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">الدرس غير موجود</h2>
-          <Button type="button" onClick={() => navigate('/courses')}>
-            <ChevronRight className="w-4 h-4 ml-2" />
-            العودة للمستويات
-          </Button>
+      <DashboardBackground>
+        <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4" dir="rtl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">الدرس غير موجود</h2>
+            <Button type="button" onClick={() => navigate('/courses')} className="bg-[#cdff4f] text-black hover:brightness-110">
+              <ChevronRight className="w-4 h-4 ml-2" />
+              العودة للمستويات
+            </Button>
+          </div>
         </div>
-      </div>
+      </DashboardBackground>
     );
   }
 
   if (!lessonContent) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center" dir="rtl">
-        <div className="text-center max-w-md mx-auto px-4">
-          <motion.div 
-            className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring' }}
-          >
-            <Star className="w-10 h-10 text-primary" />
-          </motion.div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">{lessonData.lesson.titleAr}</h2>
-          <p className="text-muted-foreground mb-6">هذا الدرس قيد الإعداد. سيتم إضافة المحتوى قريباً!</p>
-          <Button type="button" onClick={() => navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`)}>
-            <ChevronRight className="w-4 h-4 ml-2" />
-            العودة للوحدة
-          </Button>
+      <DashboardBackground>
+        <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4" dir="rtl">
+          <div className="text-center max-w-md mx-auto">
+            <motion.div
+              className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#cdff4f]/10 flex items-center justify-center border border-[#cdff4f]/20"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring' }}
+            >
+              <Star className="w-10 h-10 text-[#cdff4f]" style={{ filter: 'drop-shadow(0 0 8px rgba(205,255,79,0.8))' }} />
+            </motion.div>
+            <h2 className="text-2xl font-bold text-white mb-2">{lessonData.lesson.titleAr}</h2>
+            <p className="text-gray-400 mb-6">هذا الدرس قيد الإعداد. سيتم إضافة المحتوى قريباً!</p>
+            <Button type="button" onClick={() => navigate(`/courses/${lessonData.level.code.toLowerCase()}/${lessonData.unit.id}`)} className="bg-[#cdff4f] text-black hover:brightness-110">
+              <ChevronRight className="w-4 h-4 ml-2" />
+              العودة للوحدة
+            </Button>
+          </div>
         </div>
-      </div>
+      </DashboardBackground>
     );
   }
 
