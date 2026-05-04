@@ -271,35 +271,36 @@ const CourseLevel = () => {
     );
   }
 
-  // Level not found - show friendly empty state
   if (!level) {
     return (
-      <PageBackground>
-        <div className="min-h-screen flex flex-col items-center justify-center" dir="rtl">
+      <DashboardBackground>
+        <SidebarDashboard />
+        <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4" dir="rtl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-4">المستوى غير موجود</h2>
-            <p className="text-muted-foreground mb-6">عذراً، لم نتمكن من العثور على هذا المستوى</p>
-            <Button onClick={() => navigate('/app/courses')}>
+            <h2 className="text-2xl font-bold text-white mb-4">المستوى غير موجود</h2>
+            <p className="text-gray-400 mb-6">عذراً، لم نتمكن من العثور على هذا المستوى</p>
+            <Button onClick={() => navigate('/app/courses')} className="bg-[#cdff4f] text-black hover:brightness-110">
               <ChevronRight className="w-4 h-4 ml-2" />
               العودة للمستويات
             </Button>
           </div>
         </div>
-      </PageBackground>
+      </DashboardBackground>
     );
   }
 
   const colors = levelColors[level.code] || levelColors['A1'];
+  const levelGlow = colors.text.includes('cdff4f') ? 'rgba(205,255,79,0.3)'
+                  : colors.text.includes('a574ff') ? 'rgba(165,116,255,0.3)'
+                  : 'rgba(255,157,203,0.3)';
 
   return (
-    <PageBackground>
+    <DashboardBackground>
       {meta && (
         <Helmet>
           <title>{meta.titleAr} | Lingo Arab – تعلم الإنجليزية مجانا</title>
           <meta name="description" content={meta.descAr} />
           <link rel="canonical" href={`${SITE_URL}/courses/${levelKey}`} />
-          
-          {/* OpenGraph */}
           <meta property="og:title" content={`${meta.titleAr} | Lingo Arab`} />
           <meta property="og:description" content={meta.descAr} />
           <meta property="og:url" content={`${SITE_URL}/courses/${levelKey}`} />
@@ -307,115 +308,124 @@ const CourseLevel = () => {
           <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
           <meta property="og:site_name" content="Lingo Arab" />
           <meta property="og:locale" content="ar_SA" />
-          
-          {/* Twitter */}
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content={`${meta.titleAr} | Lingo Arab`} />
           <meta name="twitter:description" content={meta.descAr} />
           <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
-          
-          {/* JSON-LD Schemas */}
           {courseSchema && <script type="application/ld+json">{JSON.stringify(courseSchema)}</script>}
           {breadcrumbSchema && <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>}
         </Helmet>
       )}
-      <div dir="rtl">
-      {/* Header */}
-      <Header showBack showUserInfo />
+      <SidebarDashboard />
+      <div dir="rtl" className="min-h-[100dvh] text-white pb-24 selection:bg-[#cdff4f] selection:text-black" style={{ fontFamily: "'Tajawal','Cairo',sans-serif" }}>
+        <main className="container mx-auto px-4 pt-20 max-w-2xl">
+          <button
+            onClick={() => navigate('/app/courses')}
+            className="mb-6 inline-flex items-center gap-2 text-sm text-gray-300 hover:text-[#cdff4f] transition"
+          >
+            <ChevronRight className="w-4 h-4" />
+            العودة للمستويات
+          </button>
 
-      <main className="container mx-auto px-4 py-6 max-w-2xl">
-        
-        {/* Level Header */}
-        <div className="mb-8 text-center">
-          <span className={cn("inline-block text-sm font-bold px-3 py-1 rounded-full mb-3", colors.accent, colors.text)}>
-            {level.code}
-          </span>
-          <h2 className="text-3xl font-bold text-foreground mb-2">{level.titleAr}</h2>
-          <p className="text-muted-foreground ltr-text">{level.titleEn}</p>
-          <p className="text-sm text-muted-foreground mt-2">{level.descriptionAr}</p>
-        </div>
+          <section className="flex flex-col items-start mb-12 animate-slideRightIn" style={{ animationDelay: '0.1s' }}>
+            <span className={cn('inline-block text-sm font-bold px-3 py-1 rounded-full mb-3 border border-white/10', colors.accent, colors.text)}>
+              {level.code}
+            </span>
+            <h1
+              className={cn('text-[2.5rem] leading-[1.1] sm:text-5xl sm:leading-[1.2] font-black mb-4 text-right', colors.text)}
+              style={{ filter: `drop-shadow(0 0 15px ${levelGlow})` }}
+            >
+              {level.titleAr}
+            </h1>
+            <p className="text-gray-300 ltr-text font-inter">{level.titleEn}</p>
+            <p className="text-sm text-gray-400 mt-2 text-right">{level.descriptionAr}</p>
+          </section>
 
+          <section className="flex flex-col gap-6">
+            {level.units.map((unit, index) => {
+              const IconComponent = iconMap[unit.icon] || BookOpen;
+              const unitProgress = unitProgressMap[unit.id];
+              const lessonsCount = unitProgress?.totalLessons ?? unit.lessons.length;
+              const completedLessons = unitProgress?.completedLessons ?? 0;
+              const isLocked = unitProgress ? !unitProgress.isUnlocked : index > 0;
+              const progress = lessonsCount > 0 ? (completedLessons / lessonsCount) * 100 : 0;
+              const isCompleted = unitProgress?.isCompleted ?? false;
+              const palette = UNIT_PALETTES[index % UNIT_PALETTES.length];
 
-        {/* Units List */}
-        <div className="space-y-4">
-        {level.units.map((unit, index) => {
-            const IconComponent = iconMap[unit.icon] || BookOpen;
-            const unitProgress = unitProgressMap[unit.id];
-            const lessonsCount = unitProgress?.totalLessons ?? unit.lessons.length;
-            const completedLessons = unitProgress?.completedLessons ?? 0;
-            const isLocked = unitProgress ? !unitProgress.isUnlocked : index > 0;
-            const progress = lessonsCount > 0 ? (completedLessons / lessonsCount) * 100 : 0;
-            const isCompleted = unitProgress?.isCompleted ?? false;
-
-            return (
-              <Card
-                key={unit.id}
-                onClick={!isLocked ? () => navigate(`/app/courses/${level.code.toLowerCase()}/${unit.id}`) : undefined}
-                className={cn(
-                  "relative overflow-hidden cursor-pointer hover:shadow-elevated hover:-translate-y-1 transition-all duration-300",
-                  isLocked && "opacity-60 cursor-not-allowed",
-                  isCompleted && "ring-2 ring-success"
-                )}
-              >
-                {/* Gradient accent bar */}
-                <div className={cn(
-                  "absolute top-0 left-0 right-0 h-1",
-                  isCompleted ? "bg-gradient-success" : colors.bg
-                )} />
-
-                <CardContent className="p-5">
-                  <div className="flex items-start gap-4">
-                    {/* Icon */}
-                    <div className={cn(
-                      "flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center",
-                      isCompleted ? "bg-success/10 text-success" : cn(colors.accent, colors.text)
-                    )}>
-                      {isLocked ? (
+              if (isLocked) {
+                return (
+                  <div key={unit.id} className="animate-slideUpIn" style={{ animationDelay: `${0.2 + index * 0.05}s` }}>
+                    <div className="glass-card bg-[#0f110f]/80 rounded-[24px] p-6 border border-white/5 opacity-60 flex items-center gap-5 cursor-not-allowed group transition-colors hover:bg-[#151815]/90">
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 bg-white/5 text-gray-600 group-hover:text-red-500 transition-colors duration-300">
                         <Lock className="w-6 h-6" />
-                      ) : isCompleted ? (
-                        <CheckCircle className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1 flex flex-col py-1">
+                        <span className="text-sm text-gray-500 font-bold tracking-wider mb-1">الوحدة {index + 1}</span>
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-500 mb-1 leading-tight">{unit.titleAr}</h3>
+                        <p className="text-sm font-inter text-gray-600 mb-3 ltr-text">{unit.titleEn}</p>
+                        <div className="w-full h-3 bg-black/60 rounded-full border border-white/5" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={unit.id}
+                  className="animate-slideUpIn animated-border rounded-[26px]"
+                  style={{
+                    animationDelay: `${0.2 + index * 0.05}s`,
+                    ['--c1' as string]: palette.c1,
+                    ['--c2' as string]: palette.c2,
+                  } as React.CSSProperties}
+                  onClick={() => navigate(`/app/courses/${level.code.toLowerCase()}/${unit.id}`)}
+                >
+                  <div className="glass-card bg-[rgba(18,21,18,0.7)] rounded-[24px] p-6 relative overflow-hidden transition-all duration-500 cursor-pointer hover:-translate-y-2 hover:scale-[1.02] flex items-center gap-5 group h-full">
+                    <div className={cn('w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 animate-floatY group-hover:rotate-12 transition-transform duration-500 border', palette.bg, palette.border, palette.shadow)}>
+                      {isCompleted ? (
+                        <CheckCircle className={cn('w-7 h-7', palette.text)} style={{ filter: `drop-shadow(0 0 8px ${palette.glow})` }} />
                       ) : (
-                        <IconComponent className="w-6 h-6" />
+                        <IconComponent className={cn('w-7 h-7', palette.text)} style={{ filter: `drop-shadow(0 0 8px ${palette.glow})` }} />
                       )}
                     </div>
 
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs text-muted-foreground">الوحدة {index + 1}</span>
-                      </div>
-                      <h3 className="text-lg font-bold text-foreground mb-1 truncate">
-                        {unit.titleAr}
-                      </h3>
-                      <p className="text-sm text-muted-foreground ltr-text truncate mb-3">
-                        {unit.titleEn}
-                      </p>
+                    <div className="flex-1 flex flex-col justify-center py-1 min-w-0">
+                      <span className={cn('text-sm font-bold tracking-wider mb-1', palette.text)}>الوحدة {index + 1}</span>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 leading-tight truncate">{unit.titleAr}</h3>
+                      <p className="text-sm font-inter text-gray-400 mb-4 ltr-text truncate">{unit.titleEn}</p>
 
-                      {/* Progress */}
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-muted-foreground">
-                            {completedLessons} / {lessonsCount} دروس
-                          </span>
-                          <span className={cn("font-semibold", colors.text)}>
+                      <div className="w-full">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className={cn('text-base font-black font-inter animate-pulseGlow', palette.text)} style={{ filter: `drop-shadow(0 0 8px ${palette.glow})` }}>
                             {Math.round(progress)}%
                           </span>
+                          <span className={cn('text-xs font-bold opacity-70', palette.text)}>
+                            {completedLessons} / {lessonsCount} دروس
+                          </span>
                         </div>
-                        <Progress value={progress} className="h-2" />
+                        <div className="w-full h-3 bg-black/60 rounded-full overflow-hidden relative border border-white/5">
+                          <div
+                            className="absolute top-0 right-0 h-full rounded-full overflow-hidden"
+                            style={{
+                              width: `${progress}%`,
+                              background: `linear-gradient(to left, ${palette.c1}, ${palette.c1}80)`,
+                              boxShadow: `0 0 15px ${palette.glow}`,
+                            }}
+                          >
+                            <div className="absolute inset-0 bg-white/30 w-1/2 -skew-x-12 animate-shimmerBg" />
+                          </div>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Arrow */}
-                    <ChevronLeft className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-2" />
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </main>
+                </div>
+              );
+            })}
+          </section>
+        </main>
       </div>
-    </PageBackground>
+    </DashboardBackground>
   );
 };
 
