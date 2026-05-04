@@ -49,8 +49,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo } from 'react';
-import PageBackground from '@/components/PageBackground';
-import Header from '@/components/Header';
+import DashboardBackground from '@/components/DashboardBackground';
+import SidebarDashboard from '@/components/SidebarDashboard';
 import { useUserProgress, getUnitProgress } from '@/hooks/useProgress';
 
 
@@ -94,11 +94,17 @@ const iconMap: Record<string, React.ElementType> = {
   'clipboard-check': ClipboardCheck,
 };
 
+// Cycling palette inspired by the new dark dashboard
+const UNIT_PALETTES = [
+  { c1: '#cdff4f', c2: '#14b8a6', text: 'text-[#cdff4f]', glow: 'rgba(205,255,79,0.8)', bg: 'bg-[#cdff4f]/10', border: 'border-[#cdff4f]/20', shadow: 'shadow-[0_0_20px_rgba(205,255,79,0.3)]' },
+  { c1: '#a574ff', c2: '#ff9dcb', text: 'text-[#a574ff]', glow: 'rgba(165,116,255,0.8)', bg: 'bg-[#a574ff]/10', border: 'border-[#a574ff]/20', shadow: 'shadow-[0_0_20px_rgba(165,116,255,0.3)]' },
+  { c1: '#ff9dcb', c2: '#a574ff', text: 'text-[#ff9dcb]', glow: 'rgba(255,157,203,0.8)', bg: 'bg-[#ff9dcb]/10', border: 'border-[#ff9dcb]/20', shadow: 'shadow-[0_0_20px_rgba(255,157,203,0.3)]' },
+];
 const levelColors: Record<string, { bg: string; text: string; accent: string }> = {
-  'A1': { bg: 'bg-emerald-500', text: 'text-emerald-700 dark:text-emerald-400', accent: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  'A2': { bg: 'bg-sky-500', text: 'text-sky-700 dark:text-sky-400', accent: 'bg-sky-100 dark:bg-sky-900/30' },
-  'B1': { bg: 'bg-violet-500', text: 'text-violet-700 dark:text-violet-400', accent: 'bg-violet-100 dark:bg-violet-900/30' },
-  'B2': { bg: 'bg-amber-500', text: 'text-amber-700 dark:text-amber-400', accent: 'bg-amber-100 dark:bg-amber-900/30' },
+  'A1': { bg: 'bg-[#cdff4f]', text: 'text-[#cdff4f]', accent: 'bg-[#cdff4f]/10' },
+  'A2': { bg: 'bg-[#a574ff]', text: 'text-[#a574ff]', accent: 'bg-[#a574ff]/10' },
+  'B1': { bg: 'bg-[#ff9dcb]', text: 'text-[#ff9dcb]', accent: 'bg-[#ff9dcb]/10' },
+  'B2': { bg: 'bg-[#cdff4f]', text: 'text-[#cdff4f]', accent: 'bg-[#cdff4f]/10' },
 };
 
 // Level metadata for SEO
