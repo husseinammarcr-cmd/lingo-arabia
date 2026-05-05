@@ -19,6 +19,7 @@ import { MiniConfetti } from '@/components/animations/MiniConfetti';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { toast } from 'sonner';
 import DashboardBackground from '@/components/DashboardBackground';
+import '@/styles/LingoArabExercise.css';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
