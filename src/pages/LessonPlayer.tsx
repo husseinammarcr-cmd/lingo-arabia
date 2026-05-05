@@ -19,6 +19,7 @@ import { MiniConfetti } from '@/components/animations/MiniConfetti';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
 import { toast } from 'sonner';
 import DashboardBackground from '@/components/DashboardBackground';
+import '@/styles/LingoArabExercise.css';
 
 type LessonSection = 'learn' | 'practice' | 'quiz';
 
@@ -600,15 +601,33 @@ const LessonPlayer = () => {
     </div>
   );
 
-  // Learn section content with animations
+  // Learn section content
   const renderLearnSection = () => {
     const isVocab = learnIndex < lessonContent.vocab.length;
-    const item = isVocab 
-      ? lessonContent.vocab[learnIndex] 
+    const item = isVocab
+      ? lessonContent.vocab[learnIndex]
       : lessonContent.sentences[learnIndex - lessonContent.vocab.length];
 
+    const totalLearn = lessonContent.vocab.length + lessonContent.sentences.length;
+    const isLast = learnIndex >= totalLearn - 1;
+
+    const englishText = isVocab ? (item as VocabItem).english : (item as SentenceItem).english;
+    const arabicText = isVocab ? (item as VocabItem).arabic : (item as SentenceItem).arabic;
+    const example = isVocab ? (item as VocabItem).example : undefined;
+    const exampleAr = isVocab ? (item as VocabItem).exampleAr : undefined;
+
+    const handleSpeak = () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis && englishText) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(englishText);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      }
+    };
+
     return (
-      <div className="space-y-6">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
         <AnimatePresence mode="wait" custom={slideDirection}>
           <motion.div
             key={learnIndex}
@@ -618,74 +637,41 @@ const LessonPlayer = () => {
             animate="center"
             exit="exit"
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="la-flashcard la-flashcard-center"
+            style={{ flex: 1 }}
           >
-            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-              <CardContent className="p-8 text-center">
-                {isVocab ? (
-                  <>
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                      <p className="text-4xl font-bold text-primary ltr-text">
-                        {(item as VocabItem).english}
-                      </p>
-                      <AudioButton 
-                        text={(item as VocabItem).english} 
-                        size="lg"
-                        variant="secondary"
-                        className="text-primary"
-                      />
-                    </div>
-                    <p className="text-2xl text-foreground mb-4">{(item as VocabItem).arabic}</p>
-                    {(item as VocabItem).example && (
-                      <motion.div 
-                        className="mt-6 p-4 bg-background/50 rounded-lg"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          <p className="text-lg text-muted-foreground ltr-text">{(item as VocabItem).example}</p>
-                          <AudioButton 
-                            text={(item as VocabItem).example || ''} 
-                            size="sm"
-                            className="text-muted-foreground"
-                          />
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">{(item as VocabItem).exampleAr}</p>
-                      </motion.div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                      <p className="text-2xl font-bold text-primary ltr-text">
-                        {(item as SentenceItem).english}
-                      </p>
-                      <AudioButton 
-                        text={(item as SentenceItem).english} 
-                        size="lg"
-                        variant="secondary"
-                        className="text-primary"
-                      />
-                    </div>
-                    <p className="text-xl text-foreground">{(item as SentenceItem).arabic}</p>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            <div className="la-main-word">
+              <button type="button" className="la-speaker-icon" onClick={handleSpeak} aria-label="Listen">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                </svg>
+              </button>
+              <h1 className="la-word-en" style={{ fontSize: isVocab ? 36 : 22 }}>{englishText}</h1>
+            </div>
+            <h2 className="la-word-ar" style={{ fontSize: isVocab ? 26 : 20 }}>{arabicText}</h2>
+            {example && (
+              <div className="la-example-box">
+                <div className="la-example-en-row">
+                  <span className="la-example-en">{example}</span>
+                </div>
+                {exampleAr && <p className="la-example-ar">{exampleAr}</p>}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
-        
-        <div className="text-center text-sm text-muted-foreground">
-          {learnIndex + 1} / {lessonContent.vocab.length + lessonContent.sentences.length}
+
+        <div className="la-counter">
+          {totalLearn} / <span>{learnIndex + 1}</span>
         </div>
 
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleLearnNext}>
-            {learnIndex < lessonContent.vocab.length + lessonContent.sentences.length - 1 ? 'التالي' : 'ابدأ التدريب'}
-            <ChevronLeft className="w-5 h-5 mr-2" />
-          </Button>
-        </motion.div>
-
+        <div className="la-next-btn-wrapper">
+          <button type="button" className="la-next-btn" onClick={handleLearnNext}>
+            <svg viewBox="0 0 24 24" style={{ transform: 'rotate(180deg)' }} aria-hidden="true">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+            <span>{isLast ? 'ابدأ التدريب' : 'التالي'}</span>
+          </button>
+        </div>
       </div>
     );
   };
@@ -761,44 +747,59 @@ const LessonPlayer = () => {
     );
   };
 
+  // Tabs config
+  const tabs: { key: LessonSection; label: string; icon: string }[] = [
+    { key: 'learn',    label: 'تعلم',  icon: '📖' },
+    { key: 'practice', label: 'تدريب', icon: '🏋️' },
+    { key: 'quiz',     label: 'اختبار', icon: '✅' },
+  ];
+
   return (
-    <DashboardBackground>
-    <div className="min-h-[100dvh] flex flex-col text-white" dir="rtl">
-      {/* Header with animated progress */}
-      <header className="sticky top-0 z-50 bg-[#070907]/80 backdrop-blur-md border-b border-white/10 px-4 py-3">
-        <div className="flex items-center gap-4 max-w-2xl mx-auto">
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button type="button" variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/10">
-              <X className="w-5 h-5" />
-            </Button>
-          </motion.div>
-
-          <div className="flex-1">
-            <AnimatedProgress value={getSectionProgress()} className="h-3" />
-          </div>
-
-          <motion.div
-            className="flex items-center gap-1 text-[#ff9dcb] font-bold"
-            animate={hearts < 3 ? { scale: [1, 1.1, 1] } : {}}
-            transition={{ duration: 0.3 }}
-            style={{ filter: 'drop-shadow(0 0 6px rgba(255,157,203,0.6))' }}
-          >
-            <Heart className={cn('w-5 h-5', hearts > 0 && 'fill-current')} />
+    <div className="exercise-page-wrapper" dir="rtl">
+      <div className="la-app-container">
+        {/* Top bar: hearts + progress + close */}
+        <div className="la-top-bar">
+          <div className="la-lives">
             <span>{hearts}</span>
-          </motion.div>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M 12,21 C 5,15 2,10 2,7 C 2,2 10,2 12,6 C 14,2 22,2 22,7 C 22,10 19,15 12,21 Z" />
+            </svg>
+          </div>
+          <div className="la-progress-wrapper">
+            <div className="la-progress-fill" style={{ width: `${getSectionProgress()}%` }} />
+          </div>
+          <button type="button" className="la-close-btn" onClick={handleClose} aria-label="Close">
+            ×
+          </button>
         </div>
-      </header>
 
-      {/* Main content */}
-      <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl">
-        {renderSectionTabs()}
+        {/* Section tabs */}
+        <div className="la-tabs">
+          {tabs.map((t) => {
+            const isActive = section === t.key;
+            return (
+              <button
+                key={t.key}
+                type="button"
+                className={`la-tab ${isActive ? 'active' : ''}`}
+                disabled
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <span aria-hidden="true">{t.icon}</span>
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
 
-        {section === 'learn' && renderLearnSection()}
-        {section === 'practice' && renderPracticeSection()}
-        {section === 'quiz' && renderQuizSection()}
-      </main>
+        {/* Main content */}
+        <main style={{ display: 'flex', flexDirection: 'column', gap: 16, flex: 1 }}>
+          {section === 'learn' && renderLearnSection()}
+          {section === 'practice' && renderPracticeSection()}
+          {section === 'quiz' && renderQuizSection()}
+        </main>
+      </div>
     </div>
-    </DashboardBackground>
   );
 };
 
