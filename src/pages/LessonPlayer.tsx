@@ -762,44 +762,59 @@ const LessonPlayer = () => {
     );
   };
 
+  // Tabs config
+  const tabs: { key: LessonSection; label: string; icon: string }[] = [
+    { key: 'learn',    label: 'تعلم',  icon: '📖' },
+    { key: 'practice', label: 'تدريب', icon: '🏋️' },
+    { key: 'quiz',     label: 'اختبار', icon: '✅' },
+  ];
+
   return (
-    <DashboardBackground>
-    <div className="min-h-[100dvh] flex flex-col text-white" dir="rtl">
-      {/* Header with animated progress */}
-      <header className="sticky top-0 z-50 bg-[#070907]/80 backdrop-blur-md border-b border-white/10 px-4 py-3">
-        <div className="flex items-center gap-4 max-w-2xl mx-auto">
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button type="button" variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/10">
-              <X className="w-5 h-5" />
-            </Button>
-          </motion.div>
-
-          <div className="flex-1">
-            <AnimatedProgress value={getSectionProgress()} className="h-3" />
-          </div>
-
-          <motion.div
-            className="flex items-center gap-1 text-[#ff9dcb] font-bold"
-            animate={hearts < 3 ? { scale: [1, 1.1, 1] } : {}}
-            transition={{ duration: 0.3 }}
-            style={{ filter: 'drop-shadow(0 0 6px rgba(255,157,203,0.6))' }}
-          >
-            <Heart className={cn('w-5 h-5', hearts > 0 && 'fill-current')} />
+    <div className="exercise-page-wrapper" dir="rtl">
+      <div className="la-app-container">
+        {/* Top bar: hearts + progress + close */}
+        <div className="la-top-bar">
+          <div className="la-lives">
             <span>{hearts}</span>
-          </motion.div>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M 12,21 C 5,15 2,10 2,7 C 2,2 10,2 12,6 C 14,2 22,2 22,7 C 22,10 19,15 12,21 Z" />
+            </svg>
+          </div>
+          <div className="la-progress-wrapper">
+            <div className="la-progress-fill" style={{ width: `${getSectionProgress()}%` }} />
+          </div>
+          <button type="button" className="la-close-btn" onClick={handleClose} aria-label="Close">
+            ×
+          </button>
         </div>
-      </header>
 
-      {/* Main content */}
-      <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl">
-        {renderSectionTabs()}
+        {/* Section tabs */}
+        <div className="la-tabs">
+          {tabs.map((t) => {
+            const isActive = section === t.key;
+            return (
+              <button
+                key={t.key}
+                type="button"
+                className={`la-tab ${isActive ? 'active' : ''}`}
+                disabled
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <span aria-hidden="true">{t.icon}</span>
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
 
-        {section === 'learn' && renderLearnSection()}
-        {section === 'practice' && renderPracticeSection()}
-        {section === 'quiz' && renderQuizSection()}
-      </main>
+        {/* Main content */}
+        <main style={{ display: 'flex', flexDirection: 'column', gap: 16, flex: 1 }}>
+          {section === 'learn' && renderLearnSection()}
+          {section === 'practice' && renderPracticeSection()}
+          {section === 'quiz' && renderQuizSection()}
+        </main>
+      </div>
     </div>
-    </DashboardBackground>
   );
 };
 
