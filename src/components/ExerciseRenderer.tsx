@@ -1,11 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { CheckCircle, XCircle, Lightbulb, Volume2, Eye, Hash, Type } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { AudioButton } from '@/components/AudioButton';
 import { useSpeech } from '@/hooks/useSpeech';
+import '@/styles/LingoArabExercise.css';
 
 export type ExerciseType = 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching';
 
@@ -35,31 +30,25 @@ interface ExerciseRendererProps {
   disabled?: boolean;
 }
 
-// Listening button component with speech synthesis
-const ListeningButton = ({ text, disabled }: { text: string; disabled: boolean }) => {
-  const { speak, isSupported, voiceCount } = useSpeech();
+/* ---------- Inline icons (no extra deps) ---------- */
+const SpeakerSvg = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+  </svg>
+);
 
-  const handleListen = () => {
-    const cleanText = (text || '').trim();
-    console.log('[ListeningButton] Clicked, text:', cleanText, 'voices:', voiceCount);
-    
-    if (cleanText) {
-      speak(cleanText);
-    }
-  };
-
+const SpeakerButton = ({ text, disabled }: { text: string; disabled?: boolean }) => {
+  const { speak, isSupported } = useSpeech();
   return (
-    <Button
+    <button
       type="button"
-      variant="secondary"
-      size="lg"
-      className="w-full h-20"
-      onClick={handleListen}
+      className="la-speaker-icon"
+      aria-label="Listen"
+      onClick={() => isSupported && text && speak(text.trim())}
       disabled={disabled || !isSupported}
     >
-      <Volume2 className="w-8 h-8 ml-3" />
-      <span>{isSupported ? 'استمع' : 'الصوت غير متاح'}</span>
-    </Button>
+      <SpeakerSvg />
+    </button>
   );
 };
 
@@ -69,36 +58,36 @@ export const ExerciseRenderer = ({
   promptEn,
   data,
   onAnswer,
-  disabled = false
+  disabled = false,
 }: ExerciseRendererProps) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [textAnswer, setTextAnswer] = useState('');
   const [reorderedWords, setReorderedWords] = useState<number[]>([]);
-  const [showHint, setShowHint] = useState(false);
-  const [hintLevel, setHintLevel] = useState(0); // 0: none, 1: basic, 2: first letter, 3: word count
-  const [pendingHintLevel, setPendingHintLevel] = useState<number | null>(null); // For confirmation dialog
+  const [hintLevel, setHintLevel] = useState(0);
+  const [showOriginalHint, setShowOriginalHint] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
   const [selectedEnglish, setSelectedEnglish] = useState<number | null>(null);
-  const [showHintWarning, setShowHintWarning] = useState(false); // For original hint
 
-  // Reset state only when the component is truly remounted via key change
-  // We no longer use dependencies that change on every render
+  // Stable shuffle of arabic column for matching exercises
+  const shuffledArabicIndexes = useMemo(() => {
+    const len = data.pairs?.length || 0;
+    const arr = Array.from({ length: len }, (_, i) => i);
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.pairs?.length]);
+
   useEffect(() => {
-    return () => {
-      // Cleanup on unmount
-    };
+    return () => {};
   }, []);
 
-  // Helper function to normalize text by removing trailing punctuation
-  const normalizeAnswer = (text: string): string => {
-    return text
-      .trim()
-      .toLowerCase()
-      .replace(/[.?!,،؟]+$/g, '') // Remove trailing punctuation (English & Arabic)
-      .trim();
-  };
+  const normalizeAnswer = (text: string): string =>
+    text.trim().toLowerCase().replace(/[.?!,،؟]+$/g, '').trim();
 
   const checkAnswer = () => {
     let correct = false;
@@ -108,45 +97,49 @@ export const ExerciseRenderer = ({
         correct = selectedOption === data.correct;
         break;
       case 'fill_blank':
-      case 'translation':
+      case 'translation': {
         const userAnswer = normalizeAnswer(textAnswer);
         const correctAnswer = normalizeAnswer(data.answer || '');
-        const alternatives = data.alternatives?.map(a => normalizeAnswer(a)) || [];
+        const alternatives = data.alternatives?.map((a) => normalizeAnswer(a)) || [];
         correct = userAnswer === correctAnswer || alternatives.includes(userAnswer);
         break;
+      }
       case 'reorder':
         correct = JSON.stringify(reorderedWords) === JSON.stringify(data.correct_order);
         break;
       case 'listening':
         correct = normalizeAnswer(textAnswer) === normalizeAnswer(data.answer || '');
         break;
-      case 'matching':
-        // Check if all pairs are correctly matched
+      case 'matching': {
         const pairs = data.pairs || [];
-        correct = Object.keys(matchedPairs).length === pairs.length &&
+        correct =
+          Object.keys(matchedPairs).length === pairs.length &&
           Object.entries(matchedPairs).every(([eng, arb]) => parseInt(eng) === arb);
         break;
+      }
     }
 
     setAnswered(true);
     setIsCorrect(correct);
-    
-    // Hints are free - no XP penalty
-    const hintPenalty = 0;
-    
-    // Delay callback to show feedback
-    setTimeout(() => {
-      onAnswer(correct, hintPenalty);
-    }, 1500);
+    setTimeout(() => onAnswer(correct, 0), 1500);
   };
 
   const handleWordClick = (index: number) => {
     if (answered || disabled) return;
-    
     if (reorderedWords.includes(index)) {
-      setReorderedWords(reorderedWords.filter(i => i !== index));
+      setReorderedWords(reorderedWords.filter((i) => i !== index));
     } else {
       setReorderedWords([...reorderedWords, index]);
+    }
+  };
+
+  const handleMatchClick = (isEnglish: boolean, index: number) => {
+    if (answered || disabled) return;
+    if (isEnglish) {
+      setSelectedEnglish(index);
+    } else if (selectedEnglish !== null) {
+      setMatchedPairs((prev) => ({ ...prev, [selectedEnglish]: index }));
+      setSelectedEnglish(null);
     }
   };
 
@@ -167,576 +160,345 @@ export const ExerciseRenderer = ({
     }
   };
 
-  const handleMatchClick = (isEnglish: boolean, index: number) => {
-    if (answered || disabled) return;
-    
-    if (isEnglish) {
-      setSelectedEnglish(index);
-    } else if (selectedEnglish !== null) {
-      // Match the selected English with this Arabic
-      setMatchedPairs(prev => ({ ...prev, [selectedEnglish]: index }));
-      setSelectedEnglish(null);
-    }
+  /* -------- Renderers per type -------- */
+  const renderMCQ = () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {data.options?.map((option, index) => {
+        let cls = 'la-option-btn';
+        if (answered) {
+          if (index === data.correct) cls += ' correct';
+          else if (selectedOption === index) cls += ' wrong';
+        } else if (selectedOption === index) cls += ' selected';
+        return (
+          <button
+            key={index}
+            type="button"
+            className={cls}
+            dir="ltr"
+            onClick={() => !answered && !disabled && setSelectedOption(index)}
+            disabled={answered || disabled}
+          >
+            <span style={{ flex: 1, textAlign: 'left' }}>{option}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const renderTextInput = (placeholder: string) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <input
+        type="text"
+        value={textAnswer}
+        onChange={(e) => setTextAnswer(e.target.value)}
+        placeholder={placeholder}
+        className={`la-input ${answered ? (isCorrect ? 'correct' : 'wrong') : ''}`}
+        disabled={answered || disabled}
+        dir="ltr"
+      />
+      {answered && (
+        <div className={`la-feedback ${isCorrect ? 'correct' : 'wrong'}`}>
+          {isCorrect ? (
+            <span>✓ ممتاز!</span>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span>✕ إجابة خاطئة</span>
+              <span style={{ direction: 'ltr', opacity: 0.85, textDecoration: 'line-through' }}>{textAnswer}</span>
+              <span style={{ direction: 'ltr', color: 'var(--la-neon-green)' }}>
+                الصحيح: {data.answer}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderReorder = () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div className="la-dropzone" dir="ltr">
+        {reorderedWords.length === 0 ? (
+          <span style={{ color: 'var(--la-gray)' }}>اضغط على الكلمات لترتيبها</span>
+        ) : (
+          reorderedWords.map((wordIndex, i) => (
+            <button
+              key={i}
+              type="button"
+              className="la-chip"
+              onClick={() => handleWordClick(wordIndex)}
+              disabled={answered || disabled}
+            >
+              {data.words?.[wordIndex]}
+            </button>
+          ))
+        )}
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }} dir="ltr">
+        {data.words?.map((word, index) => (
+          <button
+            key={index}
+            type="button"
+            className={`la-chip ${reorderedWords.includes(index) ? 'used' : ''}`}
+            onClick={() => handleWordClick(index)}
+            disabled={answered || disabled || reorderedWords.includes(index)}
+          >
+            {word}
+          </button>
+        ))}
+      </div>
+
+      {answered && (
+        <div className={`la-feedback ${isCorrect ? 'correct' : 'wrong'}`}>
+          {isCorrect ? (
+            <span>✓ ترتيب صحيح!</span>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span>✕ ترتيب خاطئ</span>
+              <span style={{ direction: 'ltr', color: 'var(--la-neon-green)' }}>
+                الصحيح: {data.answer}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderListening = () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <button
+        type="button"
+        className="la-option-btn"
+        style={{ justifyContent: 'center', fontSize: 18 }}
+        onClick={() => data.answer && new SpeechSynthesisUtterance && window.speechSynthesis?.speak(new SpeechSynthesisUtterance(data.answer))}
+        disabled={answered || disabled}
+      >
+        🔊 استمع
+      </button>
+      {renderTextInput('اكتب ما سمعته...')}
+    </div>
+  );
+
+  const renderMatching = () => {
+    const pairs = data.pairs || [];
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontSize: 12, color: 'var(--la-gray)' }}>English</p>
+            {pairs.map((pair, index) => {
+              const isMatched = matchedPairs[index] !== undefined;
+              const isSelected = selectedEnglish === index;
+              let cls = 'la-option-btn';
+              if (isMatched) cls += ' correct';
+              else if (isSelected) cls += ' selected';
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  className={cls}
+                  dir="ltr"
+                  onClick={() => handleMatchClick(true, index)}
+                  disabled={answered || disabled || isMatched}
+                  style={{ opacity: isMatched ? 0.6 : 1 }}
+                >
+                  {pair.english}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontSize: 12, color: 'var(--la-gray)', textAlign: 'right' }}>العربية</p>
+            {shuffledArabicIndexes.map((origIdx) => {
+              const isMatched = Object.values(matchedPairs).includes(origIdx);
+              const cls = `la-option-btn ${isMatched ? 'correct' : ''}`;
+              return (
+                <button
+                  key={origIdx}
+                  type="button"
+                  className={cls}
+                  onClick={() => handleMatchClick(false, origIdx)}
+                  disabled={answered || disabled || isMatched || selectedEnglish === null}
+                  style={{ opacity: isMatched ? 0.6 : 1, justifyContent: 'flex-end' }}
+                >
+                  {pairs[origIdx]?.arabic}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {answered && (
+          <div className={`la-feedback ${isCorrect ? 'correct' : 'wrong'}`}>
+            {isCorrect ? '✓ ممتاز!' : '✕ حاول مرة أخرى'}
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderExercise = () => {
     switch (type) {
       case 'mcq':
-        return (
-          <div className="grid grid-cols-1 gap-3">
-            {data.options?.map((option, index) => (
-              <Button
-                key={index}
-                type="button"
-                variant={
-                  answered
-                    ? index === data.correct
-                      ? 'success'
-                      : selectedOption === index
-                      ? 'destructive'
-                      : 'secondary'
-                    : selectedOption === index
-                    ? 'default'
-                    : 'secondary'
-                }
-                className={cn(
-                  "h-auto py-4 px-6 text-lg justify-start",
-                  answered && index === data.correct && "ring-2 ring-success",
-                  answered && selectedOption === index && index !== data.correct && "ring-2 ring-destructive"
-                )}
-                onClick={() => !answered && !disabled && setSelectedOption(index)}
-                disabled={answered || disabled}
-                dir="ltr"
-              >
-                <span className="flex-1 text-left ltr-sentence">{option}</span>
-                {answered && index === data.correct && (
-                  <CheckCircle className="w-5 h-5 mr-2" />
-                )}
-                {answered && selectedOption === index && index !== data.correct && (
-                  <XCircle className="w-5 h-5 mr-2" />
-                )}
-              </Button>
-            ))}
-          </div>
-        );
-
+        return renderMCQ();
       case 'fill_blank':
+        return renderTextInput('اكتب الإجابة هنا...');
       case 'translation':
-        return (
-          <div className="space-y-4">
-            <Input
-              value={textAnswer}
-              onChange={(e) => setTextAnswer(e.target.value)}
-              placeholder={type === 'translation' ? 'اكتب الترجمة هنا...' : 'اكتب الإجابة هنا...'}
-              className={cn(
-                "text-lg h-14 ltr-text",
-                answered && isCorrect && "border-success ring-2 ring-success",
-                answered && !isCorrect && "border-destructive ring-2 ring-destructive"
-              )}
-              disabled={answered || disabled}
-              dir="ltr"
-            />
-            {answered && (
-              <div className={cn(
-                "p-4 rounded-lg",
-                isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
-              )}>
-                {isCorrect ? (
-                  <p className="font-semibold flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    ممتاز!
-                  </p>
-                ) : (
-                  <div className="space-y-3">
-                    <p className="font-semibold flex items-center gap-2">
-                      <XCircle className="w-5 h-5" />
-                      إجابة خاطئة
-                    </p>
-                    <div className="bg-background/50 rounded-lg p-3 space-y-2 text-sm">
-                      <div className="flex items-start gap-2">
-                        <span className="text-muted-foreground shrink-0">إجابتك:</span>
-                        <span className="ltr-inline line-through opacity-70">{textAnswer}</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-muted-foreground shrink-0">الصحيح:</span>
-                        <span className="ltr-inline text-success font-medium">{data.answer}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-
+        return renderTextInput('اكتب الترجمة هنا...');
       case 'reorder':
-        return (
-          <div className="space-y-6">
-            {/* Selected words */}
-            <div className="min-h-[60px] p-4 rounded-lg border-2 border-dashed border-border bg-muted/50 flex flex-wrap gap-2">
-              {reorderedWords.length === 0 ? (
-                <p className="text-muted-foreground">اضغط على الكلمات لترتيبها</p>
-              ) : (
-                reorderedWords.map((wordIndex, i) => (
-                  <Button
-                    key={i}
-                    type="button"
-                    variant="default"
-                    size="sm"
-                    onClick={() => handleWordClick(wordIndex)}
-                    disabled={answered || disabled}
-                    className="ltr-inline"
-                    dir="ltr"
-                  >
-                    {data.words?.[wordIndex]}
-                  </Button>
-                ))
-              )}
-            </div>
-
-            {/* Available words */}
-            <div className="flex flex-wrap gap-2 justify-center">
-              {data.words?.map((word, index) => (
-                <Button
-                  key={index}
-                  type="button"
-                  variant={reorderedWords.includes(index) ? 'outline' : 'secondary'}
-                  size="lg"
-                  onClick={() => handleWordClick(index)}
-                  disabled={answered || disabled || reorderedWords.includes(index)}
-                  className={cn(
-                    "ltr-inline",
-                    reorderedWords.includes(index) && "opacity-50"
-                  )}
-                  dir="ltr"
-                >
-                  {word}
-                </Button>
-              ))}
-            </div>
-
-            {answered && (
-              <div className={cn(
-                "p-4 rounded-lg",
-                isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
-              )}>
-                {isCorrect ? (
-                  <p className="font-semibold flex items-center justify-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    ممتاز!
-                  </p>
-                ) : (
-                  <div className="space-y-3">
-                    <p className="font-semibold flex items-center justify-center gap-2">
-                      <XCircle className="w-5 h-5" />
-                      ترتيب خاطئ
-                    </p>
-                    <div className="bg-background/50 rounded-lg p-3 space-y-2 text-sm">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="text-muted-foreground shrink-0">ترتيبك:</span>
-                        <span className="ltr-inline line-through opacity-70">
-                          {reorderedWords.map(i => data.words?.[i]).join(' ')}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="text-muted-foreground shrink-0">الصحيح:</span>
-                        <span className="ltr-inline text-success font-medium">{data.answer}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-
+        return renderReorder();
       case 'listening':
-        return (
-          <div className="space-y-4">
-            <ListeningButton text={data.answer || ''} disabled={answered || disabled} />
-            <Input
-              value={textAnswer}
-              onChange={(e) => setTextAnswer(e.target.value)}
-              placeholder="اكتب ما سمعته..."
-              className={cn(
-                "text-lg h-14 ltr-text",
-                answered && isCorrect && "border-success ring-2 ring-success",
-                answered && !isCorrect && "border-destructive ring-2 ring-destructive"
-              )}
-              disabled={answered || disabled}
-              dir="ltr"
-            />
-            {answered && (
-              <div className={cn(
-                "p-4 rounded-lg",
-                isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
-              )}>
-                {isCorrect ? (
-                  <p className="font-semibold flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    ممتاز!
-                  </p>
-                ) : (
-                  <div className="space-y-3">
-                    <p className="font-semibold flex items-center gap-2">
-                      <XCircle className="w-5 h-5" />
-                      إجابة خاطئة
-                    </p>
-                    <div className="bg-background/50 rounded-lg p-3 space-y-2 text-sm">
-                      <div className="flex items-start gap-2">
-                        <span className="text-muted-foreground shrink-0">إجابتك:</span>
-                        <span className="ltr-inline line-through opacity-70">{textAnswer}</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-muted-foreground shrink-0">الصحيح:</span>
-                        <span className="ltr-inline text-success font-medium">{data.answer}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-
+        return renderListening();
       case 'matching':
-        const pairs = data.pairs || [];
-        const shuffledArabic = [...pairs].sort(() => Math.random() - 0.5);
-        
-        return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              {/* English column */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground mb-2">English</p>
-                {pairs.map((pair, index) => {
-                  const isMatched = matchedPairs[index] !== undefined;
-                  const isSelected = selectedEnglish === index;
-                  return (
-                    <Button
-                      key={index}
-                      type="button"
-                      variant={isMatched ? 'success' : isSelected ? 'default' : 'secondary'}
-                      className={cn(
-                        "w-full justify-start",
-                        isMatched && "opacity-60"
-                      )}
-                      dir="ltr"
-                      onClick={() => handleMatchClick(true, index)}
-                      disabled={answered || disabled || isMatched}
-                    >
-                      {pair.english}
-                    </Button>
-                  );
-                })}
-              </div>
-              
-              {/* Arabic column */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground mb-2">العربية</p>
-                {pairs.map((pair, index) => {
-                  const isMatched = Object.values(matchedPairs).includes(index);
-                  return (
-                    <Button
-                      key={index}
-                      type="button"
-                      variant={isMatched ? 'success' : 'secondary'}
-                      className={cn(
-                        "w-full justify-start",
-                        isMatched && "opacity-60"
-                      )}
-                      onClick={() => handleMatchClick(false, index)}
-                      disabled={answered || disabled || isMatched || selectedEnglish === null}
-                    >
-                      {pair.arabic}
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-            
-            {answered && (
-              <div className={cn(
-                "p-4 rounded-lg text-center",
-                isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
-              )}>
-                <p className="font-semibold flex items-center justify-center gap-2">
-                  {isCorrect ? (
-                    <>
-                      <CheckCircle className="w-5 h-5" />
-                      ممتاز!
-                    </>
-                  ) : (
-                    <>
-                      <XCircle className="w-5 h-5" />
-                      حاول مرة أخرى
-                    </>
-                  )}
-                </p>
-              </div>
-            )}
-          </div>
-        );
-
+        return renderMatching();
       default:
-        return <p>نوع السؤال غير مدعوم</p>;
+        return <p style={{ color: 'var(--la-gray)' }}>نوع السؤال غير مدعوم</p>;
     }
   };
 
-  // Helper function to wrap English sentences (including blanks) in LTR isolation
+  /* -------- Prompt with LTR isolation -------- */
   const renderPromptWithLTR = (text: string) => {
-    // Check if text has Arabic hint in parentheses at the end: "English text. (Arabic hint)"
     const hintPattern = /^(.+?)\s*\(([^\x00-\x7F]+)\)\s*$/;
     const hintMatch = text.match(hintPattern);
-    
     if (hintMatch) {
-      // We have: English part + (Arabic hint)
-      const englishPart = hintMatch[1].trim();
-      const arabicHint = hintMatch[2];
-      
       return (
         <>
-          <bdi 
-            dir="ltr" 
-            style={{ unicodeBidi: 'isolate', display: 'inline' }}
-          >
-            {englishPart}
+          <bdi dir="ltr" style={{ unicodeBidi: 'isolate', display: 'inline' }}>
+            {hintMatch[1].trim()}
           </bdi>
-          <span className="text-muted-foreground mr-2"> ({arabicHint})</span>
+          <span style={{ color: 'var(--la-gray)', marginInlineStart: 8 }}>({hintMatch[2]})</span>
         </>
       );
     }
-    
-    // Check for Arabic prefix followed by English: "Arabic: English text"
     const prefixPattern = /^([\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF\s:]+)\s*(.+)$/;
     const prefixMatch = text.match(prefixPattern);
-    
     if (prefixMatch && /[A-Za-z_]/.test(prefixMatch[2])) {
-      const arabicPrefix = prefixMatch[1];
-      const englishPart = prefixMatch[2];
-      
       return (
         <>
-          <span>{arabicPrefix}</span>
-          <bdi 
-            dir="ltr" 
-            style={{ unicodeBidi: 'isolate', display: 'inline' }}
-          >
-            {englishPart}
+          <span>{prefixMatch[1]}</span>
+          <bdi dir="ltr" style={{ unicodeBidi: 'isolate', display: 'inline' }}>
+            {prefixMatch[2]}
           </bdi>
         </>
       );
     }
-    
-    // Fallback: Check if text contains any English with blanks
     if (/[A-Za-z]/.test(text) && /_{2,}/.test(text)) {
-      // Wrap entire text in LTR
       return (
-        <bdi 
-          dir="ltr" 
-          style={{ unicodeBidi: 'isolate', display: 'inline' }}
-        >
+        <bdi dir="ltr" style={{ unicodeBidi: 'isolate', display: 'inline' }}>
           {text}
         </bdi>
       );
     }
-    
-    // Default: return as-is
     return text;
   };
 
   return (
-    <div className="space-y-6">
-      {/* Prompt */}
-      <Card className="bg-secondary/30">
-        <CardContent className="p-6">
-          <h2 className="text-xl font-bold mb-2">{renderPromptWithLTR(promptAr)}</h2>
-          {promptEn && (
-            <div className="flex items-center gap-2" dir="ltr">
-              <AudioButton text={promptEn} size="sm" className="text-muted-foreground" />
-              <p className="text-muted-foreground flex-1" style={{ unicodeBidi: 'isolate' }}>{promptEn}</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* Prompt as glowing flashcard */}
+      <div className="la-flashcard la-flashcard-center">
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--la-white)', margin: 0 }}>
+          {renderPromptWithLTR(promptAr)}
+        </h2>
+        {promptEn && (
+          <div className="la-example-box" style={{ marginTop: 14 }}>
+            <div className="la-example-en-row">
+              <SpeakerButton text={promptEn} disabled={disabled} />
+              <span className="la-example-en">{promptEn}</span>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+      </div>
 
-      {/* Exercise content */}
+      {/* Exercise */}
       {renderExercise()}
 
-      {/* Smart Hints System */}
+      {/* Hints */}
       {!answered && (
-        <div className="space-y-3">
-          {/* Progressive hints for text-based exercises */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {(type === 'fill_blank' || type === 'translation' || type === 'listening') && data.answer && (
-            <div className="space-y-3">
-              {/* Hint confirmation dialog - hints are free! */}
-              {pendingHintLevel !== null && (
-                <Card className="bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 animate-scale-in">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center shrink-0">
-                        <Lightbulb className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-semibold text-blue-800 dark:text-blue-200 mb-1">
-                          تلميح مجاني 💡
-                        </p>
-                        <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
-                          استخدم التلميحات للمساعدة في التعلم - بدون أي خصم من نقاطك!
-                        </p>
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setPendingHintLevel(null)}
-                            className="border-blue-400 text-blue-700 hover:bg-blue-100 dark:hover:bg-blue-800"
-                          >
-                            إلغاء
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => {
-                              setHintLevel(pendingHintLevel);
-                              setPendingHintLevel(null);
-                            }}
-                            className="bg-blue-500 hover:bg-blue-600 text-white"
-                          >
-                            أظهر التلميح
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {hintLevel < 1 && (
+                <button type="button" className="la-chip" onClick={() => setHintLevel(1)}>
+                  # عدد الكلمات
+                </button>
               )}
-
-              {/* Hint buttons */}
-              {pendingHintLevel === null && (
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {/* Hint 1: Word count */}
-                  {hintLevel < 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPendingHintLevel(1)}
-                      className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    >
-                      <Hash className="w-4 h-4 ml-1" />
-                      عدد الكلمات
-                    </Button>
-                  )}
-                  
-                  {/* Hint 2: First letter */}
-                  {hintLevel >= 1 && hintLevel < 2 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPendingHintLevel(2)}
-                      className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    >
-                      <Type className="w-4 h-4 ml-1" />
-                      الحرف الأول
-                    </Button>
-                  )}
-                  
-                  {/* Hint 3: Show more letters */}
-                  {hintLevel >= 2 && hintLevel < 3 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPendingHintLevel(3)}
-                      className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    >
-                      <Eye className="w-4 h-4 ml-1" />
-                      كشف المزيد
-                    </Button>
-                  )}
-                </div>
+              {hintLevel >= 1 && hintLevel < 2 && (
+                <button type="button" className="la-chip" onClick={() => setHintLevel(2)}>
+                  Aa الحرف الأول
+                </button>
+              )}
+              {hintLevel >= 2 && hintLevel < 3 && (
+                <button type="button" className="la-chip" onClick={() => setHintLevel(3)}>
+                  👁 كشف المزيد
+                </button>
               )}
             </div>
           )}
 
-          {/* Display active hints */}
           {hintLevel > 0 && data.answer && (
-            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
-              <CardContent className="p-4 space-y-2">
-                {hintLevel >= 1 && (
-                  <p className="text-sm flex items-center gap-2 text-amber-700 dark:text-amber-300">
-                    <Hash className="w-4 h-4" />
-                    <span>عدد الكلمات: <strong>{data.answer.trim().split(/\s+/).length}</strong></span>
-                  </p>
-                )}
-                {hintLevel >= 2 && (
-                  <p className="text-sm flex items-center gap-2 text-orange-700 dark:text-orange-300">
-                    <Type className="w-4 h-4" />
-                    <span>يبدأ بـ: <strong className="ltr-inline font-mono text-base">{data.answer.charAt(0).toUpperCase()}...</strong></span>
-                  </p>
-                )}
-                {hintLevel >= 3 && (
-                  <p className="text-sm flex items-center gap-2 text-red-700 dark:text-red-300">
-                    <Eye className="w-4 h-4" />
-                    <span>التلميح: <strong className="ltr-inline font-mono text-base">
-                      {data.answer.split('').map((char, i) => 
-                        i < 3 || char === ' ' ? char : '_'
-                      ).join('')}
-                    </strong></span>
-                  </p>
-                )}
-              </CardContent>
-            </Card>
+            <div className="la-hint-card" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {hintLevel >= 1 && (
+                <span>
+                  عدد الكلمات: <strong>{data.answer.trim().split(/\s+/).length}</strong>
+                </span>
+              )}
+              {hintLevel >= 2 && (
+                <span>
+                  يبدأ بـ:{' '}
+                  <strong style={{ direction: 'ltr', display: 'inline-block', fontFamily: 'monospace' }}>
+                    {data.answer.charAt(0).toUpperCase()}...
+                  </strong>
+                </span>
+              )}
+              {hintLevel >= 3 && (
+                <span>
+                  التلميح:{' '}
+                  <strong style={{ direction: 'ltr', display: 'inline-block', fontFamily: 'monospace' }}>
+                    {data.answer.split('').map((c, i) => (i < 3 || c === ' ' ? c : '_')).join('')}
+                  </strong>
+                </span>
+              )}
+            </div>
           )}
 
-          {/* Original hint from exercise data */}
           {(data.hint_ar || data.hint_en) && (
-            <div className="text-center">
-              {showHint ? (
-                <Card className="bg-accent/10 border-accent/30">
-                  <CardContent className="p-4">
-                    <p className="text-sm flex items-center justify-center gap-2">
-                      <Lightbulb className="w-4 h-4 text-accent" />
-                      <span>{data.hint_ar}</span>
-                      {data.hint_en && (
-                        <span className="text-muted-foreground ltr-text">({data.hint_en})</span>
-                      )}
-                    </p>
-                  </CardContent>
-                </Card>
+            <div style={{ textAlign: 'center' }}>
+              {showOriginalHint ? (
+                <div className="la-hint-card">
+                  💡 <span>{data.hint_ar}</span>
+                  {data.hint_en && (
+                    <span style={{ color: 'var(--la-gray)', marginInlineStart: 8, direction: 'ltr' }}>
+                      ({data.hint_en})
+                    </span>
+                  )}
+                </div>
               ) : (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setShowHint(true);
-                  }}
-                  className="text-accent"
+                  className="la-chip"
+                  onClick={() => setShowOriginalHint(true)}
                 >
-                  <Lightbulb className="w-4 h-4 ml-2" />
-                  تلميح إضافي
-                </Button>
+                  💡 تلميح إضافي
+                </button>
               )}
             </div>
           )}
         </div>
       )}
 
-      {/* Submit button */}
+      {/* Submit / Next button */}
       {!answered && (
-        <Button
-          type="button"
-          variant="hero"
-          size="xl"
-          className="w-full"
-          onClick={checkAnswer}
-          disabled={!canSubmit() || disabled}
-        >
-          تحقق
-        </Button>
+        <div className="la-next-btn-wrapper">
+          <button
+            type="button"
+            className="la-next-btn"
+            onClick={checkAnswer}
+            disabled={!canSubmit() || disabled}
+          >
+            <span>تحقق</span>
+          </button>
+        </div>
       )}
     </div>
   );
