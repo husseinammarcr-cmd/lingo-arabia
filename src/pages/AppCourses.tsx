@@ -571,7 +571,7 @@ const AppCourses = () => {
               <h2 className="text-xl font-semibold text-white mb-5">النشاط الأخير</h2>
 
               {recentActivity.length === 0 ? (
-                <div className="rounded-2xl p-6 text-center text-[#8a8a8a] bg-[#242424]">
+                <div className="rounded-2xl p-6 text-center text-[#bdbdbd] border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
                   <Trophy className="h-8 w-8 mx-auto mb-2 opacity-60" />
                   <p className="text-sm">لم تُكمل أي درس بعد. ابدأ الآن!</p>
                 </div>
@@ -580,21 +580,27 @@ const AppCourses = () => {
                   {recentActivity.map((a) => (
                     <div
                       key={a.id}
-                      className="bg-[#242424] rounded-2xl px-5 py-4 flex flex-col gap-3"
+                      className="relative overflow-hidden rounded-2xl px-5 py-4 flex flex-col gap-3 border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-[#e0e0e0]">{a.title}</span>
-                        <span
-                          className="font-semibold text-sm"
-                          style={{ color: a.color }}
-                        >
+                      <span
+                        aria-hidden
+                        className="absolute -top-10 -left-10 w-32 h-32 rounded-full blur-3xl opacity-25 pointer-events-none"
+                        style={{ backgroundColor: a.color }}
+                      />
+                      <div className="relative flex items-center justify-between">
+                        <span className="text-sm text-white/90">{a.title}</span>
+                        <span className="font-semibold text-sm" style={{ color: a.color }}>
                           {a.percent}%
                         </span>
                       </div>
-                      <div className="w-full h-1.5 bg-[#383838] rounded-full overflow-hidden">
+                      <div className="relative w-full h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${a.percent}%`, backgroundColor: a.color }}
+                          style={{
+                            width: `${a.percent}%`,
+                            backgroundColor: a.color,
+                            boxShadow: `0 0 10px ${a.color}`,
+                          }}
                         />
                       </div>
                     </div>
