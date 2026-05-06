@@ -491,44 +491,53 @@ const AppCourses = () => {
                       }
                       disabled={!unlocked}
                       className={cn(
-                        'relative text-right rounded-2xl p-5 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition',
+                        'group relative text-right rounded-2xl p-5 overflow-hidden border border-white/15 backdrop-blur-xl bg-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:border-white/25 transition-colors',
                         !unlocked && 'opacity-60 cursor-not-allowed',
                       )}
-                      style={{
-                        background: theme.gradient,
-                        color: theme.textColor,
-                      }}
+                      style={{ color: '#ffffff' }}
                     >
-                      {/* Decorative circle */}
+                      {/* Tinted glass layer */}
                       <span
-                        className="absolute rounded-full pointer-events-none"
+                        aria-hidden
+                        className="absolute inset-0 pointer-events-none opacity-35 group-hover:opacity-45 transition-opacity"
+                        style={{ background: theme.gradient }}
+                      />
+                      {/* Glass highlight */}
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 pointer-events-none"
                         style={{
-                          bottom: -40,
-                          left: -40,
-                          width: 140,
-                          height: 140,
+                          background:
+                            'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 45%, transparent 75%)',
+                        }}
+                      />
+                      {/* Decorative blurred blob */}
+                      <span
+                        className="absolute rounded-full pointer-events-none blur-2xl opacity-60"
+                        style={{
+                          bottom: -50,
+                          left: -50,
+                          width: 160,
+                          height: 160,
                           backgroundColor: theme.circle,
                           zIndex: 1,
                         }}
                       />
 
                       <div className="relative z-[5] flex items-start justify-between mb-2">
-                        <span
-                          className="text-xs font-bold px-2.5 py-1 rounded-full bg-black/20 backdrop-blur-sm"
-                          style={{ color: theme.textColor }}
-                        >
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/10 text-white">
                           {level.code}
                         </span>
                         {!unlocked && <Lock className="h-4 w-4 opacity-80" />}
                         {isCompleted && <CheckCircle2 className="h-5 w-5" />}
                       </div>
 
-                      <h3 className="relative z-[5] text-base sm:text-lg font-bold mb-1">
+                      <h3 className="relative z-[5] text-base sm:text-lg font-bold mb-1 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
                         {level.titleAr}
                       </h3>
                       <p
                         dir="ltr"
-                        className="relative z-[5] text-xs opacity-80 mb-4"
+                        className="relative z-[5] text-xs opacity-85 mb-4"
                         style={{ unicodeBidi: 'isolate' }}
                       >
                         {level.titleEn}
@@ -541,10 +550,14 @@ const AppCourses = () => {
                         </span>
                       </div>
 
-                      <div className="relative z-[5] w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
+                      <div className="relative z-[5] w-full h-1.5 bg-black/30 rounded-full overflow-hidden border border-white/5">
                         <div
-                          className="h-full rounded-full bg-black/60 transition-all"
-                          style={{ width: `${unlocked ? progress : 0}%` }}
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${unlocked ? progress : 0}%`,
+                            backgroundColor: theme.trackFill,
+                            boxShadow: `0 0 10px ${theme.trackFill}`,
+                          }}
                         />
                       </div>
                     </motion.button>
