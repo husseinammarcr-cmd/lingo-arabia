@@ -380,29 +380,41 @@ const AppCourses = () => {
                     whileHover={{ y: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleActionCard(card.action)}
-                    className="relative h-[160px] sm:h-[200px] rounded-3xl p-4 sm:p-5 flex flex-col text-right overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
-                    style={{
-                      background: card.style.gradient,
-                      color: card.style.textColor,
-                    }}
+                    className="group relative h-[160px] sm:h-[200px] rounded-3xl p-4 sm:p-5 flex flex-col text-right overflow-hidden border border-white/15 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl bg-white/5 hover:border-white/25 transition-colors"
+                    style={{ color: '#ffffff' }}
                   >
-                    {/* Decorative circle */}
+                    {/* Tinted glass layer (uses card's gradient at low opacity) */}
                     <span
-                      className="absolute rounded-full pointer-events-none"
+                      aria-hidden
+                      className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-50 transition-opacity"
+                      style={{ background: card.style.gradient }}
+                    />
+                    {/* Glass highlight */}
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 pointer-events-none"
                       style={{
-                        bottom: -30,
-                        left: -30,
-                        width: 130,
-                        height: 130,
+                        background:
+                          'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 40%, transparent 70%)',
+                      }}
+                    />
+                    {/* Soft colored blob */}
+                    <span
+                      className="absolute rounded-full pointer-events-none blur-2xl opacity-60"
+                      style={{
+                        bottom: -40,
+                        left: -40,
+                        width: 150,
+                        height: 150,
                         backgroundColor: card.style.circle,
                         zIndex: 1,
                       }}
                     />
-                    <h3 className="relative z-[5] text-[15px] sm:text-[18px] font-bold leading-[1.25] whitespace-pre-line">
+                    <h3 className="relative z-[5] text-[15px] sm:text-[18px] font-bold leading-[1.25] whitespace-pre-line drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
                       {card.titleAr}
                     </h3>
                     <Icon
-                      className="absolute z-[5] h-6 w-6 sm:h-7 sm:w-7"
+                      className="absolute z-[5] h-6 w-6 sm:h-7 sm:w-7 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
                       style={{ bottom: 20, left: 20 }}
                     />
                   </motion.button>
@@ -479,44 +491,53 @@ const AppCourses = () => {
                       }
                       disabled={!unlocked}
                       className={cn(
-                        'relative text-right rounded-2xl p-5 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition',
+                        'group relative text-right rounded-2xl p-5 overflow-hidden border border-white/15 backdrop-blur-xl bg-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:border-white/25 transition-colors',
                         !unlocked && 'opacity-60 cursor-not-allowed',
                       )}
-                      style={{
-                        background: theme.gradient,
-                        color: theme.textColor,
-                      }}
+                      style={{ color: '#ffffff' }}
                     >
-                      {/* Decorative circle */}
+                      {/* Tinted glass layer */}
                       <span
-                        className="absolute rounded-full pointer-events-none"
+                        aria-hidden
+                        className="absolute inset-0 pointer-events-none opacity-35 group-hover:opacity-45 transition-opacity"
+                        style={{ background: theme.gradient }}
+                      />
+                      {/* Glass highlight */}
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 pointer-events-none"
                         style={{
-                          bottom: -40,
-                          left: -40,
-                          width: 140,
-                          height: 140,
+                          background:
+                            'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 45%, transparent 75%)',
+                        }}
+                      />
+                      {/* Decorative blurred blob */}
+                      <span
+                        className="absolute rounded-full pointer-events-none blur-2xl opacity-60"
+                        style={{
+                          bottom: -50,
+                          left: -50,
+                          width: 160,
+                          height: 160,
                           backgroundColor: theme.circle,
                           zIndex: 1,
                         }}
                       />
 
                       <div className="relative z-[5] flex items-start justify-between mb-2">
-                        <span
-                          className="text-xs font-bold px-2.5 py-1 rounded-full bg-black/20 backdrop-blur-sm"
-                          style={{ color: theme.textColor }}
-                        >
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/10 text-white">
                           {level.code}
                         </span>
                         {!unlocked && <Lock className="h-4 w-4 opacity-80" />}
                         {isCompleted && <CheckCircle2 className="h-5 w-5" />}
                       </div>
 
-                      <h3 className="relative z-[5] text-base sm:text-lg font-bold mb-1">
+                      <h3 className="relative z-[5] text-base sm:text-lg font-bold mb-1 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
                         {level.titleAr}
                       </h3>
                       <p
                         dir="ltr"
-                        className="relative z-[5] text-xs opacity-80 mb-4"
+                        className="relative z-[5] text-xs opacity-85 mb-4"
                         style={{ unicodeBidi: 'isolate' }}
                       >
                         {level.titleEn}
@@ -529,10 +550,14 @@ const AppCourses = () => {
                         </span>
                       </div>
 
-                      <div className="relative z-[5] w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
+                      <div className="relative z-[5] w-full h-1.5 bg-black/30 rounded-full overflow-hidden border border-white/5">
                         <div
-                          className="h-full rounded-full bg-black/60 transition-all"
-                          style={{ width: `${unlocked ? progress : 0}%` }}
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${unlocked ? progress : 0}%`,
+                            backgroundColor: theme.trackFill,
+                            boxShadow: `0 0 10px ${theme.trackFill}`,
+                          }}
                         />
                       </div>
                     </motion.button>
@@ -546,7 +571,7 @@ const AppCourses = () => {
               <h2 className="text-xl font-semibold text-white mb-5">النشاط الأخير</h2>
 
               {recentActivity.length === 0 ? (
-                <div className="rounded-2xl p-6 text-center text-[#8a8a8a] bg-[#242424]">
+                <div className="rounded-2xl p-6 text-center text-[#bdbdbd] border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
                   <Trophy className="h-8 w-8 mx-auto mb-2 opacity-60" />
                   <p className="text-sm">لم تُكمل أي درس بعد. ابدأ الآن!</p>
                 </div>
@@ -555,21 +580,27 @@ const AppCourses = () => {
                   {recentActivity.map((a) => (
                     <div
                       key={a.id}
-                      className="bg-[#242424] rounded-2xl px-5 py-4 flex flex-col gap-3"
+                      className="relative overflow-hidden rounded-2xl px-5 py-4 flex flex-col gap-3 border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-[#e0e0e0]">{a.title}</span>
-                        <span
-                          className="font-semibold text-sm"
-                          style={{ color: a.color }}
-                        >
+                      <span
+                        aria-hidden
+                        className="absolute -top-10 -left-10 w-32 h-32 rounded-full blur-3xl opacity-25 pointer-events-none"
+                        style={{ backgroundColor: a.color }}
+                      />
+                      <div className="relative flex items-center justify-between">
+                        <span className="text-sm text-white/90">{a.title}</span>
+                        <span className="font-semibold text-sm" style={{ color: a.color }}>
                           {a.percent}%
                         </span>
                       </div>
-                      <div className="w-full h-1.5 bg-[#383838] rounded-full overflow-hidden">
+                      <div className="relative w-full h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${a.percent}%`, backgroundColor: a.color }}
+                          style={{
+                            width: `${a.percent}%`,
+                            backgroundColor: a.color,
+                            boxShadow: `0 0 10px ${a.color}`,
+                          }}
                         />
                       </div>
                     </div>
