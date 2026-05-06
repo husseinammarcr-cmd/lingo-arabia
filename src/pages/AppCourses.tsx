@@ -380,29 +380,41 @@ const AppCourses = () => {
                     whileHover={{ y: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleActionCard(card.action)}
-                    className="relative h-[160px] sm:h-[200px] rounded-3xl p-4 sm:p-5 flex flex-col text-right overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
-                    style={{
-                      background: card.style.gradient,
-                      color: card.style.textColor,
-                    }}
+                    className="group relative h-[160px] sm:h-[200px] rounded-3xl p-4 sm:p-5 flex flex-col text-right overflow-hidden border border-white/15 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl bg-white/5 hover:border-white/25 transition-colors"
+                    style={{ color: '#ffffff' }}
                   >
-                    {/* Decorative circle */}
+                    {/* Tinted glass layer (uses card's gradient at low opacity) */}
                     <span
-                      className="absolute rounded-full pointer-events-none"
+                      aria-hidden
+                      className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-50 transition-opacity"
+                      style={{ background: card.style.gradient }}
+                    />
+                    {/* Glass highlight */}
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 pointer-events-none"
                       style={{
-                        bottom: -30,
-                        left: -30,
-                        width: 130,
-                        height: 130,
+                        background:
+                          'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 40%, transparent 70%)',
+                      }}
+                    />
+                    {/* Soft colored blob */}
+                    <span
+                      className="absolute rounded-full pointer-events-none blur-2xl opacity-60"
+                      style={{
+                        bottom: -40,
+                        left: -40,
+                        width: 150,
+                        height: 150,
                         backgroundColor: card.style.circle,
                         zIndex: 1,
                       }}
                     />
-                    <h3 className="relative z-[5] text-[15px] sm:text-[18px] font-bold leading-[1.25] whitespace-pre-line">
+                    <h3 className="relative z-[5] text-[15px] sm:text-[18px] font-bold leading-[1.25] whitespace-pre-line drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
                       {card.titleAr}
                     </h3>
                     <Icon
-                      className="absolute z-[5] h-6 w-6 sm:h-7 sm:w-7"
+                      className="absolute z-[5] h-6 w-6 sm:h-7 sm:w-7 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
                       style={{ bottom: 20, left: 20 }}
                     />
                   </motion.button>
