@@ -491,29 +491,29 @@ const AppCourses = () => {
                       }
                       disabled={!unlocked}
                       className={cn(
-                        'group relative text-right rounded-2xl p-5 overflow-hidden border border-white/15 backdrop-blur-xl bg-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:border-white/25 transition-colors',
+                        'group relative text-right rounded-2xl p-5 overflow-hidden border border-white/25 shadow-[0_12px_36px_rgba(0,0,0,0.4)] backdrop-blur-2xl hover:border-white/40 transition-colors',
                         !unlocked && 'opacity-60 cursor-not-allowed',
                       )}
-                      style={{ color: '#ffffff' }}
+                      style={{ background: theme.gradient, color: theme.textColor }}
                     >
-                      {/* Tinted glass layer */}
-                      <span
-                        aria-hidden
-                        className="absolute inset-0 pointer-events-none opacity-35 group-hover:opacity-45 transition-opacity"
-                        style={{ background: theme.gradient }}
-                      />
-                      {/* Glass highlight */}
+                      {/* Glass sheen overlay */}
                       <span
                         aria-hidden
                         className="absolute inset-0 pointer-events-none"
                         style={{
                           background:
-                            'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 45%, transparent 75%)',
+                            'linear-gradient(135deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.06) 40%, transparent 70%)',
                         }}
                       />
-                      {/* Decorative blurred blob */}
+                      {/* Inner highlight ring */}
                       <span
-                        className="absolute rounded-full pointer-events-none blur-2xl opacity-60"
+                        aria-hidden
+                        className="absolute inset-0 rounded-2xl pointer-events-none"
+                        style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(0,0,0,0.15)' }}
+                      />
+                      {/* Decorative glow blob */}
+                      <span
+                        className="absolute rounded-full pointer-events-none blur-2xl opacity-70"
                         style={{
                           bottom: -50,
                           left: -50,
