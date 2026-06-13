@@ -269,7 +269,29 @@ const BottomSection: React.FC<{ onStart: () => void }> = ({ onStart }) => (
 
 export default function Index() {
   const navigate = useNavigate();
-  const goStart = () => navigate('/auth?mode=signup');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const goStart = () => {
+    if (isLoggedIn) {
+      navigate('/app/courses');
+    } else {
+      navigate('/auth?mode=signup');
+    }
+  };
 
   return (
     <div className="lingo-arab-wrapper" dir="rtl" data-testid="lingo-arab-landing">
