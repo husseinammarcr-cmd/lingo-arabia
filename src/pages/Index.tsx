@@ -1,396 +1,289 @@
-import React, { forwardRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, Award, CheckCircle2 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import PageBackground from '@/components/PageBackground';
-import Header from '@/components/Header';
-import { motion } from 'framer-motion';
-import { LazyThreeBackground } from '@/components/animations/LazyThreeBackground';
-import { LazyLottieAnimation } from '@/components/animations/LazyLottieAnimation';
-import PrizeTicker from '@/components/PrizeTicker';
-import aiTutorBanner from '@/assets/ai-tutor-banner.jpeg';
-
+import { useNavigate } from 'react-router-dom';
+import Lottie from 'lottie-react';
+import bgAnimation from '@/assets/lottie-bg.json';
+import '@/styles/LingoArab.css';
 
 const SITE_URL = 'https://lingoarab.com';
 
-// Import feature illustrations
-import featureLessons from '@/assets/feature-lessons.png';
-import featureXp from '@/assets/feature-xp.png';
-import orangeSkating from '@/assets/orange-skating.json';
-import streakAnimation from '@/assets/streak-animation.json';
-import trophyAnimation from '@/assets/trophy-animation.json';
-import { LottieAnimation } from '@/components/animations/LottieAnimation';
-
-interface FeatureCardProps {
-  image?: string;
-  lottieData?: object;
-  titleAr: string;
-  titleEn: string;
-  delay: number;
-}
-
-const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
-  ({ image, lottieData, titleAr, titleEn, delay }, ref) => (
-    <motion.div 
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: delay * 0.001, ease: "easeOut" }}
-      whileHover={{ y: -4 }}
-      className="group bg-card/50 backdrop-blur-[2px] border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
-    >
-      {/* Card content */}
-      <div className="p-6 pb-0">
-        <h3 className="text-xl font-bold text-foreground mb-1">{titleAr}</h3>
-        <p className="text-sm text-muted-foreground ltr-text">{titleEn}</p>
-      </div>
-      
-      {/* Illustration container */}
-      <div className="h-48 md:h-56 flex items-end justify-center overflow-hidden">
-        {lottieData ? (
-          <LazyLottieAnimation 
-            animationData={lottieData}
-            loop={true}
-            autoplay={true}
-            className="w-36 h-36 md:w-44 md:h-44 mb-2"
-            rootMargin="100px"
-          />
-        ) : (
-          <img 
-            src={image} 
-            alt={`${titleEn} - ${titleAr} - ميزة تعليمية في LingoArab`}
-            loading="lazy"
-            width={176}
-            height={176}
-            className="w-full h-full object-contain object-bottom transform group-hover:scale-105 transition-transform duration-300"
-          />
-        )}
-      </div>
-    </motion.div>
-  )
+const LottieBackground = () => (
+  <div className="lottie-bg" data-testid="lottie-bg" aria-hidden="true">
+    <Lottie
+      animationData={bgAnimation}
+      loop
+      autoplay
+      rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
+    />
+  </div>
 );
 
-FeatureCard.displayName = 'FeatureCard';
+const Header: React.FC<{ onStart: () => void }> = ({ onStart }) => (
+  <header data-testid="site-header">
+    <a href="#home" className="logo" data-testid="site-logo" aria-label="Lingo Arab">
+      <img src="/assets/lingoarab-logo.png" alt="Lingo Arab" />
+    </a>
+    <ul className="nav-links" data-testid="nav-links">
+      <li><a href="#home" data-testid="nav-home">الرئيسية</a></li>
+      <li><a href="#lessons" data-testid="nav-lessons">الدروس</a></li>
+      <li><a href="#about" data-testid="nav-about">من نحن</a></li>
+      <li><a href="#news" data-testid="nav-news">ما الجديد؟</a></li>
+    </ul>
+    <button onClick={onStart} className="btn-primary" data-testid="header-cta-btn">ابدأ الآن</button>
+  </header>
+);
 
-const Index = () => {
+const HeroVisual = () => (
+  <div className="hero-visual" data-testid="hero-visual">
+    <div className="hero-bg-text">LEARN</div>
+    <div className="hero-ground-glow"></div>
+
+    <svg className="curve-svg" viewBox="0 0 500 600" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#CCFF00" stopOpacity="0.1"/>
+          <stop offset="50%" stopColor="#CCFF00" stopOpacity="1"/>
+          <stop offset="100%" stopColor="#CCFF00" stopOpacity="0.2"/>
+        </linearGradient>
+        <linearGradient id="lg2" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#CCFF00" stopOpacity="0.2"/>
+          <stop offset="50%" stopColor="#CCFF00" stopOpacity="0.9"/>
+          <stop offset="100%" stopColor="#CCFF00" stopOpacity="0.1"/>
+        </linearGradient>
+      </defs>
+      <path
+        d="M 60 80 C 10 180, 60 280, 180 240 S 420 260, 460 140 S 380 20, 260 60"
+        fill="none" stroke="url(#lg1)" strokeWidth="1.6" strokeLinecap="round"
+      />
+      <path
+        d="M 40 520 C 140 580, 260 520, 280 420 S 420 340, 460 440 S 380 560, 260 540"
+        fill="none" stroke="url(#lg2)" strokeWidth="1.6" strokeLinecap="round"
+      />
+      <path
+        d="M 80 360 C 40 420, 140 500, 240 460 S 340 340, 260 300 S 120 300, 80 360 Z"
+        fill="none" stroke="#CCFF00" strokeOpacity="0.35" strokeWidth="1.2"
+      />
+    </svg>
+
+    <div className="glow-dot" style={{ top: '10%', left: '52%' }}></div>
+    <div className="glow-dot" style={{ bottom: '6%', left: '8%' }}></div>
+    <div className="glow-dot" style={{ top: '38%', right: '2%' }}></div>
+
+    <div className="phones-stack">
+      <div className="phone phone-1" data-testid="phone-1">
+        <div className="phone-screen-1">
+          <div className="coin c1">En</div>
+          <div className="coin c2">B1</div>
+          <div className="coin c3">A+</div>
+          <h4>Join to <em>learning</em> the future.</h4>
+          <div className="screen-sub">Master English with interactive lessons curated for every level.</div>
+          <div className="mini-btn">Sign in</div>
+        </div>
+      </div>
+
+      <div className="phone phone-2" data-testid="phone-2">
+        <div className="phone-screen-2">
+          <div className="top-row">
+            <div className="back">‹</div>
+            <div className="lesson-title"><span className="dot"></span> Lesson 12</div>
+            <span>•••</span>
+          </div>
+          <div style={{ color: '#888', fontSize: '9px', marginTop: '4px' }}>Present Perfect</div>
+          <div className="big-num">9.87 / 10 XP</div>
+          <div className="addr">unit_b7f2•verb•tense•practice•speaking</div>
+
+          <div className="chart-mini">
+            <svg viewBox="0 0 180 60" fill="none">
+              <path d="M0,45 Q20,35 40,38 T80,25 T120,30 T160,15 L180,12"
+                stroke="#CCFF00" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+              <path d="M0,45 Q20,35 40,38 T80,25 T120,30 T160,15 L180,12 L180,60 L0,60 Z"
+                fill="#CCFF00" fillOpacity="0.08"/>
+            </svg>
+          </div>
+
+          <div className="action-row">
+            <div className="a-btn">Start</div>
+            <div className="a-btn ghost">Review</div>
+          </div>
+
+          <div className="meta-list">
+            <div className="row"><span>Accuracy</span><strong>94%</strong></div>
+            <div className="row"><span>Words learned</span><strong>1,324</strong></div>
+            <div className="row"><span>Streak</span><strong>27 days</strong></div>
+          </div>
+
+          <div className="bottom-cta">Continue →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const BRAND_LOGOS = [
+  <svg viewBox="0 0 40 40" key="cam"><path d="M20 4 L34 10 V22 C34 30 27 35 20 38 C13 35 6 30 6 22 V10 Z" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M14 18 H26 M14 24 H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>,
+  <svg viewBox="0 0 50 40" key="ox"><path d="M4 10 C12 6 20 6 25 10 C30 6 38 6 46 10 V32 C38 28 30 28 25 32 C20 28 12 28 4 32 Z" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M25 10 V32" stroke="currentColor" strokeWidth="2"/></svg>,
+  <svg viewBox="0 0 70 24" key="bbc"><rect x="2" y="2" width="20" height="20" fill="currentColor"/><rect x="25" y="2" width="20" height="20" fill="currentColor"/><rect x="48" y="2" width="20" height="20" fill="currentColor"/><text x="12" y="18" fontSize="14" fontWeight="900" fill="#0a0a0a" textAnchor="middle">B</text><text x="35" y="18" fontSize="14" fontWeight="900" fill="#0a0a0a" textAnchor="middle">B</text><text x="58" y="18" fontSize="14" fontWeight="900" fill="#0a0a0a" textAnchor="middle">C</text></svg>,
+  <svg viewBox="0 0 60 30" key="ted"><rect x="2" y="6" width="56" height="18" rx="2" fill="currentColor"/><text x="30" y="20" fontSize="14" fontWeight="900" fill="#0a0a0a" textAnchor="middle" letterSpacing="2">TED</text></svg>,
+  <svg viewBox="0 0 40 40" key="cou"><circle cx="20" cy="20" r="14" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="60 30" transform="rotate(40 20 20)"/><polygon points="32,12 36,16 30,18" fill="currentColor"/></svg>,
+  <svg viewBox="0 0 40 40" key="bc"><circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M5 20 H35 M20 5 V35 M9 11 Q20 18 31 11 M9 29 Q20 22 31 29" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg>,
+  <svg viewBox="0 0 40 40" key="ielts"><rect x="4" y="4" width="32" height="32" rx="4" fill="none" stroke="currentColor" strokeWidth="2"/><polyline points="12,21 18,27 28,15" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  <svg viewBox="0 0 40 40" key="toefl"><polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="currentColor" strokeWidth="2"/><polygon points="20,12 22,18 28,18 23,22 25,28 20,24 15,28 17,22 12,18 18,18" fill="currentColor"/></svg>,
+  <svg viewBox="0 0 50 30" key="edx"><rect x="2" y="6" width="20" height="6" fill="currentColor"/><rect x="10" y="14" width="20" height="6" fill="currentColor"/><rect x="18" y="22" width="20" height="6" fill="currentColor"/></svg>,
+  <svg viewBox="0 0 40 40" key="duo"><ellipse cx="20" cy="22" rx="14" ry="15" fill="currentColor"/><circle cx="14" cy="18" r="4" fill="#0a0a0a"/><circle cx="26" cy="18" r="4" fill="#0a0a0a"/><circle cx="14" cy="18" r="1.6" fill="currentColor"/><circle cx="26" cy="18" r="1.6" fill="currentColor"/><polygon points="20,22 17,26 23,26" fill="#0a0a0a"/></svg>,
+];
+
+const BrandsStrip = () => (
+  <div className="brands-strip" data-testid="brands-strip" aria-label="brands">
+    <div className="brands-track">
+      {[...BRAND_LOGOS, ...BRAND_LOGOS].map((logo, i) => (
+        <div className="brand-logo" key={i} data-testid={`brand-${i}`}>{logo}</div>
+      ))}
+    </div>
+  </div>
+);
+
+const HeroSection: React.FC = () => (
+  <section className="hero" data-testid="hero-section">
+    <div className="hero-content">
+      <span className="hero-subtitle">! تعلم بثقة</span>
+      <h1 className="hero-title" data-testid="hero-title">
+        <span className="highlight">أفضل منصة لتعلم الإنجليزية</span>
+        <span className="sub-highlight">لمستقبلك.</span>
+      </h1>
+
+      <div className="stats-box" data-testid="hero-stats">
+        <div className="avatars">
+          <div className="avatar" style={{ backgroundImage: 'url(https://i.pravatar.cc/80?img=12)' }}></div>
+          <div className="avatar" style={{ backgroundImage: 'url(https://i.pravatar.cc/80?img=32)' }}></div>
+          <div className="avatar" style={{ backgroundImage: 'url(https://i.pravatar.cc/80?img=47)' }}></div>
+          <div className="avatar" style={{ backgroundImage: 'url(https://i.pravatar.cc/80?img=56)' }}></div>
+          <div className="avatar" style={{ backgroundImage: 'url(https://i.pravatar.cc/80?img=68)' }}></div>
+        </div>
+        <div className="stats-text">
+          <strong>50K +</strong>
+          <span>متعلم نشط</span>
+        </div>
+      </div>
+
+      <div className="hero-desc">
+        <div className="circle-icon">↗</div>
+        <p>منصة لينجو عرب توفر لك بيئة تعليمية متكاملة لتعلم اللغة الإنجليزية بأساليب حديثة ومتطورة لتطوير مهاراتك اليوم.</p>
+      </div>
+
+      <BrandsStrip />
+    </div>
+
+    <HeroVisual />
+  </section>
+);
+
+const FeaturesSection = () => (
+  <section className="cards-section" data-testid="features-section">
+    <div className="section-header">
+      <h2 className="section-title">
+        شريكك <span className="highlight">الموثوق</span><br />
+        <span className="gray-text">في تعلم اللغات.</span>
+      </h2>
+      <p className="section-desc">
+        لينجو عرب تجمع بين التكنولوجيا المتقدمة والمناهج المعتمدة لتوفير تجربة تعليمية فريدة تناسب جميع المستويات والأهداف.
+      </p>
+    </div>
+
+    <div className="cards-grid">
+      <div className="card" data-testid="feature-card-1">
+        <span className="card-number">01.</span>
+        <h3>دروس تفاعلية<br/>لكل المستويات.</h3>
+        <p>محتوى تعليمي متجدد مصمم بعناية ليناسب جميع المستويات والأعمار بطريقة تضمن لك الاستيعاب الكامل.</p>
+      </div>
+
+      <div className="card active" data-testid="feature-card-2">
+        <span className="card-number">02.</span>
+        <h3>تعلم بطريقة<br />ممتعة وفعّالة.</h3>
+        <p>نظام مكافآت وتحديات يومية تجعل من رحلة تعلمك تجربة ممتعة وتحفزك على الاستمرار وتطوير لغتك.</p>
+        <a href="#learn-more" className="learn-more" data-testid="feature-learn-more">اعرف المزيد &larr;</a>
+      </div>
+
+      <div className="card" data-testid="feature-card-3">
+        <span className="card-number">03.</span>
+        <h3>تتبع تقدمك<br/>لحظة بلحظة.</h3>
+        <p>لوحة تحكم ذكية تتيح لك متابعة تطورك يومياً وفي الوقت الفعلي مع تقارير أداء مفصلة.</p>
+      </div>
+    </div>
+  </section>
+);
+
+const BottomSection: React.FC<{ onStart: () => void }> = ({ onStart }) => (
+  <section className="bottom-section" data-testid="bottom-section">
+    <div className="graph-area">
+      <svg className="svg-graph" viewBox="0 0 500 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="area-g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#CCFF00" stopOpacity="0.25"/>
+            <stop offset="100%" stopColor="#CCFF00" stopOpacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,200 Q50,200 100,140 T200,170 T300,70 T400,110 T500,40 L500,260 L0,260 Z"
+              fill="url(#area-g)" />
+        <path d="M0,200 Q50,200 100,140 T200,170 T300,70 T400,110 T500,40"
+              stroke="#CCFF00" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+      </svg>
+
+      <div className="graph-coin" style={{ top: '55%', left: '15%' }}>A</div>
+      <div className="graph-coin" style={{ top: '25%', left: '40%' }}>B</div>
+      <div className="graph-coin" style={{ top: '45%', left: '60%' }}>C</div>
+
+      <div className="graph-box top">
+        <span>+ 1,250 درس</span>
+        <p>منهج تعليمي شامل يغطي المحادثة، القواعد، والاستماع.</p>
+      </div>
+
+      <div className="graph-box bottom">
+        <span>95% نسبة نجاح</span>
+        <p>تطور ملحوظ في مستوى الطلاب خلال الأشهر الأولى.</p>
+      </div>
+
+      <div className="graph-box rate">
+        <span>Average Rate</span>
+        <div style={{ fontSize: '18px', color: '#fff', fontWeight: 800 }}>4,528 كلمة</div>
+        <div className="rate-change">↗ +45.66%</div>
+      </div>
+    </div>
+
+    <div className="bottom-text">
+      <h2 className="section-title">
+        منصة <span className="highlight">موثوقة</span><br />
+        <span className="gray-text">في أي وقت وأي مكان.</span>
+      </h2>
+      <div className="stars">★ ★ ★ ★ ★</div>
+      <p>تعتبر لينجو عرب المنصة الرائدة في العالم العربي، حيث نعتمد على أحدث أساليب التعليم الذاتي و<strong>الذكاء الاصطناعي</strong> لتخصيص خطة دراسية تناسب مستواك وسرعة تعلمك.</p>
+      <p>سواء كنت <strong>مبتدئاً</strong> أو تبحث عن اتقان الأعمال، نوفر لك الأدوات اللازمة لتحقيق هدفك بمرونة عالية.</p>
+
+      <div className="action-buttons">
+        <button onClick={onStart} className="btn-primary" style={{ padding: '14px 32px' }} data-testid="bottom-learn-more-btn">اعرف المزيد &larr;</button>
+        <a href="/contact" className="btn-text" data-testid="bottom-ask-link">اسأل سؤال؟</a>
+      </div>
+    </div>
+  </section>
+);
+
+export default function Index() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-
-  const features = [
-    { 
-      image: featureLessons, 
-      titleAr: 'دروس تفاعلية', 
-      titleEn: 'Interactive Lessons' 
-    },
-    { 
-      image: featureXp, 
-      titleAr: 'اكسب نقاط XP', 
-      titleEn: 'Earn XP Points' 
-    },
-    { 
-      lottieData: streakAnimation, 
-      titleAr: 'سلسلة يومية', 
-      titleEn: 'Daily Streaks' 
-    },
-    { 
-      lottieData: trophyAnimation, 
-      titleAr: 'شهادة مجانية', 
-      titleEn: 'Free Certificate' 
-    },
-  ];
-
-  // JSON-LD Schemas
-  const organizationSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Lingo Arab",
-    "url": SITE_URL,
-    "logo": `${SITE_URL}/logo.png`,
-    "description": "منصة لتعلم اللغة الإنجليزية للناطقين بالعربية"
-  }), []);
-
-  const websiteSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Lingo Arab",
-    "alternateName": "LingoArab",
-    "url": SITE_URL,
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": `${SITE_URL}/blog?search={search_term_string}`
-      },
-      "query-input": "required name=search_term_string"
-    }
-  }), []);
+  const goStart = () => navigate('/auth?mode=signup');
 
   return (
-    <>
-      
-      <PageBackground>
+    <div className="lingo-arab-wrapper" dir="rtl" data-testid="lingo-arab-landing">
       <Helmet>
-        <title>Lingo Arab – تعلم الإنجليزية مجانا</title>
-        <meta name="description" content="تعلم اللغة الإنجليزية بطريقة ممتعة وفعّالة مع LingoArab. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً. مصممة خصيصاً للناطقين بالعربية." />
-        <link rel="canonical" href={SITE_URL} />
-        
-        {/* OpenGraph */}
-        <meta property="og:title" content="Lingo Arab – تعلم الإنجليزية مجانا" />
-        <meta property="og:description" content="منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً." />
-        <meta property="og:url" content={SITE_URL} />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
-        <meta property="og:site_name" content="Lingo Arab" />
-        <meta property="og:locale" content="ar_SA" />
-        
-        {/* Twitter Cards */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Lingo Arab – تعلم الإنجليزية مجانا" />
-        <meta name="twitter:description" content="منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً." />
-        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
-        
-        {/* JSON-LD Schemas */}
-        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+        <title>لينجو عرب — أفضل منصة لتعلم الإنجليزية للناطقين بالعربية</title>
+        <meta name="description" content="منصة لينجو عرب لتعلم اللغة الإنجليزية بأساليب تفاعلية حديثة، دروس لكل المستويات وذكاء اصطناعي لتخصيص خطة دراستك." />
+        <link rel="canonical" href={`${SITE_URL}/`} />
       </Helmet>
-      {/* 3D Particles Background - Lazy loaded for better LCP */}
-      <LazyThreeBackground variant="particles" intensity="medium" loadDelay={2000} />
-      
-      <div dir="rtl" className="relative z-10">
-        {/* Header */}
-        <Header showAuthButton />
-        <PrizeTicker />
-        
-        {/* AI Tutor Banner */}
-        <div className="container mx-auto px-4 mt-4">
-          <a
-            href="https://lingoarab.com/ai-tutor"
-            className="block w-full rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
-          >
-            <img 
-              src={aiTutorBanner} 
-              alt="تعلم الإنجليزية مع معلمك الذكي - ابدأ الآن" 
-              className="w-full h-auto object-cover"
-            />
-          </a>
-        </div>
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 py-12 md:py-20 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight animate-slide-up">
-              تعلّم الإنجليزية
-              <span className="block text-primary mt-2">بطريقة ممتعة وفعّالة</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '100ms' }}>
-              منصة تعليمية مصممة خصيصاً للناطقين بالعربية. دروس تفاعلية، تمارين متنوعة، وتتبع تقدمك يومياً.
-            </p>
-            
-            {/* Lottie Orange Skating Animation */}
-            <div className="flex justify-center mb-4 animate-slide-up" style={{ animationDelay: '150ms' }}>
-              <LottieAnimation 
-                animationData={orangeSkating}
-                loop={true}
-                autoplay={true}
-                className="w-48 h-28 md:w-64 md:h-36"
-              />
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '200ms' }}>
-              <Button 
-                variant="hero" 
-                size="xl" 
-                onClick={() => navigate(user ? '/app/courses' : '/auth')}
-                className="text-lg shadow-lg hover:shadow-xl"
-              >
-                {user ? 'تابع التعلم' : 'ابدأ مجاناً'}
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="xl"
-                onClick={() => navigate(user ? '/placement-test' : '/auth?returnUrl=/placement-test')}
-                className="text-lg border-2"
-              >
-                اختبار تحديد المستوى
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Feature Cards Section */}
-        <section className="container mx-auto px-4 py-12 md:py-16">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-              لماذا LingoArab؟
-            </h2>
-            <p className="text-muted-foreground">
-              اكتشف مميزات التعلم معنا
-            </p>
-          </div>
-
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                image={feature.image}
-                lottieData={feature.lottieData}
-                titleAr={feature.titleAr}
-                titleEn={feature.titleEn}
-                delay={index * 100}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Certificate Banner */}
-        <section className="container mx-auto px-4 py-8 md:py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-500 p-6 md:p-8 shadow-lg"
-          >
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-1/2 translate-y-1/2" />
-            
-            <div className="relative flex flex-col md:flex-row items-center gap-6">
-              {/* Icon */}
-              <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <Award className="w-10 h-10 md:w-12 md:h-12 text-white" />
-              </div>
-              
-              {/* Content */}
-              <div className="flex-1 text-center md:text-right">
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-                  احصل على شهادة مجانية! 🎓
-                </h3>
-                <p className="text-white/90 mb-4 max-w-xl">
-                  عند إكمالك لمستوى C2، ستحصل على شهادة إتقان اللغة الإنجليزية معتمدة برمز تحقق فريد
-                </p>
-                <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/80">
-                  <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" />
-                    شهادة رسمية
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" />
-                    رمز تحقق فريد
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" />
-                    مجانية بالكامل
-                  </span>
-                </div>
-              </div>
-              
-              {/* CTA Button */}
-              <div className="flex-shrink-0">
-                <Button 
-                  variant="secondary"
-                  size="lg"
-                  onClick={() => navigate(user ? '/app/courses' : '/auth')}
-                  className="bg-white text-amber-600 hover:bg-white/90 shadow-md"
-                >
-                  {user ? 'تابع التعلم' : 'ابدأ الآن'}
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="container mx-auto px-4 py-12 md:py-16">
-          <div className="relative bg-gradient-to-br from-primary to-[hsl(180_70%_45%)] rounded-3xl overflow-hidden shadow-elevated">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-            
-            <div className="relative p-8 md:p-12 text-center">
-              <h3 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-4">
-                انضم إلى آلاف المتعلمين
-              </h3>
-              <p className="text-lg text-primary-foreground/90 mb-8 max-w-xl mx-auto">
-                ابدأ رحلتك في تعلم الإنجليزية اليوم واكتشف طريقة ممتعة وفعّالة للتعلم
-              </p>
-              <Button 
-                variant="accent" 
-                size="xl"
-                onClick={() => navigate(user ? '/app/courses' : '/auth')}
-                className="shadow-lg hover:shadow-xl"
-              >
-                {user ? 'تابع التعلم' : 'سجّل الآن مجاناً'}
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="border-t border-border/50 py-8 bg-background/50 backdrop-blur-sm">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <p className="text-muted-foreground">
-                  © {new Date().getFullYear()} LingoArab. جميع الحقوق محفوظة.
-                </p>
-                <a 
-                  href="https://www.tiktok.com/@lingo.arab" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                  aria-label="تابعنا على تيك توك"
-                >
-                  <svg 
-                    viewBox="0 0 24 24" 
-                    fill="currentColor" 
-                    className="w-5 h-5"
-                  >
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                  </svg>
-                </a>
-              </div>
-              <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
-                <a 
-                  href="/free-lessons" 
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                >
-                  دروس مجانية
-                </a>
-                <span className="text-border">|</span>
-                <a 
-                  href="/privacy-policy" 
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                >
-                  سياسة الخصوصية
-                </a>
-                <span className="text-border">|</span>
-                <a 
-                  href="/terms" 
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                >
-                  شروط الاستخدام
-                </a>
-                <span className="text-border">|</span>
-                <a 
-                  href="/cookie-policy" 
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                >
-                  سياسة ملفات الارتباط
-                </a>
-              </div>
-            </div>
-          </div>
-        </footer>
+      <LottieBackground />
+      <div className="container">
+        <Header onStart={goStart} />
+        <HeroSection />
+        <FeaturesSection />
+        <BottomSection onStart={goStart} />
       </div>
-    </PageBackground>
-    </>
+    </div>
   );
-};
-
-export default Index;
+}
