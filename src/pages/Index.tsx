@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import bgAnimation from '@/assets/lottie-bg.json';
+import { supabase } from '@/integrations/supabase/client';
 import '@/styles/LingoArab.css';
 
 const SITE_URL = 'https://lingoarab.com';
