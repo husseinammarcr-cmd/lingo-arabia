@@ -1,0 +1,83 @@
+/* AI Buddy / AI Tutor orb screen */
+.ai-buddy-screen {
+  background: #000;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #fff;
+}
+
+.topo-lines path { stroke-linecap: round; }
+
+.orb-wrap {
+  width: min(78vw, 360px);
+  height: min(78vw, 360px);
+  position: relative;
+}
+
+.orb-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(140, 90, 220, 0.45) 0%,
+    rgba(60, 100, 220, 0.22) 35%,
+    transparent 65%
+  );
+  filter: blur(35px);
+  z-index: 0;
+  animation: orb-glow-pulse 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes orb-glow-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(214, 255, 75, 0.25);
+  pointer-events: none;
+}
+.pulse-ring.ring-1 { width: 110px; height: 110px; animation: ai-pulse-ring 2.4s ease-out infinite; }
+.pulse-ring.ring-2 { width: 140px; height: 140px; animation: ai-pulse-ring 2.4s ease-out infinite 0.4s; opacity: 0.7; }
+.pulse-ring.ring-3 { width: 175px; height: 175px; animation: ai-pulse-ring 2.4s ease-out infinite 0.8s; opacity: 0.4; }
+
+@keyframes ai-pulse-ring {
+  0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0; }
+}
+
+.circle-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.circle-btn:hover { background: rgba(255,255,255,0.12); }
+.circle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.mic-btn {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #D6FF4B;
+  color: #0a0d0a;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 30px rgba(214, 255, 75, 0.4);
+}
+.mic-btn-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+
+@media (max-width: 380px) {
+  .orb-wrap { width: 72vw; height: 72vw; }
+}
