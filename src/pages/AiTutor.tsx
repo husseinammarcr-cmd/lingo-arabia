@@ -26,7 +26,7 @@ const SCENARIOS = [
 const STATUS_MAP: Record<CallStatus, { label: string; color: string; emoji: string }> = {
   idle: { label: '', color: '', emoji: '' },
   connecting: { label: 'جاري الاتصال...', color: 'bg-white/10 text-white/80', emoji: '⏳' },
-  listening: { label: 'يسمعك', color: 'bg-green-500/15 text-green-300', emoji: '👂' },
+  listening: { label: 'يسمعك', color: 'bg-cyan-500/15 text-cyan-300', emoji: '👂' },
   thinking: { label: 'يفكر', color: 'bg-yellow-500/15 text-yellow-300', emoji: '🤔' },
   speaking: { label: 'يتكلم', color: 'bg-blue-500/15 text-blue-300', emoji: '🗣️' },
 };
