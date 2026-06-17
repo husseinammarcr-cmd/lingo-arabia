@@ -14,7 +14,10 @@ type ChatMsg =
 
 type CallStatus = 'idle' | 'connecting' | 'listening' | 'thinking' | 'speaking';
 
-const WS_URL = 'ws://161.97.159.133:3000/ws';
+const WS_URL =
+  typeof window !== 'undefined' && window.location.protocol === 'https:'
+    ? 'wss://161.97.159.133:3000/ws'
+    : 'ws://161.97.159.133:3000/ws';
 
 const SCENARIOS = [
   { id: 'restaurant', label: 'مطعم', emoji: '🍽️' },
