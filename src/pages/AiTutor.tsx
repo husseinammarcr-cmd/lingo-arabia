@@ -70,12 +70,14 @@ const AiTutor = () => {
   }, []);
 
   const cleanup = useCallback(() => {
+    if (endTimeoutRef.current) { clearTimeout(endTimeoutRef.current); endTimeoutRef.current = null; }
     try { mediaRecorderRef.current?.stop(); } catch {}
     streamRef.current?.getTracks().forEach(t => t.stop());
     mediaRecorderRef.current = null;
     streamRef.current = null;
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) wsRef.current.close();
     wsRef.current = null;
+    isEndingRef.current = false;
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
