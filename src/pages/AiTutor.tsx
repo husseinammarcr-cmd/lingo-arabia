@@ -125,6 +125,11 @@ const AiTutor = () => {
             setMessages(prev => [...prev, { role: 'assistant', text: msg.reply, correction: msg.correction, tip: msg.tip }]);
           } else if (msg.type === 'audio') {
             playAudio(msg.audio);
+            if (isEndingRef.current) {
+              cleanup();
+              setCallStatus('idle');
+              setPartialText('');
+            }
           }
         } catch (e) { console.error('ws parse', e); }
       };
