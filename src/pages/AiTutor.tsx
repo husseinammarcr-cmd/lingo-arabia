@@ -150,15 +150,26 @@ const AiTutor = () => {
   }, [inCall, scenario, playAudio, cleanup]);
 
   const endCall = useCallback(() => {
+    if (!inCall || isEndingRef.current) return;
+    isEndingRef.current = true;
+
     try { mediaRecorderRef.current?.stop(); } catch {}
+    streamRef.current?.getTracks().forEach(t => t.stop());
+
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'flush' }));
     }
-    streamRef.current?.getTracks().forEach(t => t.stop());
-    setTimeout(() => cleanup(), 300);
-    setCallStatus('idle');
-    setPartialText('');
-  }, [cleanup]);
+
+    setCallStatus('thinking');
+
+    endTimeoutRef.current = setTimeout(() => {
+      if (isEndingRef.current) {
+        cleanup();
+        setCallStatus('idle');
+        setPartialText('');
+      }
+    }, 15000);
+  }, [inCall, cleanup]);
 
   const onScenarioChange = (id: string) => {
     setScenario(id);
