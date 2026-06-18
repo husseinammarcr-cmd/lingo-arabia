@@ -14,8 +14,6 @@ type ChatMsg =
 
 type CallStatus = 'idle' | 'connecting' | 'listening' | 'thinking' | 'speaking';
 
-const WS_URL = 'wss://api.lingoarab.com/ws';
-
 const SCENARIOS = [
   { id: 'restaurant', label: 'مطعم', emoji: '🍽️' },
   { id: 'airport', label: 'مطار', emoji: '✈️' },
@@ -41,11 +39,8 @@ const AiTutor = () => {
   const [partialText, setPartialText] = useState('');
 
   const wsRef = useRef<WebSocket | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const playerCtxRef = useRef<AudioContext | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const processorRef = useRef<ScriptProcessorNode | null>(null);
-  const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,32 +55,23 @@ const AiTutor = () => {
 
   const playAudio = useCallback(async (b64: string) => {
     try {
-      const bin = atob(b64);
-      const bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      if (!playerCtxRef.current) {
-        playerCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      const ctx = playerCtxRef.current;
-      const buf = await ctx.decodeAudioData(bytes.buffer.slice(0));
+      const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+      const ctx = new AudioContext();
+      const buffer = await ctx.decodeAudioData(bytes.buffer);
       const src = ctx.createBufferSource();
-      src.buffer = buf;
+      src.buffer = buffer;
       src.connect(ctx.destination);
-      src.start(0);
+      src.start();
     } catch (e) {
       console.error('audio decode error', e);
     }
   }, []);
 
   const cleanup = useCallback(() => {
-    processorRef.current?.disconnect();
-    sourceRef.current?.disconnect();
+    try { mediaRecorderRef.current?.stop(); } catch {}
     streamRef.current?.getTracks().forEach(t => t.stop());
-    audioCtxRef.current?.close().catch(() => {});
-    processorRef.current = null;
-    sourceRef.current = null;
+    mediaRecorderRef.current = null;
     streamRef.current = null;
-    audioCtxRef.current = null;
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) wsRef.current.close();
     wsRef.current = null;
   }, []);
@@ -97,34 +83,26 @@ const AiTutor = () => {
     setCallStatus('connecting');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 16000 } as MediaTrackConstraints,
+        audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } as MediaTrackConstraints,
       });
       streamRef.current = stream;
 
-      const ws = new WebSocket(WS_URL);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0 && wsRef.current?.readyState === WebSocket.OPEN) {
+          e.data.arrayBuffer().then(buf => wsRef.current?.send(buf));
+        }
+      };
+
+      const ws = new WebSocket('wss://api.lingoarab.com/ws');
       ws.binaryType = 'arraybuffer';
       wsRef.current = ws;
 
       ws.onopen = () => {
+        mediaRecorder.start(1000);
         ws.send(JSON.stringify({ type: 'start_call', scenario }));
-        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-        audioCtxRef.current = ctx;
-        const source = ctx.createMediaStreamSource(stream);
-        sourceRef.current = source;
-        const processor = ctx.createScriptProcessor(4096, 1, 1);
-        processorRef.current = processor;
-        processor.onaudioprocess = (e) => {
-          if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
-          const input = e.inputBuffer.getChannelData(0);
-          const i16 = new Int16Array(input.length);
-          for (let i = 0; i < input.length; i++) {
-            const s = Math.max(-1, Math.min(1, input[i]));
-            i16[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
-          }
-          wsRef.current.send(i16.buffer);
-        };
-        source.connect(processor);
-        processor.connect(ctx.destination);
         setCallStatus('listening');
       };
 
@@ -132,8 +110,10 @@ const AiTutor = () => {
         if (typeof ev.data !== 'string') return;
         try {
           const msg = JSON.parse(ev.data);
-          if (msg.type === 'status') setCallStatus(msg.value);
-          else if (msg.type === 'partial_text') setPartialText(msg.text || '');
+          if (msg.type === 'status') {
+            const next = msg.value as CallStatus;
+            if (['listening', 'thinking', 'speaking'].includes(next)) setCallStatus(next);
+          } else if (msg.type === 'partial_text') setPartialText(msg.text || '');
           else if (msg.type === 'user_text') {
             setPartialText('');
             setMessages(prev => [...prev, { role: 'user', text: msg.text }]);
@@ -161,7 +141,12 @@ const AiTutor = () => {
   }, [inCall, scenario, playAudio, cleanup]);
 
   const endCall = useCallback(() => {
-    cleanup();
+    try { mediaRecorderRef.current?.stop(); } catch {}
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'flush' }));
+    }
+    streamRef.current?.getTracks().forEach(t => t.stop());
+    setTimeout(() => cleanup(), 300);
     setCallStatus('idle');
     setPartialText('');
   }, [cleanup]);
