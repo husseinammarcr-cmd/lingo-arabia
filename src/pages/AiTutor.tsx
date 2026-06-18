@@ -42,6 +42,8 @@ const AiTutor = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isEndingRef = useRef(false);
+  const endTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/auth');
@@ -68,12 +70,14 @@ const AiTutor = () => {
   }, []);
 
   const cleanup = useCallback(() => {
+    if (endTimeoutRef.current) { clearTimeout(endTimeoutRef.current); endTimeoutRef.current = null; }
     try { mediaRecorderRef.current?.stop(); } catch {}
     streamRef.current?.getTracks().forEach(t => t.stop());
     mediaRecorderRef.current = null;
     streamRef.current = null;
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) wsRef.current.close();
     wsRef.current = null;
+    isEndingRef.current = false;
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
@@ -121,6 +125,11 @@ const AiTutor = () => {
             setMessages(prev => [...prev, { role: 'assistant', text: msg.reply, correction: msg.correction, tip: msg.tip }]);
           } else if (msg.type === 'audio') {
             playAudio(msg.audio);
+            if (isEndingRef.current) {
+              cleanup();
+              setCallStatus('idle');
+              setPartialText('');
+            }
           }
         } catch (e) { console.error('ws parse', e); }
       };
@@ -141,15 +150,26 @@ const AiTutor = () => {
   }, [inCall, scenario, playAudio, cleanup]);
 
   const endCall = useCallback(() => {
+    if (!inCall || isEndingRef.current) return;
+    isEndingRef.current = true;
+
     try { mediaRecorderRef.current?.stop(); } catch {}
+    streamRef.current?.getTracks().forEach(t => t.stop());
+
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'flush' }));
     }
-    streamRef.current?.getTracks().forEach(t => t.stop());
-    setTimeout(() => cleanup(), 300);
-    setCallStatus('idle');
-    setPartialText('');
-  }, [cleanup]);
+
+    setCallStatus('thinking');
+
+    endTimeoutRef.current = setTimeout(() => {
+      if (isEndingRef.current) {
+        cleanup();
+        setCallStatus('idle');
+        setPartialText('');
+      }
+    }, 15000);
+  }, [inCall, cleanup]);
 
   const onScenarioChange = (id: string) => {
     setScenario(id);
