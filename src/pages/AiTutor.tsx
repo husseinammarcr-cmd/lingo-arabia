@@ -369,7 +369,12 @@ const AiTutor = () => {
       {/* Main area */}
       <main className="relative z-10 flex-1 flex flex-col items-center px-4 pt-4">
         {!inCall && messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center flex-1">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center justify-center flex-1"
+          >
             <div className="orb-wrap">
               <div className="orb-glow" />
               <Lottie animationData={orbAnimation} loop autoplay style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
