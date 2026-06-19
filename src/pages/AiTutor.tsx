@@ -304,7 +304,14 @@ const AiTutor = () => {
   const status = STATUS_MAP[callStatus];
 
   return (
-    <div className="ai-buddy-screen min-h-screen relative overflow-hidden flex flex-col" dir="rtl">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className="ai-buddy-screen min-h-screen relative overflow-hidden flex flex-col"
+      dir="rtl"
+    >
       <Helmet>
         <title>المكالمة الحية مع المعلم الذكي | Lingo Arab</title>
         <meta name="description" content="تدرّب على المحادثة بالإنجليزية في مكالمة حية مع معلم ذكاء اصطناعي." />
