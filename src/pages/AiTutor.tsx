@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Phone, PhoneOff, X, Trash2 } from 'lucide-react';
 import Lottie from 'lottie-react';
+import { motion } from 'framer-motion';
 import orbAnimation from '@/assets/orb.json';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
