@@ -364,6 +364,10 @@ const AiTutor = () => {
             <p className="mt-6 text-white/80 text-center max-w-sm">
               اضغط على الزر الأخضر لبدء <span className="text-[#D6FF4B]">مكالمة حية</span> وتدرّب على المحادثة بالإنجليزية
             </p>
+            <div className="mt-5 px-4 py-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-200/80 text-xs text-center max-w-sm space-y-1">
+              <p>🎙️ المحادثة الصوتية <b className="text-yellow-100">باللغة الإنجليزية فقط</b> لتقوية التحدث والاستماع، ولا تدعم العربية حالياً.</p>
+              <p>⏳ قد تواجه <b className="text-yellow-100">بعض التأخير</b> أحياناً بسبب الضغط على الخادم.</p>
+            </div>
           </div>
         ) : (
           <>
