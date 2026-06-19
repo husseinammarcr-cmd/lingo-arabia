@@ -44,6 +44,7 @@ import VerifyCertificate from "./pages/VerifyCertificate";
 import Certificate from "./pages/Certificate";
 import WeeklyPrize from "./pages/WeeklyPrize";
 import AiTutor from "./pages/AiTutor";
+import AiVoiceChat from "./pages/AiVoiceChat";
 
 
 
@@ -115,6 +116,9 @@ const App = () => (
                   <Route path="/certificate" element={<Certificate />} />
                   <Route path="/verify-certificate" element={<VerifyCertificate />} />
                   <Route path="/ai-tutor" element={<AiTutor />} />
+                  <Route path="/ai-voice-chat" element={<AiVoiceChat />} />
+                  <Route path="/voice-chat" element={<AiVoiceChat />} />
+                  <Route path="/english-voice-ai" element={<AiVoiceChat />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
