@@ -457,7 +457,7 @@ const AiTutor = () => {
           </button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
