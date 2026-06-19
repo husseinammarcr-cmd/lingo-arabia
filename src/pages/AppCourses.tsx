@@ -349,7 +349,12 @@ const AppCourses = () => {
           <div className="h-12" />
 
           {/* Content wrapper */}
-          <div className="relative z-10 mx-auto w-full max-w-[900px]">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 mx-auto w-full max-w-[900px]"
+          >
             {/* Greeting */}
             <div
               className="text-right text-lg sm:text-xl font-bold text-white mb-3"
