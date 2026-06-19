@@ -601,7 +601,7 @@ const AppCourses = () => {
                 تسجيل الخروج
               </button>
             </div>
-          </div>
+          </motion.div>
         </main>
       </div>
     </>
