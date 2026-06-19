@@ -343,9 +343,14 @@ const AiTutor = () => {
         <div className="relative z-10 mt-4 px-5">
           <p className="text-white/60 text-xs text-center mb-2">اختر سيناريو المحادثة</p>
           <div className="grid grid-cols-4 gap-2 max-w-md mx-auto">
-            {SCENARIOS.map(s => (
-              <button
+            {SCENARIOS.map((s, idx) => (
+              <motion.button
                 key={s.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.1 + idx * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => onScenarioChange(s.id)}
                 className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-colors ${
                   scenario === s.id
@@ -355,7 +360,7 @@ const AiTutor = () => {
               >
                 <span className="text-xl">{s.emoji}</span>
                 <span className="text-[11px]">{s.label}</span>
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
