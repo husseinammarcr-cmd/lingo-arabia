@@ -166,13 +166,22 @@
     <lastmod>2026-05-01</lastmod>
   </url>
 
-  <!-- AI Tutor -->
+  <!-- AI Tutor (app) -->
   <url>
     <loc>https://lingoarab.com/ai-tutor</loc>
     <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/ai-tutor" />
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-06-19</lastmod>
+  </url>
+
+  <!-- AI Voice Chat — public landing for the new feature -->
+  <url>
+    <loc>https://lingoarab.com/ai-voice-chat</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://lingoarab.com/ai-voice-chat" />
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <lastmod>2026-06-19</lastmod>
   </url>
 
   <!-- Weekly Prize -->
