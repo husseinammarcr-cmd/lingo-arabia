@@ -313,9 +313,16 @@ const AiTutor = () => {
       dir="rtl"
     >
       <Helmet>
-        <title>المكالمة الحية مع المعلم الذكي | Lingo Arab</title>
-        <meta name="description" content="تدرّب على المحادثة بالإنجليزية في مكالمة حية مع معلم ذكاء اصطناعي." />
+        <title>مكالمة صوتية بالإنجليزية مع AI - تدرّب الآن | Lingo Arab</title>
+        <meta name="description" content="ابدأ مكالمة صوتية حية بالإنجليزية مع معلم ذكاء اصطناعي. تصحيح فوري للنطق والقواعد، 4 سيناريوهات: مطعم، مطار، فندق، تسوق. مجاناً." />
+        <meta name="keywords" content="محادثة صوتية بالانجليزي, ai tutor عربي, تعلم الانجليزية بالصوت, ذكاء اصطناعي محادثة" />
         <link rel="canonical" href="https://lingoarab.com/ai-tutor" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://lingoarab.com/ai-tutor" />
+        <meta property="og:title" content="مكالمة صوتية بالإنجليزية مع AI | Lingo Arab" />
+        <meta property="og:description" content="تكلّم مع معلم ذكاء اصطناعي بصوتك — تصحيح فوري، 4 سيناريوهات، مجاناً 24/7." />
+        <meta property="og:locale" content="ar_AR" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <svg className="topo-lines absolute top-0 left-0 w-72 h-72 opacity-30 pointer-events-none" viewBox="0 0 300 300" fill="none">
