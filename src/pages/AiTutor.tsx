@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Phone, PhoneOff, X, Trash2 } from 'lucide-react';
 import Lottie from 'lottie-react';
+import { motion } from 'framer-motion';
 import orbAnimation from '@/assets/orb.json';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -303,7 +304,14 @@ const AiTutor = () => {
   const status = STATUS_MAP[callStatus];
 
   return (
-    <div className="ai-buddy-screen min-h-screen relative overflow-hidden flex flex-col" dir="rtl">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className="ai-buddy-screen min-h-screen relative overflow-hidden flex flex-col"
+      dir="rtl"
+    >
       <Helmet>
         <title>المكالمة الحية مع المعلم الذكي | Lingo Arab</title>
         <meta name="description" content="تدرّب على المحادثة بالإنجليزية في مكالمة حية مع معلم ذكاء اصطناعي." />
@@ -335,9 +343,14 @@ const AiTutor = () => {
         <div className="relative z-10 mt-4 px-5">
           <p className="text-white/60 text-xs text-center mb-2">اختر سيناريو المحادثة</p>
           <div className="grid grid-cols-4 gap-2 max-w-md mx-auto">
-            {SCENARIOS.map(s => (
-              <button
+            {SCENARIOS.map((s, idx) => (
+              <motion.button
                 key={s.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.1 + idx * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => onScenarioChange(s.id)}
                 className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-colors ${
                   scenario === s.id
@@ -347,7 +360,7 @@ const AiTutor = () => {
               >
                 <span className="text-xl">{s.emoji}</span>
                 <span className="text-[11px]">{s.label}</span>
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -356,7 +369,12 @@ const AiTutor = () => {
       {/* Main area */}
       <main className="relative z-10 flex-1 flex flex-col items-center px-4 pt-4">
         {!inCall && messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center flex-1">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center justify-center flex-1"
+          >
             <div className="orb-wrap">
               <div className="orb-glow" />
               <Lottie animationData={orbAnimation} loop autoplay style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
@@ -368,7 +386,7 @@ const AiTutor = () => {
               <p>🎙️ المحادثة الصوتية <b className="text-yellow-100">باللغة الإنجليزية فقط</b> لتقوية التحدث والاستماع، ولا تدعم العربية حالياً.</p>
               <p>⏳ قد تواجه <b className="text-yellow-100">بعض التأخير</b> أحياناً بسبب الضغط على الخادم.</p>
             </div>
-          </div>
+          </motion.div>
         ) : (
           <>
             {inCall && (
@@ -449,7 +467,7 @@ const AiTutor = () => {
           </button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
