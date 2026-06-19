@@ -338,7 +338,7 @@ const AiTutor = () => {
             {SCENARIOS.map(s => (
               <button
                 key={s.id}
-                onClick={() => setScenario(s.id)}
+                onClick={() => onScenarioChange(s.id)}
                 className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-colors ${
                   scenario === s.id
                     ? 'bg-[#D6FF4B]/10 border-[#D6FF4B] text-[#D6FF4B]'
