@@ -231,6 +231,7 @@ const AiTutor = () => {
       wsRef.current = ws;
 
       ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'scenario', scenario }));
         ws.send(JSON.stringify({ type: 'start_call', scenario }));
         aiSpeakingRef.current = false;
         startRecording(stream);
