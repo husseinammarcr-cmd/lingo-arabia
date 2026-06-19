@@ -39,11 +39,24 @@ const AiTutor = () => {
   const [partialText, setPartialText] = useState('');
 
   const wsRef = useRef<WebSocket | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isEndingRef = useRef(false);
-  const endTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // PCM recording refs
+  const recordAudioCtxRef = useRef<AudioContext | null>(null);
+  const recordProcessorRef = useRef<ScriptProcessorNode | null>(null);
+  const recordSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const pcmSamplesRef = useRef<Float32Array[]>([]);
+  const aiSpeakingRef = useRef(false);
+
+  // Silence detection
+  const silenceCtxRef = useRef<AudioContext | null>(null);
+  const silenceIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const RECORD_SAMPLE_RATE = 16000;
+  const SILENCE_THRESHOLD = 0.09;
+  const SILENCE_DELAY = 2500;
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/auth');
@@ -55,30 +68,152 @@ const AiTutor = () => {
 
   const inCall = callStatus !== 'idle';
 
-  const playAudio = useCallback(async (b64: string) => {
-    try {
-      const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-      const ctx = new AudioContext();
-      const buffer = await ctx.decodeAudioData(bytes.buffer);
-      const src = ctx.createBufferSource();
-      src.buffer = buffer;
-      src.connect(ctx.destination);
-      src.start();
-    } catch (e) {
-      console.error('audio decode error', e);
+  const encodeWav = (samplesArray: Float32Array[], sampleRate: number): ArrayBuffer => {
+    let totalLength = 0;
+    for (const s of samplesArray) totalLength += s.length;
+    const merged = new Float32Array(totalLength);
+    let offset = 0;
+    for (const s of samplesArray) { merged.set(s, offset); offset += s.length; }
+    const pcm16 = new Int16Array(merged.length);
+    for (let i = 0; i < merged.length; i++) {
+      const v = Math.max(-1, Math.min(1, merged[i]));
+      pcm16[i] = v < 0 ? v * 0x8000 : v * 0x7FFF;
+    }
+    const blockAlign = 2;
+    const byteRate = sampleRate * blockAlign;
+    const dataSize = pcm16.length * 2;
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+    const writeStr = (off: number, str: string) => {
+      for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i));
+    };
+    writeStr(0, 'RIFF');
+    view.setUint32(4, 36 + dataSize, true);
+    writeStr(8, 'WAVE');
+    writeStr(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, byteRate, true);
+    view.setUint16(32, blockAlign, true);
+    view.setUint16(34, 16, true);
+    writeStr(36, 'data');
+    view.setUint32(40, dataSize, true);
+    let o = 44;
+    for (let i = 0; i < pcm16.length; i++, o += 2) {
+      view.setInt16(o, pcm16[i], true);
+    }
+    return buffer;
+  };
+
+  const flushPcmToServer = useCallback(() => {
+    if (pcmSamplesRef.current.length === 0) return;
+    const wavBuffer = encodeWav(pcmSamplesRef.current, RECORD_SAMPLE_RATE);
+    pcmSamplesRef.current = [];
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(wavBuffer);
     }
   }, []);
 
+  const startRecording = useCallback((stream: MediaStream) => {
+    if (recordAudioCtxRef.current) return;
+    const AC: typeof AudioContext = (window.AudioContext || (window as any).webkitAudioContext);
+    const ctx = new AC({ sampleRate: RECORD_SAMPLE_RATE });
+    recordAudioCtxRef.current = ctx;
+    const source = ctx.createMediaStreamSource(stream);
+    recordSourceRef.current = source;
+    const processor = ctx.createScriptProcessor(4096, 1, 1);
+    recordProcessorRef.current = processor;
+    processor.onaudioprocess = (e) => {
+      if (aiSpeakingRef.current) return;
+      const input = e.inputBuffer.getChannelData(0);
+      pcmSamplesRef.current.push(new Float32Array(input));
+    };
+    source.connect(processor);
+    const silentGain = ctx.createGain();
+    silentGain.gain.value = 0;
+    processor.connect(silentGain);
+    silentGain.connect(ctx.destination);
+  }, []);
+
+  const stopRecordingNodes = useCallback(() => {
+    if (recordProcessorRef.current) { try { recordProcessorRef.current.disconnect(); } catch {} recordProcessorRef.current = null; }
+    if (recordSourceRef.current) { try { recordSourceRef.current.disconnect(); } catch {} recordSourceRef.current = null; }
+    if (recordAudioCtxRef.current) { try { recordAudioCtxRef.current.close(); } catch {} recordAudioCtxRef.current = null; }
+  }, []);
+
+  const startSilenceDetection = useCallback((stream: MediaStream) => {
+    const AC: typeof AudioContext = (window.AudioContext || (window as any).webkitAudioContext);
+    const audioCtx = new AC();
+    silenceCtxRef.current = audioCtx;
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 512;
+    const source = audioCtx.createMediaStreamSource(stream);
+    source.connect(analyser);
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    let isSpeaking = true;
+    silenceIntervalRef.current = setInterval(() => {
+      if (aiSpeakingRef.current) return;
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+      const avg = sum / dataArray.length / 255;
+      if (avg > SILENCE_THRESHOLD) {
+        if (silenceTimerRef.current) { clearTimeout(silenceTimerRef.current); silenceTimerRef.current = null; }
+        isSpeaking = true;
+      } else if (isSpeaking && !silenceTimerRef.current) {
+        silenceTimerRef.current = setTimeout(() => {
+          isSpeaking = false;
+          silenceTimerRef.current = null;
+          aiSpeakingRef.current = true;
+          flushPcmToServer();
+        }, SILENCE_DELAY);
+      }
+    }, 100);
+  }, [flushPcmToServer]);
+
+  const stopSilenceDetection = useCallback(() => {
+    if (silenceIntervalRef.current) { clearInterval(silenceIntervalRef.current); silenceIntervalRef.current = null; }
+    if (silenceTimerRef.current) { clearTimeout(silenceTimerRef.current); silenceTimerRef.current = null; }
+    if (silenceCtxRef.current) { try { silenceCtxRef.current.close(); } catch {} silenceCtxRef.current = null; }
+  }, []);
+
+  const playAudio = useCallback(async (b64: string) => {
+    return new Promise<void>((resolve) => {
+      try {
+        const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        const ctx = new AudioContext();
+        ctx.decodeAudioData(bytes.buffer).then((buffer) => {
+          const src = ctx.createBufferSource();
+          src.buffer = buffer;
+          src.connect(ctx.destination);
+          src.onended = () => {
+            aiSpeakingRef.current = false;
+            if (wsRef.current?.readyState === WebSocket.OPEN) {
+              wsRef.current.send(JSON.stringify({ type: 'audio_done' }));
+            }
+            resolve();
+          };
+          src.start();
+        }).catch(() => { aiSpeakingRef.current = false; resolve(); });
+      } catch (e) {
+        aiSpeakingRef.current = false;
+        resolve();
+      }
+    });
+  }, []);
+
   const cleanup = useCallback(() => {
-    if (endTimeoutRef.current) { clearTimeout(endTimeoutRef.current); endTimeoutRef.current = null; }
-    try { mediaRecorderRef.current?.stop(); } catch {}
+    stopSilenceDetection();
+    stopRecordingNodes();
+    pcmSamplesRef.current = [];
+    aiSpeakingRef.current = false;
     streamRef.current?.getTracks().forEach(t => t.stop());
-    mediaRecorderRef.current = null;
     streamRef.current = null;
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) wsRef.current.close();
     wsRef.current = null;
-    isEndingRef.current = false;
-  }, []);
+  }, [stopSilenceDetection, stopRecordingNodes]);
 
   useEffect(() => () => cleanup(), [cleanup]);
 
@@ -91,22 +226,15 @@ const AiTutor = () => {
       });
       streamRef.current = stream;
 
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
-      mediaRecorderRef.current = mediaRecorder;
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0 && wsRef.current?.readyState === WebSocket.OPEN) {
-          e.data.arrayBuffer().then(buf => wsRef.current?.send(buf));
-        }
-      };
-
       const ws = new WebSocket('wss://api.lingoarab.com/ws');
       ws.binaryType = 'arraybuffer';
       wsRef.current = ws;
 
       ws.onopen = () => {
-        mediaRecorder.start(1000);
         ws.send(JSON.stringify({ type: 'start_call', scenario }));
+        aiSpeakingRef.current = false;
+        startRecording(stream);
+        startSilenceDetection(stream);
         setCallStatus('listening');
       };
 
@@ -117,6 +245,8 @@ const AiTutor = () => {
           if (msg.type === 'status') {
             const next = msg.value as CallStatus;
             if (['listening', 'thinking', 'speaking'].includes(next)) setCallStatus(next);
+            if (next === 'speaking') aiSpeakingRef.current = true;
+            if (next === 'listening') aiSpeakingRef.current = false;
           } else if (msg.type === 'partial_text') setPartialText(msg.text || '');
           else if (msg.type === 'user_text') {
             setPartialText('');
@@ -124,12 +254,8 @@ const AiTutor = () => {
           } else if (msg.type === 'ai_text') {
             setMessages(prev => [...prev, { role: 'assistant', text: msg.reply, correction: msg.correction, tip: msg.tip }]);
           } else if (msg.type === 'audio') {
+            aiSpeakingRef.current = true;
             playAudio(msg.audio);
-            if (isEndingRef.current) {
-              cleanup();
-              setCallStatus('idle');
-              setPartialText('');
-            }
           }
         } catch (e) { console.error('ws parse', e); }
       };
@@ -147,29 +273,20 @@ const AiTutor = () => {
       cleanup();
       setCallStatus('idle');
     }
-  }, [inCall, scenario, playAudio, cleanup]);
+  }, [inCall, scenario, playAudio, cleanup, startRecording, startSilenceDetection]);
 
   const endCall = useCallback(() => {
-    if (!inCall || isEndingRef.current) return;
-    isEndingRef.current = true;
-
-    try { mediaRecorderRef.current?.stop(); } catch {}
+    if (!inCall) return;
+    stopSilenceDetection();
+    stopRecordingNodes();
+    pcmSamplesRef.current = [];
     streamRef.current?.getTracks().forEach(t => t.stop());
-
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ type: 'flush' }));
-    }
-
-    setCallStatus('thinking');
-
-    endTimeoutRef.current = setTimeout(() => {
-      if (isEndingRef.current) {
-        cleanup();
-        setCallStatus('idle');
-        setPartialText('');
-      }
-    }, 15000);
-  }, [inCall, cleanup]);
+    streamRef.current = null;
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) wsRef.current.close();
+    wsRef.current = null;
+    setCallStatus('idle');
+    setPartialText('');
+  }, [inCall, stopSilenceDetection, stopRecordingNodes]);
 
   const onScenarioChange = (id: string) => {
     setScenario(id);
