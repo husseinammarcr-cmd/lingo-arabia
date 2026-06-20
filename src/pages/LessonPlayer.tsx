@@ -645,12 +645,8 @@ const LessonPlayer = () => {
     const exampleAr = isVocab ? (item as VocabItem).exampleAr : undefined;
 
     const handleSpeak = () => {
-      if (typeof window !== 'undefined' && window.speechSynthesis && englishText) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(englishText);
-        u.lang = 'en-US';
-        u.rate = 0.9;
-        window.speechSynthesis.speak(u);
+      if (englishText) {
+        playLessonAudio(englishText).catch(() => { /* handled in util */ });
       }
     };
 
