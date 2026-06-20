@@ -356,18 +356,49 @@ const LessonPlayer = () => {
     }
   };
 
+  const recordExerciseMistake = (
+    bucket: 'practice' | 'quiz',
+    index: number,
+  ) => {
+    if (!lessonId) return;
+    const ex = bucket === 'practice'
+      ? lessonContent?.exercises[index]
+      : lessonContent?.quiz[index];
+    if (!ex) return;
+
+    // Word-level: if the answer looks like a single English word, treat as word
+    const answer = (ex.data.answer || '').trim();
+    const isWord = /^[A-Za-z][A-Za-z\s'-]{0,40}$/.test(answer) && answer.split(/\s+/).length <= 2;
+    const itemKey = answer || `${bucket}-${index}-${ex.type}`;
+    const matchingVocab = lessonContent?.vocab.find(
+      (v) => v.english.toLowerCase() === answer.toLowerCase(),
+    );
+
+    recordMistake.mutate({
+      lessonId,
+      itemType: isWord ? 'word' : 'exercise',
+      itemKey,
+      itemData: {
+        english: isWord ? answer : undefined,
+        arabic: matchingVocab?.arabic,
+        promptAr: ex.promptAr,
+        answer: answer || undefined,
+        type: ex.type,
+        lessonTitle: lessonData?.lesson.titleAr,
+      },
+    });
+  };
+
   const handlePracticeAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
-    // Track hint penalties regardless of answer correctness (will be deducted from total XP)
     if (hintPenalty > 0) {
-      console.log('[LessonPlayer] Adding hint penalty:', hintPenalty);
       setHintPenalties(prev => prev + hintPenalty);
     }
-    
+
     if (isCorrect) {
-      // Award full XP for correct answer
       setXpEarned(prev => prev + 3);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
+      recordExerciseMistake('practice', practiceIndex);
     }
 
     setSlideDirection(1);
@@ -382,19 +413,17 @@ const LessonPlayer = () => {
   };
 
   const handleQuizAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
-    // Track hint penalties regardless of answer correctness (will be deducted from total XP)
     if (hintPenalty > 0) {
-      console.log('[LessonPlayer] Adding quiz hint penalty:', hintPenalty);
       setHintPenalties(prev => prev + hintPenalty);
     }
-    
+
     const currentQuiz = lessonContent.quiz[quizIndex];
     if (isCorrect) {
       setQuizScore(prev => prev + currentQuiz.points);
-      // Award full XP for correct answer
       setXpEarned(prev => prev + 5);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
+      recordExerciseMistake('quiz', quizIndex);
     }
 
     setSlideDirection(1);
