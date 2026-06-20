@@ -32,7 +32,7 @@ export const useWeakPoints = (onlyActive = true) => {
     queryFn: async (): Promise<WeakPoint[]> => {
       if (!user) return [];
       let q = supabase
-        .from('weak_points' as never)
+        .from('weak_points')
         .select('*')
         .eq('user_id', user.id)
         .order('last_mistake_at', { ascending: false });
@@ -58,7 +58,7 @@ export const useRecordMistake = () => {
       if (!user) return;
       // Try update existing first
       const { data: existing } = await supabase
-        .from('weak_points' as never)
+        .from('weak_points')
         .select('id, mistakes_count')
         .eq('user_id', user.id)
         .eq('lesson_id', input.lessonId)
@@ -67,7 +67,7 @@ export const useRecordMistake = () => {
 
       if (existing) {
         await supabase
-          .from('weak_points' as never)
+          .from('weak_points')
           .update({
             mistakes_count: ((existing as { mistakes_count: number }).mistakes_count || 0) + 1,
             correct_streak: 0,
@@ -78,7 +78,7 @@ export const useRecordMistake = () => {
           })
           .eq('id', (existing as { id: string }).id);
       } else {
-        await supabase.from('weak_points' as never).insert({
+        await supabase.from('weak_points').insert({
           user_id: user.id,
           lesson_id: input.lessonId,
           item_type: input.itemType,
@@ -98,7 +98,7 @@ export const useRecordReviewResult = () => {
     mutationFn: async ({ id, correct }: { id: string; correct: boolean }) => {
       if (!user) return;
       const { data: existing } = await supabase
-        .from('weak_points' as never)
+        .from('weak_points')
         .select('correct_streak')
         .eq('id', id)
         .maybeSingle();
@@ -107,7 +107,7 @@ export const useRecordReviewResult = () => {
         const next = streak + 1;
         const mastered = next >= 3;
         await supabase
-          .from('weak_points' as never)
+          .from('weak_points')
           .update({
             correct_streak: next,
             mastered,
@@ -116,7 +116,7 @@ export const useRecordReviewResult = () => {
           .eq('id', id);
       } else {
         await supabase
-          .from('weak_points' as never)
+          .from('weak_points')
           .update({
             correct_streak: 0,
             mistakes_count: 0, // reset display count after retry attempt
