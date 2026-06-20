@@ -32,7 +32,7 @@ const publicNavItems: NavItem[] = [
 ];
 
 const authNavItems: NavItem[] = [
-  { label: 'AI Speaking', labelAr: 'AI Speaking', href: '/ai-voice-chat', icon: <Mic className="w-5 h-5" />, requiresAuth: true },
+  { label: 'AI Speaking', labelAr: 'AI Speaking', href: '/ai-tutor', icon: <Mic className="w-5 h-5" />, requiresAuth: true },
   { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/app/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
   { label: 'Weak Points', labelAr: 'نقاط الضعف', href: '/app/weak-points', icon: <Brain className="w-5 h-5" />, requiresAuth: true },
   { label: 'Profile', labelAr: 'الملف الشخصي', href: '/profile', icon: <User className="w-5 h-5" />, requiresAuth: true },
