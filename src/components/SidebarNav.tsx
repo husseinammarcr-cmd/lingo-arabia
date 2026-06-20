@@ -29,21 +29,15 @@ interface NavItem {
 
 const publicNavItems: NavItem[] = [
   { label: 'Home', labelAr: 'الرئيسية', href: '/', icon: <Home className="w-5 h-5" /> },
-  { label: 'Free Lessons', labelAr: 'دروس مجانية', href: '/free-lessons', icon: <GraduationCap className="w-5 h-5" /> },
-  { label: 'Courses', labelAr: 'الدورات', href: '/courses', icon: <BookOpen className="w-5 h-5" /> },
-  { label: 'Levels', labelAr: 'المستويات', href: '/learn', icon: <Layers className="w-5 h-5" /> },
-  { label: 'Blog', labelAr: 'المدونة', href: '/blog', icon: <FileText className="w-5 h-5" /> },
-  { label: 'About', labelAr: 'من نحن', href: '/about', icon: <Info className="w-5 h-5" /> },
-  { label: 'FAQ', labelAr: 'الأسئلة الشائعة', href: '/faq', icon: <HelpCircle className="w-5 h-5" /> },
-  { label: 'Contact', labelAr: 'تواصل معنا', href: '/contact', icon: <MessageSquare className="w-5 h-5" /> },
 ];
 
 const authNavItems: NavItem[] = [
+  { label: 'AI Speaking', labelAr: 'AI Speaking', href: '/ai-voice-chat', icon: <Mic className="w-5 h-5" />, requiresAuth: true },
   { label: 'Dashboard', labelAr: 'لوحة التحكم', href: '/app/courses', icon: <LayoutDashboard className="w-5 h-5" />, requiresAuth: true },
-  { label: 'AI Tutor', labelAr: 'المعلم الذكي', href: '/ai-tutor', icon: <Bot className="w-5 h-5" />, requiresAuth: true },
+  { label: 'Weak Points', labelAr: 'نقاط الضعف', href: '/app/weak-points', icon: <Brain className="w-5 h-5" />, requiresAuth: true },
   { label: 'Profile', labelAr: 'الملف الشخصي', href: '/profile', icon: <User className="w-5 h-5" />, requiresAuth: true },
-  { label: 'Certificate', labelAr: 'الشهادة', href: '/certificate', icon: <Award className="w-5 h-5" />, requiresAuth: true },
   { label: 'Settings', labelAr: 'الإعدادات', href: '/settings', icon: <Settings className="w-5 h-5" />, requiresAuth: true },
+  { label: 'Certificate', labelAr: 'الشهادة', href: '/certificate', icon: <Award className="w-5 h-5" />, requiresAuth: true },
 ];
 
 const guestNavItems: NavItem[] = [
