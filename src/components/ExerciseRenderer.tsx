@@ -68,6 +68,7 @@ export const ExerciseRenderer = ({
   const [showOriginalHint, setShowOriginalHint] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [listeningLoading, setListeningLoading] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
   const [selectedEnglish, setSelectedEnglish] = useState<number | null>(null);
 
