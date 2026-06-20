@@ -500,8 +500,8 @@ export const ExerciseRenderer = ({
         </div>
       )}
 
-      {/* Submit / Next button */}
-      {!answered && (
+      {/* Submit / Next button — not for speaking (it auto-advances) */}
+      {!answered && type !== 'speaking' && (
         <div className="la-next-btn-wrapper">
           <button
             type="button"
