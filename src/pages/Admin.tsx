@@ -626,6 +626,11 @@ const Admin = () => {
             <CertificatesManager />
           </TabsContent>
 
+          <TabsContent value="call-feedback">
+            <CallFeedbackManager />
+          </TabsContent>
+
+
           <TabsContent value="analytics">
             <Card>
               <CardContent className="pt-6">
