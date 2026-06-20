@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import '@/styles/AiTutorOrb.css';
+import CallFeedbackDialog from '@/components/CallFeedbackDialog';
 
 type ChatMsg =
   | { role: 'user'; text: string }
