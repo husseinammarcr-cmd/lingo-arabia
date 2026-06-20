@@ -5,21 +5,15 @@ import {
   Menu, 
   X, 
   Home, 
-  BookOpen, 
-  Layers, 
-  Info, 
-  HelpCircle,
-  MessageSquare,
-  FileText,
   LayoutDashboard, 
   User,
   Settings, 
   LogOut, 
   LogIn, 
   UserPlus,
-  GraduationCap,
   Award,
-  Bot
+  Mic,
+  Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
