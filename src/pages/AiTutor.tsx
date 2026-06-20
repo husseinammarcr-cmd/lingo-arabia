@@ -39,6 +39,7 @@ const AiTutor = () => {
   const [callStatus, setCallStatus] = useState<CallStatus>('idle');
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [partialText, setPartialText] = useState('');
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
