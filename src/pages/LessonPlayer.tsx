@@ -184,48 +184,39 @@ const LessonPlayer = () => {
     };
   }, []);
 
-  // Save to DB when lesson completes (only if passed)
+  // Save to DB when lesson completes — ALWAYS save (open progression).
+  // needs_review flag is set if score < passing threshold.
   useEffect(() => {
     if (isComplete && lessonId && lessonData && !isSaving && !hasSaved) {
       const passed = calculatePassed();
-      
-      if (!passed) {
-        clearProgress();
-        return;
-      }
-      
+      const scorePercent = quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 100;
+
       setIsSaving(true);
-      setSaveError(false); // Reset error state before attempting save
+      setSaveError(false);
       clearProgress();
-      setShowConfetti(true);
-      
+      if (passed) setShowConfetti(true);
+
       const totalXp = xpEarned + lessonData.lesson.xpReward;
-      console.log('[LessonPlayer] Saving progress with hint penalties:', {
-        totalXp,
-        hintPenalties,
-        netXp: totalXp - hintPenalties
-      });
-      
-      // Clear any existing timeout
+
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
-      
-      // Set new timeout
+
       saveTimeoutRef.current = setTimeout(() => {
         if (!hasSaved) {
           setIsSaving(false);
           setSaveError(true);
         }
       }, 10000);
-      
+
       updateProgress.mutate({
         lessonId,
         completed: true,
-        score: lessonContent ? Math.round((quizScore / quizTotal) * 100) : 100,
+        score: scorePercent,
         heartsRemaining: hearts,
         xpEarned: totalXp,
-        hintPenalty: hintPenalties
+        hintPenalty: hintPenalties,
+        needsReview: !passed,
       }, {
         onSuccess: async () => {
           if (saveTimeoutRef.current) {
@@ -234,7 +225,6 @@ const LessonPlayer = () => {
           }
           setHasSaved(true);
           setIsSaving(false);
-          
           await refreshProfile();
           await evaluateAchievements();
         },
