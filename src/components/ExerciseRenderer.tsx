@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSpeech } from '@/hooks/useSpeech';
+import { SpeakingExercise } from './SpeakingExercise';
 import '@/styles/LingoArabExercise.css';
 
-export type ExerciseType = 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching';
+export type ExerciseType = 'mcq' | 'fill_blank' | 'reorder' | 'listening' | 'translation' | 'matching' | 'speaking';
 
 interface MatchingPair {
   english: string;
@@ -352,6 +353,18 @@ export const ExerciseRenderer = ({
         return renderListening();
       case 'matching':
         return renderMatching();
+      case 'speaking':
+        return (
+          <SpeakingExercise
+            target={data.answer || ''}
+            disabled={disabled}
+            onAnswer={(ok) => {
+              setAnswered(true);
+              setIsCorrect(ok);
+              setTimeout(() => onAnswer(ok, 0), 100);
+            }}
+          />
+        );
       default:
         return <p style={{ color: 'var(--la-gray)' }}>نوع السؤال غير مدعوم</p>;
     }
@@ -487,8 +500,8 @@ export const ExerciseRenderer = ({
         </div>
       )}
 
-      {/* Submit / Next button */}
-      {!answered && (
+      {/* Submit / Next button — not for speaking (it auto-advances) */}
+      {!answered && type !== 'speaking' && (
         <div className="la-next-btn-wrapper">
           <button
             type="button"

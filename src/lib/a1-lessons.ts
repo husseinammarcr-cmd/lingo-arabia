@@ -14,7 +14,7 @@ export interface SentenceItem {
 }
 
 export interface ExerciseItem {
-  type: 'mcq' | 'fill_blank' | 'reorder' | 'matching' | 'translation';
+  type: 'mcq' | 'fill_blank' | 'reorder' | 'matching' | 'translation' | 'speaking';
   promptAr: string;
   promptEn?: string;
   data: {
@@ -1124,6 +1124,7 @@ import { A2_LESSONS_CONTENT } from './a2-lessons';
 import { B1_LESSONS_CONTENT } from './b1-lessons';
 import { B2_LESSONS_CONTENT } from './b2-lessons';
 import { C1_LESSONS_CONTENT } from './c1-lessons';
+import { compactLesson } from './lessonTransform';
 
 // Unified lesson content registry
 export const ALL_LESSONS_CONTENT: Record<string, LessonContent> = {
@@ -1135,5 +1136,6 @@ export const ALL_LESSONS_CONTENT: Record<string, LessonContent> = {
 };
 
 export function getLessonContent(lessonId: string): LessonContent | undefined {
-  return ALL_LESSONS_CONTENT[lessonId];
+  const raw = ALL_LESSONS_CONTENT[lessonId];
+  return raw ? compactLesson(raw) : undefined;
 }

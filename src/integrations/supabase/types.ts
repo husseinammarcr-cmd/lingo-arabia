@@ -610,6 +610,7 @@ export type Database = {
           hearts_remaining: number | null
           id: string
           lesson_id: string
+          needs_review: boolean
           score: number | null
           updated_at: string | null
           user_id: string
@@ -619,6 +620,7 @@ export type Database = {
           hearts_remaining?: number | null
           id?: string
           lesson_id: string
+          needs_review?: boolean
           score?: number | null
           updated_at?: string | null
           user_id: string
@@ -628,6 +630,7 @@ export type Database = {
           hearts_remaining?: number | null
           id?: string
           lesson_id?: string
+          needs_review?: boolean
           score?: number | null
           updated_at?: string | null
           user_id?: string
@@ -778,6 +781,54 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      weak_points: {
+        Row: {
+          correct_streak: number
+          created_at: string
+          id: string
+          item_data: Json
+          item_key: string
+          item_type: string
+          last_mistake_at: string
+          lesson_id: string
+          mastered: boolean
+          mastered_at: string | null
+          mistakes_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          correct_streak?: number
+          created_at?: string
+          id?: string
+          item_data?: Json
+          item_key: string
+          item_type: string
+          last_mistake_at?: string
+          lesson_id: string
+          mastered?: boolean
+          mastered_at?: string | null
+          mistakes_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          correct_streak?: number
+          created_at?: string
+          id?: string
+          item_data?: Json
+          item_key?: string
+          item_type?: string
+          last_mistake_at?: string
+          lesson_id?: string
+          mastered?: boolean
+          mastered_at?: string | null
+          mistakes_count?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

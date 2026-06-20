@@ -13,6 +13,7 @@ import { AudioButton } from '@/components/AudioButton';
 import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 import { useEvaluateAchievements } from '@/hooks/useEvaluateAchievements';
+import { useRecordMistake } from '@/hooks/useWeakPoints';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MiniConfetti } from '@/components/animations/MiniConfetti';
@@ -89,6 +90,7 @@ const LessonPlayer = () => {
   const { user, isLoading, refreshProfile } = useAuth();
   const updateProgress = useUpdateProgress();
   const { evaluateAchievements } = useEvaluateAchievements();
+  const recordMistake = useRecordMistake();
   const prefersReducedMotion = usePrefersReducedMotion();
   
   // Use refs to track initialization
@@ -182,48 +184,39 @@ const LessonPlayer = () => {
     };
   }, []);
 
-  // Save to DB when lesson completes (only if passed)
+  // Save to DB when lesson completes — ALWAYS save (open progression).
+  // needs_review flag is set if score < passing threshold.
   useEffect(() => {
     if (isComplete && lessonId && lessonData && !isSaving && !hasSaved) {
       const passed = calculatePassed();
-      
-      if (!passed) {
-        clearProgress();
-        return;
-      }
-      
+      const scorePercent = quizTotal > 0 ? Math.round((quizScore / quizTotal) * 100) : 100;
+
       setIsSaving(true);
-      setSaveError(false); // Reset error state before attempting save
+      setSaveError(false);
       clearProgress();
-      setShowConfetti(true);
-      
+      if (passed) setShowConfetti(true);
+
       const totalXp = xpEarned + lessonData.lesson.xpReward;
-      console.log('[LessonPlayer] Saving progress with hint penalties:', {
-        totalXp,
-        hintPenalties,
-        netXp: totalXp - hintPenalties
-      });
-      
-      // Clear any existing timeout
+
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
-      
-      // Set new timeout
+
       saveTimeoutRef.current = setTimeout(() => {
         if (!hasSaved) {
           setIsSaving(false);
           setSaveError(true);
         }
       }, 10000);
-      
+
       updateProgress.mutate({
         lessonId,
         completed: true,
-        score: lessonContent ? Math.round((quizScore / quizTotal) * 100) : 100,
+        score: scorePercent,
         heartsRemaining: hearts,
         xpEarned: totalXp,
-        hintPenalty: hintPenalties
+        hintPenalty: hintPenalties,
+        needsReview: !passed,
       }, {
         onSuccess: async () => {
           if (saveTimeoutRef.current) {
@@ -232,7 +225,6 @@ const LessonPlayer = () => {
           }
           setHasSaved(true);
           setIsSaving(false);
-          
           await refreshProfile();
           await evaluateAchievements();
         },
@@ -364,18 +356,49 @@ const LessonPlayer = () => {
     }
   };
 
+  const recordExerciseMistake = (
+    bucket: 'practice' | 'quiz',
+    index: number,
+  ) => {
+    if (!lessonId) return;
+    const ex = bucket === 'practice'
+      ? lessonContent?.exercises[index]
+      : lessonContent?.quiz[index];
+    if (!ex) return;
+
+    // Word-level: if the answer looks like a single English word, treat as word
+    const answer = (ex.data.answer || '').trim();
+    const isWord = /^[A-Za-z][A-Za-z\s'-]{0,40}$/.test(answer) && answer.split(/\s+/).length <= 2;
+    const itemKey = answer || `${bucket}-${index}-${ex.type}`;
+    const matchingVocab = lessonContent?.vocab.find(
+      (v) => v.english.toLowerCase() === answer.toLowerCase(),
+    );
+
+    recordMistake.mutate({
+      lessonId,
+      itemType: isWord ? 'word' : 'exercise',
+      itemKey,
+      itemData: {
+        english: isWord ? answer : undefined,
+        arabic: matchingVocab?.arabic,
+        promptAr: ex.promptAr,
+        answer: answer || undefined,
+        type: ex.type,
+        lessonTitle: lessonData?.lesson.titleAr,
+      },
+    });
+  };
+
   const handlePracticeAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
-    // Track hint penalties regardless of answer correctness (will be deducted from total XP)
     if (hintPenalty > 0) {
-      console.log('[LessonPlayer] Adding hint penalty:', hintPenalty);
       setHintPenalties(prev => prev + hintPenalty);
     }
-    
+
     if (isCorrect) {
-      // Award full XP for correct answer
       setXpEarned(prev => prev + 3);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
+      recordExerciseMistake('practice', practiceIndex);
     }
 
     setSlideDirection(1);
@@ -390,19 +413,17 @@ const LessonPlayer = () => {
   };
 
   const handleQuizAnswer = (isCorrect: boolean, hintPenalty: number = 0) => {
-    // Track hint penalties regardless of answer correctness (will be deducted from total XP)
     if (hintPenalty > 0) {
-      console.log('[LessonPlayer] Adding quiz hint penalty:', hintPenalty);
       setHintPenalties(prev => prev + hintPenalty);
     }
-    
+
     const currentQuiz = lessonContent.quiz[quizIndex];
     if (isCorrect) {
       setQuizScore(prev => prev + currentQuiz.points);
-      // Award full XP for correct answer
       setXpEarned(prev => prev + 5);
     } else {
       setHearts(prev => Math.max(0, prev - 1));
+      recordExerciseMistake('quiz', quizIndex);
     }
 
     setSlideDirection(1);
@@ -550,11 +571,18 @@ const LessonPlayer = () => {
               </>
             ) : (
               <>
+                <div className="mb-3 p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-100 text-sm text-right">
+                  ⚠️ نتيجتك أقل من 50%. ننصحك بإعادة الدرس لتثبيت المفاهيم — لكن يمكنك المتابعة للدرس التالي إن أردت.
+                  أضفنا الكلمات والتمارين التي أخطأت بها إلى <strong>نقاط الضعف</strong> لمراجعتها لاحقاً.
+                </div>
                 <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleRetry}>
-                  حاول مرة أخرى
+                  إعادة الاختبار
                 </Button>
-                <Button type="button" variant="outline" size="lg" className="w-full" onClick={handleBackToUnit}>
-                  العودة للوحدة
+                <Button type="button" variant="outline" size="lg" className="w-full" onClick={handleNextLesson}>
+                  المتابعة للدرس التالي
+                </Button>
+                <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => navigate('/app/weak-points')}>
+                  مراجعة نقاط الضعف
                 </Button>
               </>
             )}

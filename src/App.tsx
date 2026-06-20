@@ -45,6 +45,7 @@ import Certificate from "./pages/Certificate";
 import WeeklyPrize from "./pages/WeeklyPrize";
 import AiTutor from "./pages/AiTutor";
 import AiVoiceChat from "./pages/AiVoiceChat";
+import WeakPoints from "./pages/WeakPoints";
 
 
 
@@ -84,6 +85,7 @@ const App = () => (
                   <Route path="/app/courses" element={<AppCourses />} />
                   <Route path="/app/courses/:level" element={<CourseLevel />} />
                   <Route path="/app/courses/:level/:unit" element={<CourseUnit />} />
+                  <Route path="/app/weak-points" element={<WeakPoints />} />
                   
                   {/* Legacy routes - redirect to new paths */}
                   <Route path="/courses/:level" element={<Navigate to="/app/courses" replace />} />

@@ -25,6 +25,7 @@ const PUBLIC_ITEMS: NavItem[] = [
 const AUTH_ITEMS: NavItem[] = [
   { labelAr: 'لوحة التحكم', href: '/app/courses', icon: 'fa-solid fa-table-cells-large', requiresAuth: true },
   { labelAr: 'المعلم الذكي', href: '/ai-tutor', icon: 'fa-solid fa-robot', requiresAuth: true },
+  { labelAr: 'نقاط الضعف', href: '/app/weak-points', icon: 'fa-solid fa-brain', requiresAuth: true },
   { labelAr: 'الملف الشخصي', href: '/profile', icon: 'fa-regular fa-user', requiresAuth: true },
   { labelAr: 'الشهادة', href: '/certificate', icon: 'fa-solid fa-award', requiresAuth: true },
   { labelAr: 'الإعدادات', href: '/settings', icon: 'fa-solid fa-gear', requiresAuth: true },
