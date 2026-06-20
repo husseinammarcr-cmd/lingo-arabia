@@ -290,6 +290,7 @@ const AiTutor = () => {
     wsRef.current = null;
     setCallStatus('idle');
     setPartialText('');
+    setFeedbackOpen(true);
   }, [inCall, stopSilenceDetection, stopRecordingNodes]);
 
   const onScenarioChange = (id: string) => {
