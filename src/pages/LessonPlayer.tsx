@@ -13,6 +13,7 @@ import { AudioButton } from '@/components/AudioButton';
 import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 import { useEvaluateAchievements } from '@/hooks/useEvaluateAchievements';
+import { useRecordMistake } from '@/hooks/useWeakPoints';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MiniConfetti } from '@/components/animations/MiniConfetti';
@@ -89,6 +90,7 @@ const LessonPlayer = () => {
   const { user, isLoading, refreshProfile } = useAuth();
   const updateProgress = useUpdateProgress();
   const { evaluateAchievements } = useEvaluateAchievements();
+  const recordMistake = useRecordMistake();
   const prefersReducedMotion = usePrefersReducedMotion();
   
   // Use refs to track initialization
