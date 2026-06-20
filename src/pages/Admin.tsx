@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply, Award, BarChart3 } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply, Award, BarChart3, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import Header from '@/components/Header';
 import BlogManager from '@/components/admin/BlogManager';
 import CertificatesManager from '@/components/admin/CertificatesManager';
+import CallFeedbackManager from '@/components/admin/CallFeedbackManager';
 import UserActivityStats from '@/components/admin/UserActivityStats';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -316,6 +317,10 @@ const Admin = () => {
             <TabsTrigger value="certificates" className="flex items-center gap-2">
               <Award className="w-4 h-4" />
               الشهادات
+            </TabsTrigger>
+            <TabsTrigger value="call-feedback" className="flex items-center gap-2">
+              <Star className="w-4 h-4" />
+              تقييمات المكالمات
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
@@ -620,6 +625,11 @@ const Admin = () => {
           <TabsContent value="certificates">
             <CertificatesManager />
           </TabsContent>
+
+          <TabsContent value="call-feedback">
+            <CallFeedbackManager />
+          </TabsContent>
+
 
           <TabsContent value="analytics">
             <Card>

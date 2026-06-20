@@ -53,6 +53,39 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_call_feedback: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          rating: number
+          scenario: string | null
+          user_email: string | null
+          user_id: string
+          user_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          rating: number
+          scenario?: string | null
+          user_email?: string | null
+          user_id: string
+          user_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          rating?: number
+          scenario?: string | null
+          user_email?: string | null
+          user_id?: string
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       ai_tutor_usage: {
         Row: {
           created_at: string

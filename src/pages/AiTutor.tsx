@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import '@/styles/AiTutorOrb.css';
+import CallFeedbackDialog from '@/components/CallFeedbackDialog';
 
 type ChatMsg =
   | { role: 'user'; text: string }
@@ -38,6 +39,7 @@ const AiTutor = () => {
   const [callStatus, setCallStatus] = useState<CallStatus>('idle');
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [partialText, setPartialText] = useState('');
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -288,6 +290,7 @@ const AiTutor = () => {
     wsRef.current = null;
     setCallStatus('idle');
     setPartialText('');
+    setFeedbackOpen(true);
   }, [inCall, stopSilenceDetection, stopRecordingNodes]);
 
   const onScenarioChange = (id: string) => {
@@ -474,6 +477,8 @@ const AiTutor = () => {
           </button>
         )}
       </div>
+
+      <CallFeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} scenario={scenario} />
     </motion.div>
   );
 };
