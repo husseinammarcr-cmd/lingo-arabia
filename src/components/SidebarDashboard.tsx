@@ -13,22 +13,15 @@ interface NavItem {
 
 const PUBLIC_ITEMS: NavItem[] = [
   { labelAr: 'الرئيسية', href: '/', icon: 'fa-solid fa-house' },
-  { labelAr: 'دروس مجانية', href: '/free-lessons', icon: 'fa-solid fa-graduation-cap' },
-  { labelAr: 'الدورات', href: '/courses', icon: 'fa-solid fa-book-open' },
-  { labelAr: 'المستويات', href: '/learn', icon: 'fa-solid fa-layer-group' },
-  { labelAr: 'المدونة', href: '/blog', icon: 'fa-regular fa-file-lines' },
-  { labelAr: 'من نحن', href: '/about', icon: 'fa-solid fa-circle-info' },
-  { labelAr: 'الأسئلة الشائعة', href: '/faq', icon: 'fa-regular fa-circle-question' },
-  { labelAr: 'تواصل معنا', href: '/contact', icon: 'fa-regular fa-comment-dots' },
 ];
 
 const AUTH_ITEMS: NavItem[] = [
+  { labelAr: 'AI Speaking', href: '/ai-voice-chat', icon: 'fa-solid fa-microphone', requiresAuth: true },
   { labelAr: 'لوحة التحكم', href: '/app/courses', icon: 'fa-solid fa-table-cells-large', requiresAuth: true },
-  { labelAr: 'المعلم الذكي', href: '/ai-tutor', icon: 'fa-solid fa-robot', requiresAuth: true },
   { labelAr: 'نقاط الضعف', href: '/app/weak-points', icon: 'fa-solid fa-brain', requiresAuth: true },
   { labelAr: 'الملف الشخصي', href: '/profile', icon: 'fa-regular fa-user', requiresAuth: true },
-  { labelAr: 'الشهادة', href: '/certificate', icon: 'fa-solid fa-award', requiresAuth: true },
   { labelAr: 'الإعدادات', href: '/settings', icon: 'fa-solid fa-gear', requiresAuth: true },
+  { labelAr: 'الشهادة', href: '/certificate', icon: 'fa-solid fa-award', requiresAuth: true },
 ];
 
 const GUEST_ITEMS: NavItem[] = [
