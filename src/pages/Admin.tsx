@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply, Award, BarChart3 } from 'lucide-react';
+import { Shield, Bell, Users, Send, Loader2, FileText, Clock, MessageSquare, Mail, Trash2, Eye, EyeOff, Reply, Award, BarChart3, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
