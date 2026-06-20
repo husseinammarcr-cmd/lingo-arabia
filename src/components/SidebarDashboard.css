@@ -58,6 +58,13 @@
   cursor: pointer;
 }
 
+.sd-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+}
+
 .sd-nav-items {
   display: flex;
   flex-direction: column;
