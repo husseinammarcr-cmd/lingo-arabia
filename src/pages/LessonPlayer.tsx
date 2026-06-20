@@ -571,11 +571,18 @@ const LessonPlayer = () => {
               </>
             ) : (
               <>
+                <div className="mb-3 p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-100 text-sm text-right">
+                  ⚠️ نتيجتك أقل من 50%. ننصحك بإعادة الدرس لتثبيت المفاهيم — لكن يمكنك المتابعة للدرس التالي إن أردت.
+                  أضفنا الكلمات والتمارين التي أخطأت بها إلى <strong>نقاط الضعف</strong> لمراجعتها لاحقاً.
+                </div>
                 <Button type="button" variant="hero" size="xl" className="w-full" onClick={handleRetry}>
-                  حاول مرة أخرى
+                  إعادة الاختبار
                 </Button>
-                <Button type="button" variant="outline" size="lg" className="w-full" onClick={handleBackToUnit}>
-                  العودة للوحدة
+                <Button type="button" variant="outline" size="lg" className="w-full" onClick={handleNextLesson}>
+                  المتابعة للدرس التالي
+                </Button>
+                <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => navigate('/app/weak-points')}>
+                  مراجعة نقاط الضعف
                 </Button>
               </>
             )}
