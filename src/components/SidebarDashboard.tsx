@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import logoAsset from '@/assets/lingoarab-logo.png.asset.json';
+
 import './SidebarDashboard.css';
 
 interface NavItem {
@@ -83,7 +83,7 @@ export default function SidebarDashboard() {
       <nav className={`sd-sidebar ${isOpen ? 'show' : ''}`} aria-label="القائمة الجانبية">
         <button className="sd-logo" onClick={() => go('/')} aria-label="الرئيسية">
           <img
-            src={logoAsset.url}
+            src="/lingoarab-logo.png"
             alt="LingoArab"
             width={32}
             height={32}
