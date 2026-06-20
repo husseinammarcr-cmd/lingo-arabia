@@ -477,6 +477,8 @@ const AiTutor = () => {
           </button>
         )}
       </div>
+
+      <CallFeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} scenario={scenario} />
     </motion.div>
   );
 };
