@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import Header from '@/components/Header';
 import BlogManager from '@/components/admin/BlogManager';
 import CertificatesManager from '@/components/admin/CertificatesManager';
+import CallFeedbackManager from '@/components/admin/CallFeedbackManager';
 import UserActivityStats from '@/components/admin/UserActivityStats';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
