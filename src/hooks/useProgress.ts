@@ -358,7 +358,8 @@ export const useUpdateProgress = () => {
       score,
       heartsRemaining,
       xpEarned,
-      hintPenalty = 0
+      hintPenalty = 0,
+      needsReview = false,
     }: {
       lessonId: string;
       completed: boolean;
@@ -366,6 +367,7 @@ export const useUpdateProgress = () => {
       heartsRemaining: number;
       xpEarned: number;
       hintPenalty?: number;
+      needsReview?: boolean;
     }) => {
       if (!user) throw new Error('Not authenticated');
 
@@ -386,6 +388,7 @@ export const useUpdateProgress = () => {
         completed,
         score,
         hearts_remaining: heartsRemaining,
+        needs_review: needsReview,
         updated_at: new Date().toISOString()
       };
 
@@ -399,6 +402,7 @@ export const useUpdateProgress = () => {
             completed,
             score,
             hearts_remaining: heartsRemaining,
+            needs_review: needsReview,
             updated_at: new Date().toISOString()
           })
           .eq('user_id', user.id)
