@@ -26,6 +26,7 @@ import { useEffect, useMemo, useState } from 'react';
 import WelcomeBackOverlay from '@/components/WelcomeBackOverlay';
 import { useUserProgress, isLevelUnlocked } from '@/hooks/useProgress';
 import SidebarDashboard from '@/components/SidebarDashboard';
+import WeakPointsWidget from '@/components/WeakPointsWidget';
 import Lottie from 'lottie-react';
 import dashboardBgAnimation from '@/assets/dashboard-bg.json';
 
@@ -374,6 +375,11 @@ const AppCourses = () => {
               <br />
               you today?
             </h1>
+
+            <div className="mb-6">
+              <WeakPointsWidget />
+            </div>
+
 
             {/* ============= Action cards ============= */}
             <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-10">
