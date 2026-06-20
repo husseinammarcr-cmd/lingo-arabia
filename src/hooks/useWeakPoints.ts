@@ -104,14 +104,13 @@ export const useRecordReviewResult = () => {
         .maybeSingle();
       const streak = ((existing as { correct_streak?: number } | null)?.correct_streak ?? 0);
       if (correct) {
-        const next = streak + 1;
-        const mastered = next >= 3;
+        // Single confirmation marks the item as mastered and removes it from the active list.
         await supabase
           .from('weak_points')
           .update({
-            correct_streak: next,
-            mastered,
-            mastered_at: mastered ? new Date().toISOString() : null,
+            correct_streak: streak + 1,
+            mastered: true,
+            mastered_at: new Date().toISOString(),
           })
           .eq('id', id);
       } else {
