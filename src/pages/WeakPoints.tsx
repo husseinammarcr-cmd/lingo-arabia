@@ -11,13 +11,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWeakPoints, useRecordReviewResult, type WeakPoint } from '@/hooks/useWeakPoints';
 
+import { playLessonAudio } from '@/lib/lessonAudio';
+
 const speak = (text: string) => {
-  if (typeof window === 'undefined' || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.9;
-  window.speechSynthesis.speak(u);
+  playLessonAudio(text).catch(() => { /* handled in util */ });
 };
 
 function FlashcardReview({ items, onClose }: { items: WeakPoint[]; onClose: () => void }) {

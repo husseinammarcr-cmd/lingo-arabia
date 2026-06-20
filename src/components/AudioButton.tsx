@@ -21,7 +21,7 @@ export const AudioButton = ({
   className,
   variant = 'ghost'
 }: AudioButtonProps) => {
-  const { speak, isSupported, isReady, voiceCount } = useSpeech();
+  const { speak, isSupported, isReady, voiceCount, isLoading } = useSpeech();
   const { toast } = useToast();
 
   // SSR guard
@@ -87,8 +87,10 @@ export const AudioButton = ({
       variant={variant}
       size="icon"
       onClick={handleClick}
+      disabled={isLoading}
       className={cn(
         "rounded-full transition-all hover:scale-110 active:scale-95",
+        isLoading && "opacity-60 cursor-wait",
         size === 'sm' && "h-8 w-8",
         size === 'default' && "h-10 w-10",
         size === 'lg' && "h-12 w-12",

@@ -68,6 +68,7 @@ export const ExerciseRenderer = ({
   const [showOriginalHint, setShowOriginalHint] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [listeningLoading, setListeningLoading] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, number>>({});
   const [selectedEnglish, setSelectedEnglish] = useState<number | null>(null);
 
@@ -266,20 +267,31 @@ export const ExerciseRenderer = ({
     </div>
   );
 
-  const renderListening = () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <button
-        type="button"
-        className="la-option-btn"
-        style={{ justifyContent: 'center', fontSize: 18 }}
-        onClick={() => data.answer && new SpeechSynthesisUtterance && window.speechSynthesis?.speak(new SpeechSynthesisUtterance(data.answer))}
-        disabled={answered || disabled}
-      >
-        🔊 استمع
-      </button>
-      {renderTextInput('اكتب ما سمعته...')}
-    </div>
-  );
+  const renderListening = () => {
+    const handlePlay = async () => {
+      if (!data.answer) return;
+      const { playLessonAudio } = await import('@/lib/lessonAudio');
+      setListeningLoading(true);
+      try {
+        await playLessonAudio(data.answer);
+      } catch { /* ignore */ }
+      setListeningLoading(false);
+    };
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <button
+          type="button"
+          className="la-option-btn"
+          style={{ justifyContent: 'center', fontSize: 18, opacity: listeningLoading ? 0.6 : 1 }}
+          onClick={handlePlay}
+          disabled={answered || disabled || listeningLoading}
+        >
+          {listeningLoading ? '⏳ جاري التحميل...' : '🔊 استمع'}
+        </button>
+        {renderTextInput('اكتب ما سمعته...')}
+      </div>
+    );
+  };
 
   const renderMatching = () => {
     const pairs = data.pairs || [];

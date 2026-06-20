@@ -74,13 +74,9 @@ export const SpeakingExercise = ({ target, onAnswer, disabled }: SpeakingExercis
     };
   }, [target, onAnswer]);
 
-  const speakTarget = () => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(target);
-    u.lang = 'en-US';
-    u.rate = 0.9;
-    window.speechSynthesis.speak(u);
+  const speakTarget = async () => {
+    const { playLessonAudio } = await import('@/lib/lessonAudio');
+    playLessonAudio(target).catch(() => { /* handled in util */ });
   };
 
   const start = () => {

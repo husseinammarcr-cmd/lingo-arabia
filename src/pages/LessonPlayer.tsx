@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useUpdateProgress, getNextLesson } from '@/hooks/useProgress';
 import { useEvaluateAchievements } from '@/hooks/useEvaluateAchievements';
 import { useRecordMistake } from '@/hooks/useWeakPoints';
+import { playLessonAudio } from '@/lib/lessonAudio';
 import { AnimatedProgress } from '@/components/animations/AnimatedProgress';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { MiniConfetti } from '@/components/animations/MiniConfetti';
@@ -645,12 +646,8 @@ const LessonPlayer = () => {
     const exampleAr = isVocab ? (item as VocabItem).exampleAr : undefined;
 
     const handleSpeak = () => {
-      if (typeof window !== 'undefined' && window.speechSynthesis && englishText) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(englishText);
-        u.lang = 'en-US';
-        u.rate = 0.9;
-        window.speechSynthesis.speak(u);
+      if (englishText) {
+        playLessonAudio(englishText).catch(() => { /* handled in util */ });
       }
     };
 
