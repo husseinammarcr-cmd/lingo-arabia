@@ -14,7 +14,7 @@ export interface SentenceItem {
 }
 
 export interface ExerciseItem {
-  type: 'mcq' | 'fill_blank' | 'reorder' | 'matching' | 'translation';
+  type: 'mcq' | 'fill_blank' | 'reorder' | 'matching' | 'translation' | 'speaking';
   promptAr: string;
   promptEn?: string;
   data: {
