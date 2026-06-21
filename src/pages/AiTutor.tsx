@@ -333,6 +333,26 @@ const AiTutor = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
+      {/* Restaurant scenario video background layer */}
+      {scenario === 'restaurant' && (
+        <div className="absolute inset-0 -z-10 pointer-events-none">
+          {(['entrance', 'ordering', 'eating', 'paying'] as const).map((stage) => (
+            <video
+              key={stage}
+              src={`/videos/restaurant-${stage}.mp4`}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                currentStage === stage ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
       <svg className="topo-lines absolute top-0 left-0 w-72 h-72 opacity-30 pointer-events-none" viewBox="0 0 300 300" fill="none">
         <path d="M-20 40 Q 80 20 180 60 T 340 80" stroke="#D6FF4B" strokeWidth="0.6" />
         <path d="M-20 70 Q 80 50 180 90 T 340 110" stroke="#D6FF4B" strokeWidth="0.6" opacity="0.8" />
