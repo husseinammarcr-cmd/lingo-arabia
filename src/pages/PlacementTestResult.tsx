@@ -22,32 +22,40 @@ import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
+type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+
 interface Breakdown {
   A1: { correct: number; total: number };
   A2: { correct: number; total: number };
   B1: { correct: number; total: number };
   B2: { correct: number; total: number };
+  C1?: { correct: number; total: number };
+  C2?: { correct: number; total: number };
 }
 
 interface LocationState {
   score: number;
   total: number;
-  level: 'A1' | 'A2' | 'B1' | 'B2';
+  level: CEFRLevel;
   breakdown: Breakdown;
 }
 
-const levelIcons: Record<string, React.ElementType> = {
+const levelIcons: Record<CEFRLevel, React.ElementType> = {
   'A1': BookOpen,
   'A2': Trophy,
   'B1': GraduationCap,
   'B2': Rocket,
+  'C1': Award,
+  'C2': Star,
 };
 
-const levelColors: Record<string, { bg: string; text: string; gradient: string }> = {
+const levelColors: Record<CEFRLevel, { bg: string; text: string; gradient: string }> = {
   'A1': { bg: 'bg-emerald-500', text: 'text-emerald-600', gradient: 'from-emerald-400 to-emerald-600' },
   'A2': { bg: 'bg-sky-500', text: 'text-sky-600', gradient: 'from-sky-400 to-sky-600' },
   'B1': { bg: 'bg-violet-500', text: 'text-violet-600', gradient: 'from-violet-400 to-violet-600' },
   'B2': { bg: 'bg-amber-500', text: 'text-amber-600', gradient: 'from-amber-400 to-amber-600' },
+  'C1': { bg: 'bg-rose-500', text: 'text-rose-600', gradient: 'from-rose-400 to-rose-600' },
+  'C2': { bg: 'bg-indigo-500', text: 'text-indigo-600', gradient: 'from-indigo-400 to-indigo-600' },
 };
 
 const PlacementTestResult = () => {
