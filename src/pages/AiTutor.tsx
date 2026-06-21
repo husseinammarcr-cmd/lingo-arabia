@@ -223,6 +223,7 @@ const AiTutor = () => {
 
   const startCall = useCallback(async () => {
     if (inCall) return;
+    setCurrentStage('entrance');
     setCallStatus('connecting');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
