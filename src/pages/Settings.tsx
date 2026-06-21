@@ -219,7 +219,7 @@ const PanelCard = ({
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { user, profile, signOut, refreshProfile } = useAuth();
+  const { user, profile, signOut, refreshProfile, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const tabsRef = useRef<HTMLDivElement>(null);
 
