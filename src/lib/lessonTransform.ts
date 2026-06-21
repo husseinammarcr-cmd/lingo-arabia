@@ -1,64 +1,27 @@
-// Compact lesson transform — keeps lessons short AND only includes
-// exercises/quiz items that reference vocab/sentences the user actually studied.
+// Compact lesson transform — derives kept vocab/sentences from what the
+// practice & quiz actually use, so the learner never sees an exercise that
+// references material the lesson never taught.
 import type { LessonContent, ExerciseItem, QuizItem, VocabItem, SentenceItem } from './a1-lessons';
 
-const MAX_VOCAB = 4;
-const MAX_SENTENCES = 2;
 const MAX_EXERCISES = 3;
 const MAX_QUIZ = 2;
-
-/**
- * Inject a speaking exercise that asks the user to pronounce the first sentence
- * (or first vocab example) of the lesson.
- */
-function buildSpeakingExercise(lesson: LessonContent): ExerciseItem | null {
-  const sentence =
-    lesson.sentences?.[0]?.english ||
-    lesson.vocab?.[0]?.example ||
-    lesson.vocab?.[0]?.english;
-  if (!sentence) return null;
-  const arabicHint =
-    lesson.sentences?.[0]?.arabic ||
-    lesson.vocab?.[0]?.exampleAr ||
-    lesson.vocab?.[0]?.arabic ||
-    '';
-  return {
-    type: 'speaking' as ExerciseItem['type'],
-    promptAr: 'انطق الجملة التالية بالإنجليزية',
-    promptEn: arabicHint,
-    data: {
-      answer: sentence,
-    },
-  };
-}
+// Soft caps for the Learn step. We may keep fewer if the exercises don't
+// reference that many items, or slightly more if the exercises need them.
+const MIN_VOCAB = 3;
+const MIN_SENTENCES = 1;
+const HARD_MAX_VOCAB = 8;
+const HARD_MAX_SENTENCES = 4;
 
 const norm = (s: string | undefined | null) =>
   (s || '').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '').trim();
 
-function buildAllowedSet(vocab: VocabItem[], sentences: SentenceItem[]): Set<string> {
-  const set = new Set<string>();
-  const addTokens = (text?: string) => {
-    const n = norm(text);
-    if (!n) return;
-    set.add(n);
-    n.split(/\s+/).forEach((tok) => { if (tok.length > 1) set.add(tok); });
-  };
-  vocab.forEach((v) => {
-    addTokens(v.english);
-    addTokens(v.arabic);
-    addTokens(v.example);
-    addTokens(v.exampleAr);
-  });
-  sentences.forEach((s) => {
-    addTokens(s.english);
-    addTokens(s.arabic);
-  });
-  return set;
-}
+const tokens = (s: string | undefined | null) => {
+  const n = norm(s);
+  if (!n) return [] as string[];
+  return [n, ...n.split(/\s+/).filter((t) => t.length > 1)];
+};
 
-/**
- * Collect every English text bit an exercise references (answer, options, words, pairs…).
- */
+/** Every English/Arabic text bit an exercise references. */
 function collectExerciseTexts(ex: ExerciseItem): string[] {
   const out: string[] = [];
   const d = ex.data || {};
@@ -71,16 +34,45 @@ function collectExerciseTexts(ex: ExerciseItem): string[] {
   return out;
 }
 
-function exerciseIsTaught(ex: ExerciseItem, allowed: Set<string>): boolean {
-  const texts = collectExerciseTexts(ex);
-  if (texts.length === 0) return true; // nothing to verify against
-  // Pass if any meaningful token in the exercise appears in studied content.
-  return texts.some((t) => {
-    const n = norm(t);
-    if (!n) return false;
-    if (allowed.has(n)) return true;
-    return n.split(/\s+/).some((tok) => tok.length > 1 && allowed.has(tok));
-  });
+function exerciseTokenSet(ex: ExerciseItem): Set<string> {
+  const set = new Set<string>();
+  collectExerciseTexts(ex).forEach((t) => tokens(t).forEach((tok) => set.add(tok)));
+  return set;
+}
+
+function vocabTokenSet(v: VocabItem): Set<string> {
+  const set = new Set<string>();
+  [v.english, v.arabic, v.example, v.exampleAr].forEach((t) =>
+    tokens(t).forEach((tok) => set.add(tok))
+  );
+  return set;
+}
+
+function sentenceTokenSet(s: SentenceItem): Set<string> {
+  const set = new Set<string>();
+  [s.english, s.arabic].forEach((t) => tokens(t).forEach((tok) => set.add(tok)));
+  return set;
+}
+
+const intersects = (a: Set<string>, b: Set<string>) => {
+  for (const t of a) if (b.has(t)) return true;
+  return false;
+};
+
+function buildSpeakingExercise(
+  vocab: VocabItem[],
+  sentences: SentenceItem[]
+): ExerciseItem | null {
+  const sentence = sentences[0]?.english || vocab[0]?.example || vocab[0]?.english;
+  if (!sentence) return null;
+  const arabicHint =
+    sentences[0]?.arabic || vocab[0]?.exampleAr || vocab[0]?.arabic || '';
+  return {
+    type: 'speaking' as ExerciseItem['type'],
+    promptAr: 'انطق الجملة التالية بالإنجليزية',
+    promptEn: arabicHint,
+    data: { answer: sentence },
+  };
 }
 
 const cache = new Map<string, LessonContent>();
@@ -88,29 +80,104 @@ const cache = new Map<string, LessonContent>();
 export function compactLesson(lesson: LessonContent): LessonContent {
   if (cache.has(lesson.lessonId)) return cache.get(lesson.lessonId)!;
 
-  const vocab = (lesson.vocab || []).slice(0, MAX_VOCAB);
-  const sentences = (lesson.sentences || []).slice(0, MAX_SENTENCES);
+  const allVocab = lesson.vocab || [];
+  const allSentences = lesson.sentences || [];
+  const allExercises = lesson.exercises || [];
+  const allQuiz = (lesson.quiz || []) as QuizItem[];
 
-  const allowed = buildAllowedSet(vocab, sentences);
+  // 1. Pick the practice + quiz items first, preferring those that reuse
+  //    early vocab (so the learner studies a tight, coherent set).
+  const earlyVocabTokens = new Set<string>();
+  allVocab.slice(0, MIN_VOCAB).forEach((v) =>
+    vocabTokenSet(v).forEach((t) => earlyVocabTokens.add(t))
+  );
+  allSentences.slice(0, MIN_SENTENCES).forEach((s) =>
+    sentenceTokenSet(s).forEach((t) => earlyVocabTokens.add(t))
+  );
 
-  // Only keep exercises/quiz items whose content the user has actually studied.
-  const taughtExercises = (lesson.exercises || []).filter((e) => exerciseIsTaught(e, allowed));
-  const taughtQuiz = (lesson.quiz || []).filter((q) => exerciseIsTaught(q, allowed));
+  const scoreExercise = (ex: ExerciseItem): number =>
+    intersects(exerciseTokenSet(ex), earlyVocabTokens) ? 1 : 0;
 
-  const exercises = taughtExercises.slice(0, MAX_EXERCISES);
-  const quiz = taughtQuiz.slice(0, MAX_QUIZ) as QuizItem[];
+  const rankedExercises = [...allExercises]
+    .map((e, i) => ({ e, i, score: scoreExercise(e) }))
+    .sort((a, b) => b.score - a.score || a.i - b.i)
+    .map((x) => x.e);
 
-  // Add speaking exercise as bonus practice (uses kept sentence/vocab — always safe).
-  const speaking = buildSpeakingExercise(lesson);
-  if (speaking) exercises.push(speaking);
+  const rankedQuiz = [...allQuiz]
+    .map((q, i) => ({ q, i, score: scoreExercise(q) }))
+    .sort((a, b) => b.score - a.score || a.i - b.i)
+    .map((x) => x.q);
+
+  const exercises = rankedExercises.slice(0, MAX_EXERCISES);
+  const quiz = rankedQuiz.slice(0, MAX_QUIZ);
+
+  // 2. Derive the allowed vocab/sentence set precisely from what those
+  //    exercises actually reference (plus a small base so Learn isn't empty).
+  const requiredTokens = new Set<string>();
+  [...exercises, ...quiz].forEach((ex) =>
+    exerciseTokenSet(ex).forEach((t) => requiredTokens.add(t))
+  );
+
+  const keepVocab: VocabItem[] = [];
+  const keepVocabIdx = new Set<number>();
+  allVocab.forEach((v, i) => {
+    if (intersects(vocabTokenSet(v), requiredTokens)) {
+      keepVocab.push(v);
+      keepVocabIdx.add(i);
+    }
+  });
+  // Pad with first few so we always teach at least MIN_VOCAB items.
+  for (let i = 0; i < allVocab.length && keepVocab.length < MIN_VOCAB; i++) {
+    if (!keepVocabIdx.has(i)) {
+      keepVocab.push(allVocab[i]);
+      keepVocabIdx.add(i);
+    }
+  }
+  const vocab = keepVocab.slice(0, HARD_MAX_VOCAB);
+
+  const keepSentences: SentenceItem[] = [];
+  const keepSentenceIdx = new Set<number>();
+  allSentences.forEach((s, i) => {
+    if (intersects(sentenceTokenSet(s), requiredTokens)) {
+      keepSentences.push(s);
+      keepSentenceIdx.add(i);
+    }
+  });
+  for (let i = 0; i < allSentences.length && keepSentences.length < MIN_SENTENCES; i++) {
+    if (!keepSentenceIdx.has(i)) {
+      keepSentences.push(allSentences[i]);
+      keepSentenceIdx.add(i);
+    }
+  }
+  const sentences = keepSentences.slice(0, HARD_MAX_SENTENCES);
+
+  // 3. Safety net: drop any exercise/quiz item that still references content
+  //    not present in the final kept vocab/sentences set.
+  const taughtTokens = new Set<string>();
+  vocab.forEach((v) => vocabTokenSet(v).forEach((t) => taughtTokens.add(t)));
+  sentences.forEach((s) => sentenceTokenSet(s).forEach((t) => taughtTokens.add(t)));
+
+  const isTaught = (ex: ExerciseItem) => {
+    const texts = collectExerciseTexts(ex);
+    if (texts.length === 0) return true;
+    const exTok = exerciseTokenSet(ex);
+    return intersects(exTok, taughtTokens);
+  };
+
+  const safeExercises = exercises.filter(isTaught);
+  const safeQuiz = quiz.filter(isTaught);
+
+  // 4. Speaking bonus uses the first kept sentence/vocab — always safe.
+  const speaking = buildSpeakingExercise(vocab, sentences);
+  if (speaking) safeExercises.push(speaking);
 
   const compact: LessonContent = {
     ...lesson,
     vocab,
     sentences,
-    exercises,
-    quiz,
-    passingScore: 50, // open-progression friendly threshold for badge/needs_review
+    exercises: safeExercises,
+    quiz: safeQuiz,
+    passingScore: 50,
   };
   cache.set(lesson.lessonId, compact);
   return compact;
