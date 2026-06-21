@@ -171,6 +171,8 @@ const PlacementTestResult = () => {
                           lvl === 'A2' && "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
                           lvl === 'B1' && "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
                           lvl === 'B2' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+                          lvl === 'C1' && "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
+                          lvl === 'C2' && "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
                         )}>
                           {lvl}
                         </span>
