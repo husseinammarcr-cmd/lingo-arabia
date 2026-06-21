@@ -22,32 +22,40 @@ import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
+type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+
 interface Breakdown {
   A1: { correct: number; total: number };
   A2: { correct: number; total: number };
   B1: { correct: number; total: number };
   B2: { correct: number; total: number };
+  C1?: { correct: number; total: number };
+  C2?: { correct: number; total: number };
 }
 
 interface LocationState {
   score: number;
   total: number;
-  level: 'A1' | 'A2' | 'B1' | 'B2';
+  level: CEFRLevel;
   breakdown: Breakdown;
 }
 
-const levelIcons: Record<string, React.ElementType> = {
+const levelIcons: Record<CEFRLevel, React.ElementType> = {
   'A1': BookOpen,
   'A2': Trophy,
   'B1': GraduationCap,
   'B2': Rocket,
+  'C1': Award,
+  'C2': Star,
 };
 
-const levelColors: Record<string, { bg: string; text: string; gradient: string }> = {
+const levelColors: Record<CEFRLevel, { bg: string; text: string; gradient: string }> = {
   'A1': { bg: 'bg-emerald-500', text: 'text-emerald-600', gradient: 'from-emerald-400 to-emerald-600' },
   'A2': { bg: 'bg-sky-500', text: 'text-sky-600', gradient: 'from-sky-400 to-sky-600' },
   'B1': { bg: 'bg-violet-500', text: 'text-violet-600', gradient: 'from-violet-400 to-violet-600' },
   'B2': { bg: 'bg-amber-500', text: 'text-amber-600', gradient: 'from-amber-400 to-amber-600' },
+  'C1': { bg: 'bg-rose-500', text: 'text-rose-600', gradient: 'from-rose-400 to-rose-600' },
+  'C2': { bg: 'bg-indigo-500', text: 'text-indigo-600', gradient: 'from-indigo-400 to-indigo-600' },
 };
 
 const PlacementTestResult = () => {
@@ -60,7 +68,7 @@ const PlacementTestResult = () => {
   // If no state, use profile data
   const score = state?.score ?? profile?.placement_score ?? 0;
   const total = state?.total ?? 30;
-  const level = (state?.level ?? profile?.placement_level ?? 'A1') as 'A1' | 'A2' | 'B1' | 'B2';
+  const level = (state?.level ?? profile?.placement_level ?? 'A1') as CEFRLevel;
   const breakdown = state?.breakdown;
 
   const percentage = Math.round((score / total) * 100);
@@ -149,8 +157,9 @@ const PlacementTestResult = () => {
               <CardContent className="p-6">
                 <h3 className="font-bold text-foreground mb-4">تفاصيل الأداء</h3>
                 <div className="space-y-3">
-                  {(['A1', 'A2', 'B1', 'B2'] as const).map((lvl) => {
+                  {(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as const).map((lvl) => {
                     const data = breakdown[lvl];
+                    if (!data) return null;
                     const lvlPercentage = data.total > 0 ? (data.correct / data.total) * 100 : 0;
                     const lvlColors = levelColors[lvl];
                     
@@ -162,6 +171,8 @@ const PlacementTestResult = () => {
                           lvl === 'A2' && "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
                           lvl === 'B1' && "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
                           lvl === 'B2' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+                          lvl === 'C1' && "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
+                          lvl === 'C2' && "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
                         )}>
                           {lvl}
                         </span>
