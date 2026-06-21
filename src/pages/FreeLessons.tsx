@@ -1,33 +1,51 @@
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Book, ChevronLeft, GraduationCap, Star, Users, BookOpen, Mic, PenTool, MessageCircle, Globe, Award } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Book,
+  ChevronLeft,
+  ChevronDown,
+  GraduationCap,
+  Star,
+  Users,
+  BookOpen,
+  Mic,
+  PenTool,
+  MessageCircle,
+  Globe,
+  Award,
+  Sparkles,
+  Target,
+} from 'lucide-react';
 import { CURRICULUM } from '@/lib/curriculum';
 import { useAuth } from '@/contexts/AuthContext';
-import Header from '@/components/Header';
-// Get first lesson of each unit for public preview
-const getFreeLessons = () => {
-  const freeLessons: Array<{
-    levelCode: string;
-    levelTitleAr: string;
-    levelTitleEn: string;
-    levelColor: string;
-    units: Array<{
-      unitId: string;
-      unitTitleAr: string;
-      unitTitleEn: string;
-      lessonId: string;
-      lessonTitleAr: string;
-      lessonTitleEn: string;
-      xpReward: number;
-    }>;
-  }> = [];
+import DashboardLayout from '@/components/DashboardLayout';
+import { cn } from '@/lib/utils';
 
-  for (const level of CURRICULUM) {
-    const units = level.units.map(unit => ({
+interface LessonUnit {
+  unitId: string;
+  unitTitleAr: string;
+  unitTitleEn: string;
+  lessonId: string;
+  lessonTitleAr: string;
+  lessonTitleEn: string;
+  xpReward: number;
+}
+
+interface LevelGroup {
+  levelCode: string;
+  levelTitleAr: string;
+  levelTitleEn: string;
+  units: LessonUnit[];
+}
+
+const getFreeLessons = (): LevelGroup[] => {
+  return CURRICULUM.map((level) => ({
+    levelCode: level.code,
+    levelTitleAr: level.titleAr,
+    levelTitleEn: level.titleEn,
+    units: level.units.map((unit) => ({
       unitId: unit.id,
       unitTitleAr: unit.titleAr,
       unitTitleEn: unit.titleEn,
@@ -35,269 +53,315 @@ const getFreeLessons = () => {
       lessonTitleAr: unit.lessons[0].titleAr,
       lessonTitleEn: unit.lessons[0].titleEn,
       xpReward: unit.lessons[0].xpReward,
-    }));
-
-    freeLessons.push({
-      levelCode: level.code,
-      levelTitleAr: level.titleAr,
-      levelTitleEn: level.titleEn,
-      levelColor: level.color,
-      units,
-    });
-  }
-
-  return freeLessons;
+    })),
+  }));
 };
 
-const getLevelGradient = (color: string) => {
-  const gradients: Record<string, string> = {
-    emerald: 'from-emerald-500 to-emerald-600',
-    sky: 'from-sky-500 to-sky-600',
-    violet: 'from-violet-500 to-violet-600',
-    amber: 'from-amber-500 to-amber-600',
-    rose: 'from-rose-500 to-rose-600',
-    fuchsia: 'from-fuchsia-500 to-fuchsia-600',
-  };
-  return gradients[color] || 'from-primary to-primary/80';
+const LEVEL_THEME: Record<string, { grad: string; circle: string; text: string; icon: typeof BookOpen }> = {
+  A1: { grad: 'linear-gradient(145deg, #cdff4f, #a7e31b)', circle: '#dcff82', text: '#111', icon: BookOpen },
+  A2: { grad: 'linear-gradient(145deg, #a574ff, #753aeb)', circle: '#8b52ff', text: '#fff', icon: Mic },
+  B1: { grad: 'linear-gradient(145deg, #ff9dcb, #ed5f9f)', circle: '#ffb8da', text: '#111', icon: PenTool },
+  B2: { grad: 'linear-gradient(145deg, #5cdcff, #2196f3)', circle: '#86e4ff', text: '#111', icon: MessageCircle },
+  C1: { grad: 'linear-gradient(145deg, #ffae3a, #ff6a13)', circle: '#ffce8a', text: '#111', icon: Globe },
+  C2: { grad: 'linear-gradient(145deg, #ffe27a, #f1b733)', circle: '#ffea8a', text: '#111', icon: Award },
 };
 
-const getLevelIcon = (code: string) => {
-  const icons: Record<string, React.ReactNode> = {
-    A1: <BookOpen className="w-5 h-5 text-white" />,
-    A2: <Mic className="w-5 h-5 text-white" />,
-    B1: <PenTool className="w-5 h-5 text-white" />,
-    B2: <MessageCircle className="w-5 h-5 text-white" />,
-    C1: <Globe className="w-5 h-5 text-white" />,
-    C2: <Award className="w-5 h-5 text-white" />,
-  };
-  return icons[code] || <Book className="w-5 h-5 text-white" />;
-};
-
-const getLevelDescription = (code: string) => {
-  const descriptions: Record<string, string> = {
-    A1: 'الأساسيات والتحيات اليومية',
-    A2: 'المحادثات البسيطة والمواقف اليومية',
-    B1: 'التعبير عن الآراء والمواضيع المألوفة',
-    B2: 'النقاشات المتقدمة والنصوص المعقدة',
-    C1: 'الطلاقة والاستخدام الأكاديمي',
-    C2: 'الإتقان والتعبير الاحترافي',
-  };
-  return descriptions[code] || '';
+const LEVEL_DESC: Record<string, string> = {
+  A1: 'الأساسيات والتحيات اليومية',
+  A2: 'المحادثات البسيطة والمواقف اليومية',
+  B1: 'التعبير عن الآراء والمواضيع المألوفة',
+  B2: 'النقاشات المتقدمة والنصوص المعقدة',
+  C1: 'الطلاقة والاستخدام الأكاديمي',
+  C2: 'الإتقان والتعبير الاحترافي',
 };
 
 const FreeLessons = () => {
   const { user } = useAuth();
   const freeLessons = getFreeLessons();
-  const totalLessons = freeLessons.reduce((acc, level) => acc + level.units.length, 0);
+  const totalLessons = freeLessons.reduce((acc, l) => acc + l.units.length, 0);
+  const [expanded, setExpanded] = useState<string | null>(freeLessons[0]?.levelCode ?? null);
 
-  // JSON-LD structured data
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'دروس إنجليزية مجانية - LingoArab',
-    description: 'تصفح دروس تعلم اللغة الإنجليزية المجانية للناطقين بالعربية. دروس تفاعلية من المستوى المبتدئ إلى المتقدم.',
     url: 'https://lingoarab.com/free-lessons',
     inLanguage: ['ar', 'en'],
-    provider: {
-      '@type': 'Organization',
-      name: 'LingoArab',
-      url: 'https://lingoarab.com',
-    },
-    hasPart: freeLessons.flatMap(level =>
-      level.units.map(unit => ({
+    hasPart: freeLessons.flatMap((level) =>
+      level.units.map((u) => ({
         '@type': 'Course',
-        name: `${unit.lessonTitleEn} - ${level.levelCode}`,
-        description: `${unit.unitTitleAr} - ${unit.lessonTitleAr}`,
-        provider: {
-          '@type': 'Organization',
-          name: 'LingoArab',
-        },
+        name: `${u.lessonTitleEn} - ${level.levelCode}`,
         educationalLevel: level.levelCode,
-        inLanguage: ['ar', 'en'],
-      }))
+      })),
     ),
-  };
-
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'الرئيسية',
-        item: 'https://lingoarab.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'دروس مجانية',
-        item: 'https://lingoarab.com/free-lessons',
-      },
-    ],
   };
 
   return (
     <>
       <Helmet>
-        <title>دروس إنجليزية مجانية | تعلم الإنجليزية للعرب - LingoArab</title>
-        <meta 
-          name="description" 
-          content="استكشف دروسنا المجانية لتعلم اللغة الإنجليزية. دروس تفاعلية مصممة خصيصاً للناطقين بالعربية من المستوى A1 إلى C2." 
+        <title>دروس إنجليزية مجانية | LingoArab</title>
+        <meta
+          name="description"
+          content="استكشف دروسنا المجانية لتعلم اللغة الإنجليزية. دروس تفاعلية مصممة خصيصاً للناطقين بالعربية من المستوى A1 إلى C2."
         />
-        <meta name="keywords" content="دروس إنجليزية مجانية, تعلم الإنجليزية, تعليم اللغة الإنجليزية, دروس مجانية, LingoArab" />
         <link rel="canonical" href="https://lingoarab.com/free-lessons" />
-        <meta property="og:title" content="دروس إنجليزية مجانية | LingoArab" />
-        <meta property="og:description" content="استكشف دروسنا المجانية لتعلم اللغة الإنجليزية. دروس تفاعلية مصممة للناطقين بالعربية." />
-        <meta property="og:url" content="https://lingoarab.com/free-lessons" />
-        <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
       </Helmet>
 
-      <Header showBack showAuthButton />
-      <div className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto">
-              <Badge variant="secondary" className="mb-4">
-                <Book className="w-4 h-4 ml-2" />
-                {totalLessons} درس مجاني
-              </Badge>
-              <h1 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-l from-primary to-primary/70 bg-clip-text text-transparent">
-                دروس إنجليزية مجانية
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                استكشف عينة من دروسنا التفاعلية المصممة خصيصاً للناطقين بالعربية.
-                ابدأ رحلتك في تعلم الإنجليزية اليوم!
+      <DashboardLayout
+        titlePrimary="Free"
+        titleAccent="lessons."
+        gradient="linear-gradient(120deg, #cdff4f 0%, #5cdcff 100%)"
+        glow1="rgba(186,243,58,0.20)"
+        glow2="rgba(92,220,255,0.18)"
+        showGreeting={!!user}
+        testId="free-lessons-page"
+      >
+        {/* Hero card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative rounded-3xl p-5 sm:p-6 overflow-hidden mb-6 shadow-[0_10px_40px_rgba(0,0,0,0.3)]"
+          style={{
+            background:
+              'linear-gradient(135deg, #cdff4f 0%, #a7e31b 60%, #5cdcff 100%)',
+            color: '#111',
+          }}
+          data-testid="free-hero"
+        >
+          <span
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              bottom: -80,
+              left: -80,
+              width: 240,
+              height: 240,
+              background: 'rgba(255,255,255,0.15)',
+            }}
+          />
+          <div className="relative flex items-start gap-4">
+            <div className="h-14 w-14 rounded-2xl bg-black/15 flex items-center justify-center flex-shrink-0">
+              <Book className="h-7 w-7" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[10px] font-black tracking-[0.18em] uppercase opacity-75 mb-1">
+                Free Forever
               </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link to={user ? "/app/courses" : "/auth"}>
-                  <Button size="lg" className="gap-2">
-                    <GraduationCap className="w-5 h-5" />
-                    {user ? "استمر في التعلم" : "ابدأ التعلم مجاناً"}
-                  </Button>
-                </Link>
-                <Link to="/placement-test">
-                  <Button size="lg" variant="outline" className="gap-2">
-                    حدد مستواك
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
-                </Link>
-              </div>
+              <h2 className="text-2xl sm:text-3xl font-black leading-tight mb-2">
+                {totalLessons} درس مجاني للجميع
+              </h2>
+              <p className="text-sm font-bold opacity-85">
+                ابدأ رحلتك في تعلم الإنجليزية من المستوى المبتدئ إلى الإتقان
+              </p>
             </div>
           </div>
-        </section>
 
-        {/* Stats Section */}
-        <section className="py-8 border-b">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto text-center">
-              <div>
-                <div className="text-2xl md:text-3xl font-bold text-primary">{CURRICULUM.length}</div>
-                <div className="text-sm text-muted-foreground">مستويات CEFR</div>
-              </div>
-              <div>
-                <div className="text-2xl md:text-3xl font-bold text-primary">{totalLessons}</div>
-                <div className="text-sm text-muted-foreground">درس مجاني</div>
-              </div>
-              <div>
-                <div className="text-2xl md:text-3xl font-bold text-primary">100%</div>
-                <div className="text-sm text-muted-foreground">مجاني</div>
-              </div>
-            </div>
+          <div className="relative flex flex-wrap gap-2 mt-5">
+            <Link to={user ? '/app/courses' : '/auth'}>
+              <motion.span
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                className="px-5 py-2.5 rounded-full bg-[#111] text-[#cdff4f] font-extrabold text-sm flex items-center gap-2 shadow-lg"
+                data-testid="cta-start"
+              >
+                <GraduationCap className="w-4 h-4" />
+                {user ? 'استمر في التعلم' : 'ابدأ التعلم مجاناً'}
+              </motion.span>
+            </Link>
+            <Link to="/placement-test">
+              <motion.span
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                className="px-5 py-2.5 rounded-full bg-black/15 text-[#111] font-extrabold text-sm flex items-center gap-2"
+                data-testid="cta-placement"
+              >
+                <Target className="w-4 h-4" />
+                حدد مستواك
+              </motion.span>
+            </Link>
           </div>
-        </section>
+        </motion.div>
 
-        {/* Lessons by Level - Accordion */}
-        <section className="py-12 md:py-16">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-2xl font-bold text-center mb-8">تصفح الدروس حسب المستوى</h2>
-            <Accordion type="single" collapsible className="space-y-3">
-              {freeLessons.map((level) => (
-                <AccordionItem 
-                  key={level.levelCode} 
-                  value={level.levelCode}
-                  className="border rounded-xl overflow-hidden bg-card shadow-sm"
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6" data-testid="free-stats">
+          {[
+            { label: 'مستويات CEFR', value: CURRICULUM.length, accent: '#cdff4f' },
+            { label: 'درس مجاني', value: totalLessons, accent: '#a574ff' },
+            { label: 'مجاني', value: '100%', accent: '#ff9dcb' },
+          ].map((s, i) => (
+            <div
+              key={i}
+              className="rounded-2xl p-3 sm:p-4 bg-white/[0.04] border border-white/8 backdrop-blur-sm"
+            >
+              <div
+                className="text-2xl sm:text-3xl font-black"
+                style={{ color: s.accent }}
+              >
+                {s.value}
+              </div>
+              <p className="text-[11px] text-white/55 font-bold mt-1">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Section title */}
+        <h2 className="text-lg sm:text-xl font-extrabold text-white mb-3">
+          تصفح الدروس حسب المستوى
+        </h2>
+
+        {/* Levels accordion */}
+        <div className="space-y-3 mb-8">
+          {freeLessons.map((level, idx) => {
+            const theme = LEVEL_THEME[level.levelCode] || LEVEL_THEME.A1;
+            const LevelIcon = theme.icon;
+            const isOpen = expanded === level.levelCode;
+            return (
+              <motion.div
+                key={level.levelCode}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.04 * idx }}
+                className="rounded-3xl overflow-hidden bg-[#161618] border border-white/8"
+                data-testid={`level-${level.levelCode}`}
+              >
+                <button
+                  onClick={() =>
+                    setExpanded(isOpen ? null : level.levelCode)
+                  }
+                  data-testid={`level-toggle-${level.levelCode}`}
+                  className="w-full px-4 py-4 flex items-center gap-3 hover:bg-white/[0.02] transition-colors"
                 >
-                  <AccordionTrigger className="px-5 py-4 hover:no-underline hover:bg-muted/50">
-                    <div className="flex items-center gap-4 w-full">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center shrink-0 shadow-md`}>
-                        {getLevelIcon(level.levelCode)}
-                      </div>
-                      <div className="text-right flex-1">
-                        <p className="font-bold text-base">{level.levelTitleAr}</p>
-                        <p className="text-xs text-muted-foreground ltr-text">{level.levelTitleEn}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{getLevelDescription(level.levelCode)}</p>
-                      </div>
-                      <Badge variant="outline" className="shrink-0">
-                        {level.units.length} درس
-                      </Badge>
+                  <div
+                    className="h-12 w-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: theme.grad, color: theme.text }}
+                  >
+                    <LevelIcon className="h-6 w-6" />
+                  </div>
+                  <div className="flex-1 text-right min-w-0">
+                    <div className="flex items-center gap-2 justify-end">
+                      <span
+                        className="text-[10px] font-extrabold px-2 py-0.5 rounded-full"
+                        style={{
+                          background: `${theme.grad}`,
+                          color: theme.text,
+                        }}
+                      >
+                        {level.levelCode}
+                      </span>
+                      <p className="font-extrabold text-white text-sm">
+                        {level.levelTitleAr}
+                      </p>
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-5 pb-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                      {level.units.map((unit) => (
-                        <Link
-                          key={unit.lessonId}
-                          to={`/preview/lesson/${unit.lessonId}`}
-                          className="block"
-                        >
-                          <Card className="h-full hover:shadow-md transition-all duration-200 hover:border-primary/30 group">
-                            <CardContent className="p-4 flex items-center gap-3">
-                              <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${getLevelGradient(level.levelColor)} flex items-center justify-center shrink-0 opacity-80`}>
-                                <Book className="w-4 h-4 text-white" />
+                    <p className="text-[11px] text-white/45 mt-0.5">
+                      {LEVEL_DESC[level.levelCode]}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold text-white/50 px-2 py-1 rounded-md bg-white/5 flex-shrink-0">
+                    {level.units.length} درس
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      'h-4 w-4 text-white/50 transition-transform flex-shrink-0',
+                      isOpen && 'rotate-180',
+                    )}
+                  />
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-4 pb-4 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {level.units.map((unit) => (
+                          <Link
+                            key={unit.lessonId}
+                            to={`/preview/lesson/${unit.lessonId}`}
+                            className="block"
+                            data-testid={`lesson-${unit.lessonId}`}
+                          >
+                            <motion.div
+                              whileHover={{ y: -2 }}
+                              className="rounded-xl p-3 flex items-center gap-3 bg-white/[0.04] border border-white/8 hover:border-white/20 transition-colors"
+                            >
+                              <div
+                                className="h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                                style={{
+                                  background: theme.grad,
+                                  color: theme.text,
+                                }}
+                              >
+                                <Book className="h-4 w-4" />
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm group-hover:text-primary transition-colors truncate">
+                              <div className="flex-1 min-w-0 text-right">
+                                <p className="font-bold text-white text-xs truncate">
                                   {unit.unitTitleAr}
                                 </p>
-                                <p className="text-xs text-muted-foreground truncate ltr-text">
+                                <p
+                                  dir="ltr"
+                                  className="text-[10px] text-white/45 truncate"
+                                >
                                   {unit.lessonTitleEn}
                                 </p>
                               </div>
-                              <Badge variant="secondary" className="flex items-center gap-1 shrink-0 text-xs">
-                                <Star className="w-3 h-3" />
+                              <span
+                                className="flex items-center gap-0.5 text-[10px] font-extrabold flex-shrink-0 px-1.5 py-0.5 rounded-md bg-white/8 text-[#cdff4f]"
+                              >
+                                <Star className="h-2.5 w-2.5 fill-[#cdff4f]" />
                                 {unit.xpReward}
-                              </Badge>
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </section>
+                              </span>
+                            </motion.div>
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
 
-        {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-br from-primary/5 to-secondary/5">
-          <div className="container mx-auto px-4">
-            <Card className="max-w-2xl mx-auto text-center p-8">
-              <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h2 className="text-2xl font-bold mb-4">
-                انضم إلى آلاف المتعلمين
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                سجّل الآن للوصول إلى جميع الدروس، تتبع تقدمك، واكسب نقاط XP!
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link to={user ? "/app/courses" : "/auth"}>
-                  <Button size="lg">{user ? "استمر في التعلم" : "إنشاء حساب مجاني"}</Button>
-                </Link>
-                <Link to={user ? "/app/courses" : "/courses"}>
-                  <Button size="lg" variant="outline">
-                    استكشف المنهج الكامل
-                  </Button>
-                </Link>
-              </div>
-            </Card>
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative rounded-3xl p-6 overflow-hidden text-center mb-8"
+          style={{
+            background:
+              'linear-gradient(135deg, rgba(205,255,79,0.10) 0%, rgba(165,116,255,0.12) 60%, rgba(20,20,20,0.7) 100%)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(12px)',
+          }}
+        >
+          <Users className="w-10 h-10 mx-auto mb-3 text-[#cdff4f]" />
+          <h2 className="text-xl font-extrabold text-white mb-2">
+            انضم إلى آلاف المتعلمين
+          </h2>
+          <p className="text-sm text-white/60 mb-5 max-w-md mx-auto">
+            سجّل الآن للوصول إلى جميع الدروس، تتبع تقدمك، واكسب نقاط XP!
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link to={user ? '/app/courses' : '/auth'}>
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#cdff4f] text-[#111] font-extrabold text-sm">
+                <Sparkles className="w-4 h-4" />
+                {user ? 'استمر في التعلم' : 'إنشاء حساب مجاني'}
+              </span>
+            </Link>
+            <Link to={user ? '/app/courses' : '/courses'}>
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 text-white border border-white/15 font-bold text-sm">
+                <ChevronLeft className="w-4 h-4" />
+                استكشف المنهج
+              </span>
+            </Link>
           </div>
-        </section>
-      </div>
+        </motion.div>
+      </DashboardLayout>
     </>
   );
 };
