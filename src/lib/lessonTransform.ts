@@ -3,14 +3,13 @@
 // references material the lesson never taught.
 import type { LessonContent, ExerciseItem, QuizItem, VocabItem, SentenceItem } from './a1-lessons';
 
-const MAX_EXERCISES = 3;
-const MAX_QUIZ = 2;
-// Soft caps for the Learn step. We may keep fewer if the exercises don't
-// reference that many items, or slightly more if the exercises need them.
-const MIN_VOCAB = 3;
+const MAX_EXERCISES = 2;
+const MAX_QUIZ = 1;
+// Soft caps for the Learn step — keep the lesson short so it doesn't get boring.
+const MIN_VOCAB = 2;
 const MIN_SENTENCES = 1;
-const HARD_MAX_VOCAB = 8;
-const HARD_MAX_SENTENCES = 4;
+const HARD_MAX_VOCAB = 3;
+const HARD_MAX_SENTENCES = 1;
 
 const norm = (s: string | undefined | null) =>
   (s || '').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '').trim();
