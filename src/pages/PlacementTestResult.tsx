@@ -157,8 +157,9 @@ const PlacementTestResult = () => {
               <CardContent className="p-6">
                 <h3 className="font-bold text-foreground mb-4">تفاصيل الأداء</h3>
                 <div className="space-y-3">
-                  {(['A1', 'A2', 'B1', 'B2'] as const).map((lvl) => {
+                  {(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as const).map((lvl) => {
                     const data = breakdown[lvl];
+                    if (!data) return null;
                     const lvlPercentage = data.total > 0 ? (data.correct / data.total) * 100 : 0;
                     const lvlColors = levelColors[lvl];
                     
