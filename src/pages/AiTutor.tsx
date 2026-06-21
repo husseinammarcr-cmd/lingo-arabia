@@ -335,7 +335,7 @@ const AiTutor = () => {
 
       {/* Restaurant scenario video background layer */}
       {scenario === 'restaurant' && (
-        <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           {(['entrance', 'ordering', 'eating', 'paying'] as const).map((stage) => (
             <video
               key={stage}
