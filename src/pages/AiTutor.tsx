@@ -257,6 +257,9 @@ const AiTutor = () => {
             setPartialText('');
             setMessages(prev => [...prev, { role: 'user', text: msg.text }]);
           } else if (msg.type === 'ai_text') {
+            if (msg.stage && ['entrance', 'ordering', 'eating', 'paying'].includes(msg.stage)) {
+              setCurrentStage(msg.stage);
+            }
             setMessages(prev => [...prev, { role: 'assistant', text: msg.reply, correction: msg.correction, tip: msg.tip }]);
           } else if (msg.type === 'audio') {
             aiSpeakingRef.current = true;
