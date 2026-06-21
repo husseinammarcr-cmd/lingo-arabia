@@ -333,8 +333,8 @@ const AiTutor = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      {/* Restaurant scenario video background layer */}
-      {scenario === 'restaurant' && (
+      {/* Restaurant scenario video background layer - only active during a call */}
+      {scenario === 'restaurant' && inCall && (
         <div className="absolute inset-0 z-0 pointer-events-none">
           {(['entrance', 'ordering', 'eating', 'paying'] as const).map((stage) => (
             <video
