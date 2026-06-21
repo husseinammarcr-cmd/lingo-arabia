@@ -68,7 +68,7 @@ const PlacementTestResult = () => {
   // If no state, use profile data
   const score = state?.score ?? profile?.placement_score ?? 0;
   const total = state?.total ?? 30;
-  const level = (state?.level ?? profile?.placement_level ?? 'A1') as 'A1' | 'A2' | 'B1' | 'B2';
+  const level = (state?.level ?? profile?.placement_level ?? 'A1') as CEFRLevel;
   const breakdown = state?.breakdown;
 
   const percentage = Math.round((score / total) * 100);
