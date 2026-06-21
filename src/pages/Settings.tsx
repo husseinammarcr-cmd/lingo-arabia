@@ -270,8 +270,8 @@ const Settings = () => {
   }, [profile]);
 
   useEffect(() => {
-    if (!user) navigate('/auth');
-  }, [user, navigate]);
+    if (!authLoading && !user) navigate('/auth');
+  }, [user, authLoading, navigate]);
 
   useEffect(() => {
     const html = document.documentElement;
