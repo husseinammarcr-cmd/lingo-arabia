@@ -40,6 +40,7 @@ const AiTutor = () => {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [partialText, setPartialText] = useState('');
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [currentStage, setCurrentStage] = useState<'entrance' | 'ordering' | 'eating' | 'paying'>('entrance');
 
   const wsRef = useRef<WebSocket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
