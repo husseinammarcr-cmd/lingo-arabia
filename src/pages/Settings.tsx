@@ -219,7 +219,7 @@ const PanelCard = ({
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { user, profile, signOut, refreshProfile } = useAuth();
+  const { user, profile, signOut, refreshProfile, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -270,8 +270,8 @@ const Settings = () => {
   }, [profile]);
 
   useEffect(() => {
-    if (!user) navigate('/auth');
-  }, [user, navigate]);
+    if (!authLoading && !user) navigate('/auth');
+  }, [user, authLoading, navigate]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -417,7 +417,7 @@ const Settings = () => {
     });
   };
 
-  if (!user) return null;
+  if (authLoading || !user) return null;
 
   const firstName =
     profile?.display_name?.split(' ')[0] ??
