@@ -417,7 +417,7 @@ const Settings = () => {
     });
   };
 
-  if (!user) return null;
+  if (authLoading || !user) return null;
 
   const firstName =
     profile?.display_name?.split(' ')[0] ??
