@@ -127,7 +127,7 @@ const ACTION_CARDS = [
     action: 'tutor' as const,
   },
   {
-    titleAr: 'مراجعة\nالقواعد',
+    titleAr: 'تحديد\nالمستوى',
     icon: ScrollText,
     style: {
       gradient: 'linear-gradient(145deg, #ff9dcb, #ed5f9f)',
