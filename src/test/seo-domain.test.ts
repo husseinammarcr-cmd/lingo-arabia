@@ -1,8 +1,9 @@
+/// <reference types="node" />
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync } from "fs";
 import { resolve, join } from "path";
 
-const ROOT = resolve(__dirname, "../..");
+const ROOT = resolve(process.cwd());
 const EXPECTED_DOMAIN = "lingoarab.com";
 const FORBIDDEN_DOMAINS = [
   "arabizi-learn.lovable.app",
