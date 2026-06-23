@@ -27,8 +27,6 @@ Disallow: /profile
 Disallow: /settings
 Disallow: /notifications
 Disallow: /onboarding
-Disallow: /auth
-Disallow: /verify-email
 Disallow: /reset-password
 Disallow: /lesson/
 Disallow: /certificate
