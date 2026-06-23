@@ -39,7 +39,6 @@ Disallow: /app/
 Disallow: /admin
 Disallow: /profile
 Disallow: /settings
-Disallow: /auth
 Disallow: /lesson/
 
 # Allow Googlebot to crawl images for image search
