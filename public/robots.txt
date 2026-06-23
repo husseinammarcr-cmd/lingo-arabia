@@ -1,5 +1,5 @@
 # LingoArab Robots.txt
-# https://lingoarab.com
+# https://arabizi-learn.lovable.app
 
 # Default rule for all crawlers
 User-agent: *
