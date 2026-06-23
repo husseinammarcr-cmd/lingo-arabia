@@ -69,7 +69,6 @@ User-agent: GPTBot
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /profile
 Disallow: /settings
 Disallow: /lesson/
@@ -84,7 +83,6 @@ User-agent: ClaudeBot
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /profile
 Disallow: /settings
 Disallow: /lesson/
@@ -105,7 +103,6 @@ User-agent: Google-Extended
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /lesson/
 
 User-agent: GoogleOther
@@ -142,7 +139,6 @@ User-agent: CCBot
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /lesson/
 
 # Crawl-delay for less critical bots
