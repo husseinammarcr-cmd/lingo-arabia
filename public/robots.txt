@@ -158,4 +158,4 @@ User-agent: SemrushBot
 Crawl-delay: 10
 
 # Sitemap location
-Sitemap: https://lingoarab.com/sitemap.xml
+Sitemap: https://arabizi-learn.lovable.app/sitemap.xml
