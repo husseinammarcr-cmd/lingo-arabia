@@ -1,5 +1,5 @@
 # LingoArab Robots.txt
-# https://arabizi-learn.lovable.app
+# https://lingoarab.com
 
 # Default rule for all crawlers
 User-agent: *
@@ -149,4 +149,4 @@ User-agent: SemrushBot
 Crawl-delay: 10
 
 # Sitemap location
-Sitemap: https://arabizi-learn.lovable.app/sitemap.xml
+Sitemap: https://lingoarab.com/sitemap.xml
