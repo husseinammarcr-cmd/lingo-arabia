@@ -1,5 +1,5 @@
 # LingoArab Robots.txt
-# https://lingoarab.com
+# https://arabizi-learn.lovable.app
 
 # Default rule for all crawlers
 User-agent: *
@@ -10,8 +10,6 @@ Disallow: /profile
 Disallow: /settings
 Disallow: /notifications
 Disallow: /onboarding
-Disallow: /auth
-Disallow: /verify-email
 Disallow: /reset-password
 Disallow: /lesson/
 Disallow: /certificate
@@ -29,8 +27,6 @@ Disallow: /profile
 Disallow: /settings
 Disallow: /notifications
 Disallow: /onboarding
-Disallow: /auth
-Disallow: /verify-email
 Disallow: /reset-password
 Disallow: /lesson/
 Disallow: /certificate
@@ -43,7 +39,6 @@ Disallow: /app/
 Disallow: /admin
 Disallow: /profile
 Disallow: /settings
-Disallow: /auth
 Disallow: /lesson/
 
 # Allow Googlebot to crawl images for image search
@@ -74,7 +69,6 @@ User-agent: GPTBot
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /profile
 Disallow: /settings
 Disallow: /lesson/
@@ -89,7 +83,6 @@ User-agent: ClaudeBot
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /profile
 Disallow: /settings
 Disallow: /lesson/
@@ -110,7 +103,6 @@ User-agent: Google-Extended
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /lesson/
 
 User-agent: GoogleOther
@@ -147,7 +139,6 @@ User-agent: CCBot
 Allow: /
 Disallow: /app/
 Disallow: /admin
-Disallow: /auth
 Disallow: /lesson/
 
 # Crawl-delay for less critical bots
@@ -158,4 +149,4 @@ User-agent: SemrushBot
 Crawl-delay: 10
 
 # Sitemap location
-Sitemap: https://lingoarab.com/sitemap.xml
+Sitemap: https://arabizi-learn.lovable.app/sitemap.xml
