@@ -152,6 +152,7 @@
   animation: fadeIn 1s ease-out;
   position: relative;
   z-index: 3;
+  min-width: 0;
 }
 
 .lingo-arab-wrapper .hero-subtitle {
