@@ -1,4 +1,4 @@
-# UI alignment
-- [ ] Identify older public and support pages compared with the current updated interface.
-- [ ] Update their presentation to match the existing new UI without changing its colors or behavior.
-- [ ] Verify representative pages on desktop and mobile.
+# UI refresh
+- [ ] Align public blog, article, courses, policies, and weekly prize with the updated site layout.
+- [ ] Check other older public pages and refresh where needed without changing behavior or palette.
+- [ ] Verify desktop/mobile rendering, links, and diagnostic output.
