@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import Header from '@/components/Header';
-import PageBackground from '@/components/PageBackground';
+import DashboardLayout from '@/components/DashboardLayout';
 import { allStaticArticles as staticArticles } from '@/lib/staticBlogData';
 
 const SITE_URL = 'https://lingoarab.com';
@@ -172,24 +171,22 @@ const BlogArticle = () => {
 
   if (isLoading) {
     return (
-      <PageBackground>
-        <Header showBack showUserInfo />
-        <main className="container mx-auto px-4 py-8">
+      <DashboardLayout titlePrimary="The" titleAccent="Journal." showGreeting={false} testId="blog-article-page">
+        <main className="py-4 sm:py-8">
           <Skeleton className="h-12 w-3/4 mb-4" />
           <Skeleton className="h-64 w-full mb-8" />
           <Skeleton className="h-4 w-full mb-2" />
           <Skeleton className="h-4 w-full mb-2" />
           <Skeleton className="h-4 w-2/3" />
         </main>
-      </PageBackground>
+      </DashboardLayout>
     );
   }
 
   if (error || !article) {
     return (
-      <PageBackground>
-        <Header showBack showUserInfo />
-        <main className="container mx-auto px-4 py-16 text-center">
+      <DashboardLayout titlePrimary="The" titleAccent="Journal." showGreeting={false} testId="blog-article-page">
+        <main className="py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">المقال غير موجود</h1>
           <Link to="/blog">
             <Button>
@@ -198,13 +195,13 @@ const BlogArticle = () => {
             </Button>
           </Link>
         </main>
-      </PageBackground>
+      </DashboardLayout>
     );
   }
 
 
   return (
-    <PageBackground>
+    <DashboardLayout titlePrimary="The" titleAccent="Journal." showGreeting={false} testId="blog-article-page">
       <Helmet>
         <title>{article.title_ar} - Lingo Arab</title>
         <meta name="description" content={article.excerpt_ar} />
@@ -234,14 +231,13 @@ const BlogArticle = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
       
-      <Header showBack showUserInfo />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="py-4 sm:py-8">
         <motion.article
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto"
+          className="max-w-4xl mx-auto min-w-0"
         >
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -265,7 +261,7 @@ const BlogArticle = () => {
           {article.category && (
             <Badge 
               className="mb-4"
-              style={{ backgroundColor: article.category.color }}
+              
             >
               <Tag className="w-3 h-3 ml-1" />
               {article.category.name_ar}
@@ -295,7 +291,7 @@ const BlogArticle = () => {
 
           {/* Featured Image */}
           {article.featured_image && (
-            <div className="mb-8 rounded-2xl overflow-hidden">
+            <div className="mb-8 rounded-md overflow-hidden">
               <img 
                 src={article.featured_image} 
                 alt={article.title_ar}
@@ -312,26 +308,26 @@ const BlogArticle = () => {
               <Button
                 size="icon"
                 variant="outline"
-                className="h-9 w-9 rounded-full bg-[#1877F2] hover:bg-[#1877F2]/90 border-0"
+                className="h-9 w-9 rounded-md"
                 onClick={() => handleShare('facebook')}
               >
-                <Facebook className="w-4 h-4 text-white" />
+                <Facebook className="w-4 h-4" />
               </Button>
               <Button
                 size="icon"
                 variant="outline"
-                className="h-9 w-9 rounded-full bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 border-0"
+                className="h-9 w-9 rounded-md"
                 onClick={() => handleShare('twitter')}
               >
-                <Twitter className="w-4 h-4 text-white" />
+                <Twitter className="w-4 h-4" />
               </Button>
               <Button
                 size="icon"
                 variant="outline"
-                className="h-9 w-9 rounded-full bg-[#0A66C2] hover:bg-[#0A66C2]/90 border-0"
+                className="h-9 w-9 rounded-md"
                 onClick={() => handleShare('linkedin')}
               >
-                <Linkedin className="w-4 h-4 text-white" />
+                <Linkedin className="w-4 h-4" />
               </Button>
               <Button
                 size="icon"
@@ -375,7 +371,7 @@ const BlogArticle = () => {
           )}
         </motion.article>
       </main>
-    </PageBackground>
+    </DashboardLayout>
   );
 };
 

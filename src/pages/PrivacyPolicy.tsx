@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
-import Header from '@/components/Header';
+import DashboardLayout from '@/components/DashboardLayout';
 import SeoBreadcrumbs from '@/components/SeoBreadcrumbs';
 
 const PrivacyPolicy = () => {
@@ -111,17 +111,17 @@ const PrivacyPolicy = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <DashboardLayout titlePrimary="Privacy" titleAccent="policy." showGreeting={false} testId="privacypolicy-page">
       <SeoBreadcrumbs items={[{ name: 'سياسة الخصوصية', url: 'https://lingoarab.com/privacy-policy' }]} />
-      <Header showBack showAuthButton />
+      
 
-      <main className="container mx-auto px-4 py-12 max-w-3xl">
+      <main className="py-4 sm:py-8 max-w-3xl">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-right mb-10 border-b border-border pb-8"
         >
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
             <Shield className="w-8 h-8 text-primary" />
@@ -142,7 +142,7 @@ const PrivacyPolicy = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 * index }}
-              className="bg-card border border-border rounded-xl p-6 shadow-sm"
+              className="border-b border-border py-6"
             >
               <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">
@@ -180,7 +180,7 @@ const PrivacyPolicy = () => {
           </button>
         </motion.div>
       </main>
-    </div>
+    </DashboardLayout>
   );
 };
 

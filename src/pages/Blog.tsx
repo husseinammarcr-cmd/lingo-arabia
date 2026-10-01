@@ -6,8 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import Header from '@/components/Header';
-import PageBackground from '@/components/PageBackground';
+import DashboardLayout from '@/components/DashboardLayout';
 import {
   Pagination,
   PaginationContent,
@@ -163,7 +162,7 @@ const Blog = () => {
   const activeCategory = categories?.find(c => c.slug === categorySlug);
 
   return (
-    <PageBackground>
+    <DashboardLayout titlePrimary="The" titleAccent="Journal." showGreeting={false} showBack={false} testId="blog-page">
       <Helmet>
         <title>المدونة - Lingo Arab | مقالات تعلم الإنجليزية</title>
         <meta name="description" content="اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية. نشارك معك أفضل الاستراتيجيات والموارد لرحلة تعلم ناجحة." />
@@ -191,26 +190,24 @@ const Blog = () => {
         <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
       </Helmet>
       
-      <div className="min-h-screen" dir="rtl">
-        <Header />
-
-        <main className="container mx-auto px-4 py-12 pt-24">
+      <div dir="rtl">
+        <main className="py-4 sm:py-8">
           {/* Hero Section */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-right mb-10 border-b border-border pb-8"
           >
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
               <BookOpen className="w-5 h-5" />
               <span className="font-medium">مصادر تعليمية</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
               المدونة
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة العربية. نشارك معك
+            <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
+              اكتشف مقالات ونصائح مفيدة لتحسين مهاراتك في اللغة الإنجليزية. نشارك معك
               أفضل الاستراتيجيات والموارد لرحلة تعلم ناجحة.
             </p>
           </motion.section>
@@ -231,7 +228,7 @@ const Blog = () => {
                 variant={!categorySlug ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => handleCategoryFilter()}
-                className="rounded-full"
+                className="rounded-md"
               >
                 الكل
               </Button>
@@ -244,10 +241,10 @@ const Blog = () => {
                     variant={categorySlug === cat.slug ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handleCategoryFilter(cat.slug)}
-                    className="rounded-full gap-2"
-                    style={categorySlug === cat.slug ? { backgroundColor: cat.color } : { borderColor: cat.color }}
+                    className="rounded-md gap-2"
+                    
                   >
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
+                    <span className="w-2 h-2 rounded-full bg-primary" />
                     {cat.name_ar}
                   </Button>
                 ))
@@ -263,7 +260,7 @@ const Blog = () => {
               className="mb-6 p-4 bg-muted/50 rounded-xl flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
-                <Tag className="w-5 h-5" style={{ color: activeCategory.color }} />
+                <Tag className="w-5 h-5"  />
                 <span>عرض المقالات في تصنيف: <strong>{activeCategory.name_ar}</strong></span>
               </div>
               <Button variant="ghost" size="sm" onClick={() => handleCategoryFilter()}>
@@ -279,7 +276,7 @@ const Blog = () => {
                 <Loader2 className="w-10 h-10 animate-spin text-primary" />
               </div>
             ) : currentPosts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {currentPosts.map((article, index) => (
                   <motion.div
                     key={article.id}
@@ -289,7 +286,7 @@ const Blog = () => {
                     variants={fadeUpVariants}
                   >
                     <Link to={`/blog/${article.slug}`}>
-                      <Card className="overflow-hidden h-full hover:shadow-lg transition-shadow duration-300 group">
+                      <Card className="overflow-hidden h-full border-border bg-card hover:border-primary/40 transition-colors duration-300 group rounded-md">
                         {/* Featured Image */}
                         <div className="relative h-48 overflow-hidden bg-muted">
                           {article.featured_image ? (
@@ -307,8 +304,7 @@ const Blog = () => {
                           {article.category && (
                             <div className="absolute top-3 right-3">
                               <Badge
-                                className="text-xs text-white"
-                                style={{ backgroundColor: article.category.color }}
+                                className="text-xs bg-primary text-primary-foreground"
                               >
                                 {article.category.name_ar}
                               </Badge>
@@ -413,7 +409,7 @@ const Blog = () => {
           </div>
         </footer>
       </div>
-    </PageBackground>
+    </DashboardLayout>
   );
 };
 
