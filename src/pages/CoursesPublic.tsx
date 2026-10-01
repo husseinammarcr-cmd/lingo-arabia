@@ -19,8 +19,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import PageBackground from '@/components/PageBackground';
-import Header from '@/components/Header';
+import DashboardLayout from '@/components/DashboardLayout';
 import { FadeUp, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedContainers';
 import { TiltCard } from '@/components/animations/TiltCard';
 import { usePrefersReducedMotion } from '@/hooks/useAnimations';
@@ -185,7 +184,7 @@ const CoursesPublic = () => {
   };
 
   return (
-    <PageBackground>
+    <DashboardLayout titlePrimary="Your learning" titleAccent="journey." showGreeting={false} showBack={false} testId="public-courses-page">
       <Helmet>
         <title>كورسات تعلم الإنجليزية للناطقين بالعربية | Lingo Arab</title>
         <meta name="description" content="تعلم الإنجليزية مجاناً من الصفر إلى الإتقان. 300+ درس تفاعلي في 6 مستويات CEFR مصممة خصيصاً للناطقين بالعربية." />
@@ -214,12 +213,10 @@ const CoursesPublic = () => {
       </Helmet>
 
       <div dir="rtl">
-        <Header />
-
-        <main className="container mx-auto px-4 py-8 max-w-5xl">
+        <main className="py-4 sm:py-8">
           {/* Hero Section */}
           <FadeUp>
-            <section className="text-center mb-16">
+            <section className="text-right mb-14 border-b border-border pb-9">
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -230,18 +227,18 @@ const CoursesPublic = () => {
                 <span className="text-sm font-medium">مجاني بالكامل</span>
               </motion.div>
               
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
                 كورسات تعلم الإنجليزية
                 <span className="block text-primary mt-2">للناطقين بالعربية</span>
               </h1>
               
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              <p className="text-base text-muted-foreground max-w-2xl mb-8">
                 منهج متكامل مبني على معايير CEFR الدولية. {totalLessons} درس تفاعلي 
                 يغطي المفردات، القواعد، الاستماع، والمحادثة.
               </p>
 
               {/* Stats */}
-              <div className="flex flex-wrap justify-center gap-6 mb-8">
+              <div className="flex flex-wrap gap-4 sm:gap-6 mb-8">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <BookOpen className="w-5 h-5 text-primary" />
                   <span>{totalLessons}+ درس</span>
@@ -291,7 +288,7 @@ const CoursesPublic = () => {
                   return (
                     <StaggerItem key={level.id}>
                       <TiltCard className="h-full">
-                        <Card className="group overflow-hidden transition-all duration-300 h-full hover:shadow-elevated">
+                        <Card className="group overflow-hidden transition-all duration-300 h-full border-border bg-card hover:border-primary/40 rounded-md">
                           {/* Gradient Header with Illustration */}
                           <div className={cn("h-32 bg-gradient-to-br relative overflow-hidden", levelColors[level.code])}>
                             <img 
@@ -302,18 +299,18 @@ const CoursesPublic = () => {
                               height={128}
                               className="absolute inset-0 w-full h-full object-cover opacity-90"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
                             
                             {/* Level Badge */}
                             <div className="absolute top-3 right-3">
-                              <span className="text-sm font-bold px-3 py-1 rounded-full bg-white/90 text-foreground shadow-sm">
+                              <span className="text-sm font-bold px-3 py-1 rounded-md bg-card text-foreground">
                                 {level.code}
                               </span>
                             </div>
                             
                             {/* Shine effect */}
                             <motion.div 
-                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                              className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/20 to-transparent"
                               initial={{ x: '-100%' }}
                               whileHover={prefersReducedMotion ? {} : { x: '100%' }}
                               transition={{ duration: 0.6 }}
@@ -450,7 +447,7 @@ const CoursesPublic = () => {
           </FadeUp>
         </main>
       </div>
-    </PageBackground>
+    </DashboardLayout>
   );
 };
 
