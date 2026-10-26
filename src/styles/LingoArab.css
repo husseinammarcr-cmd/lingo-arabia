@@ -924,3 +924,10 @@
   .lingo-arab-wrapper .phone-screen-2 .meta-list .row { font-size: 6.5px; }
   .lingo-arab-wrapper .phone-screen-2 .bottom-cta { padding: 5px 6px; font-size: 7px; border-radius: 8px; }
 }
+
+/* Landing footer links */
+.landing-footer { position: relative; z-index: 2; margin-top: 48px; padding: 28px 0 36px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; }
+.landing-footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; margin-bottom: 16px; }
+.landing-footer-links a { color: rgba(255,255,255,0.75); font-size: 14px; text-decoration: none; transition: color .2s; }
+.landing-footer-links a:hover { color: #CDFF4F; }
+.landing-footer-copy { color: rgba(255,255,255,0.5); font-size: 13px; }
