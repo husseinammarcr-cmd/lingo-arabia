@@ -5,8 +5,7 @@ import { BookOpen, ArrowLeft, ArrowRight, Lock, ChevronRight, Star, GraduationCa
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import Header from '@/components/Header';
-import PageBackground from '@/components/PageBackground';
+import DashboardLayout from '@/components/DashboardLayout';
 import { CURRICULUM, getLessonById } from '@/lib/curriculum';
 import { getLessonContent, VocabItem, SentenceItem } from '@/lib/a1-lessons';
 import { AudioButton } from '@/components/AudioButton';
@@ -70,9 +69,8 @@ const PublicLessonPreview = () => {
 
   if (!lessonData) {
     return (
-      <PageBackground>
-        <Header showBack />
-        <main className="container mx-auto px-4 py-16 text-center">
+      <DashboardLayout titlePrimary="Free" titleAccent="lesson." showGreeting={false} testId="lesson-preview-page">
+        <main className="py-10 text-center">
           <h1 className="text-2xl font-bold mb-4">الدرس غير موجود</h1>
           <Link to="/courses">
             <Button>
@@ -81,20 +79,19 @@ const PublicLessonPreview = () => {
             </Button>
           </Link>
         </main>
-      </PageBackground>
+      </DashboardLayout>
     );
   }
 
   // If not a first lesson, show teaser and redirect to auth
   if (!isPublicLesson) {
     return (
-      <PageBackground>
+      <DashboardLayout titlePrimary="Free" titleAccent="lesson." showGreeting={false} testId="lesson-preview-page">
         <Helmet>
           <title>{lessonData.lesson.titleAr} - {lessonData.unit.titleAr} | Lingo Arab</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Header showBack />
-        <main className="container mx-auto px-4 py-16 text-center max-w-lg">
+        <main className="py-10 text-center max-w-lg mx-auto">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
             <Lock className="w-10 h-10 text-primary" />
           </div>
@@ -114,7 +111,7 @@ const PublicLessonPreview = () => {
             </Link>
           </div>
         </main>
-      </PageBackground>
+      </DashboardLayout>
     );
   }
 
@@ -170,7 +167,7 @@ const PublicLessonPreview = () => {
   };
 
   return (
-    <PageBackground>
+    <DashboardLayout titlePrimary="Free" titleAccent="lesson." showGreeting={false} testId="lesson-preview-page">
       <Helmet>
         <title>{lessonData.lesson.titleAr} - {lessonData.unit.titleAr} | تعلم الإنجليزية مجاناً - Lingo Arab</title>
         <meta name="description" content={`تعلم ${lessonData.unit.titleAr} في اللغة الإنجليزية. ${lessonData.lesson.descriptionAr}. دروس تفاعلية مجانية للناطقين بالعربية.`} />
@@ -191,9 +188,8 @@ const PublicLessonPreview = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
-      <Header showBack />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl" dir="rtl">
+      <main className="py-2" dir="rtl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
           <Link to="/courses" className="hover:text-primary transition-colors">الدورات</Link>
@@ -209,7 +205,7 @@ const PublicLessonPreview = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-8 border-b border-border pb-6 text-right"
         >
           <div className="flex items-center gap-3 mb-4">
             <Badge variant="secondary" className="text-sm">
@@ -222,7 +218,7 @@ const PublicLessonPreview = () => {
             </Badge>
           </div>
           
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">
+          <h1 className="text-2xl md:text-3xl font-bold mb-3 leading-snug">
             {lessonData.unit.titleAr}: {lessonData.lesson.titleAr}
           </h1>
           <p className="text-lg text-muted-foreground">
@@ -240,24 +236,24 @@ const PublicLessonPreview = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <BookOpen className="w-6 h-6 text-primary" />
                   المفردات
                 </h2>
                 <div className="grid gap-3 md:grid-cols-2">
                   {lessonContent.vocab.slice(0, 6).map((item: VocabItem, index: number) => (
-                    <Card key={index} className="overflow-hidden">
+                    <Card key={index} className="overflow-hidden rounded-md border-border bg-card/70 backdrop-blur transition-colors hover:border-primary/40">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg font-bold text-primary">{item.english}</span>
+                              <span className="text-lg font-bold text-primary"><bdi dir="ltr" style={{ unicodeBidi: 'isolate' }}>{item.english}</bdi></span>
                               <AudioButton text={item.english} size="sm" />
                             </div>
                             <p className="text-muted-foreground">{item.arabic}</p>
                             {item.example && (
                               <p className="text-sm mt-2 text-muted-foreground/80 italic">
-                                "{item.example}"
+                                <bdi dir="ltr" style={{ unicodeBidi: 'isolate' }}>"{item.example}"</bdi>
                               </p>
                             )}
                           </div>
@@ -282,14 +278,14 @@ const PublicLessonPreview = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h2 className="text-2xl font-bold mb-4">الجمل والعبارات</h2>
-                <Card>
+                <h2 className="text-xl font-bold mb-4">الجمل والعبارات</h2>
+                <Card className="rounded-md border-border bg-card/70 backdrop-blur">
                   <CardContent className="p-4 space-y-4">
                     {lessonContent.sentences.slice(0, 4).map((sentence: SentenceItem, index: number) => (
                       <div key={index} className="flex items-start gap-3 pb-3 border-b last:border-0 last:pb-0">
                         <AudioButton text={sentence.english} size="sm" />
                         <div>
-                          <p className="font-medium text-foreground">{sentence.english}</p>
+                          <p className="font-medium text-foreground"><bdi dir="ltr" style={{ unicodeBidi: 'isolate' }}>{sentence.english}</bdi></p>
                           <p className="text-muted-foreground">{sentence.arabic}</p>
                         </div>
                       </div>
@@ -304,7 +300,7 @@ const PublicLessonPreview = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8 text-center"
+              className="rounded-md border border-primary/30 bg-card/70 backdrop-blur p-6 md:p-8 text-center"
             >
               <h2 className="text-2xl font-bold mb-3">
                 {user ? 'أكمل الدرس الآن!' : 'سجّل مجاناً لإكمال الدرس'}
@@ -354,18 +350,18 @@ const PublicLessonPreview = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h2 className="text-2xl font-bold mb-4">دروس أخرى في هذا المستوى</h2>
-              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <h2 className="text-xl font-bold mb-4">دروس أخرى في هذا المستوى</h2>
+              <div className="grid gap-3 sm:grid-cols-2">
                 {lessonData.level.units.slice(0, 6).map((unit, index) => (
                   <Link 
                     key={unit.id} 
                     to={`/preview/lesson/${unit.lessons[0]?.id}`}
                     className={unit.lessons[0]?.id === lessonId ? 'pointer-events-none' : ''}
                   >
-                    <Card className={`transition-all hover:shadow-md ${unit.lessons[0]?.id === lessonId ? 'bg-primary/5 border-primary' : 'hover:border-primary/50'}`}>
+                    <Card className={`rounded-md bg-card/70 backdrop-blur transition-colors ${unit.lessons[0]?.id === lessonId ? 'bg-primary/5 border-primary' : 'hover:border-primary/50'}`}>
                       <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                          <div className="w-10 h-10 shrink-0 rounded-md bg-primary/10 flex items-center justify-center text-primary font-bold">
                             {index + 1}
                           </div>
                           <div>
@@ -381,7 +377,7 @@ const PublicLessonPreview = () => {
             </motion.section>
           </div>
         ) : (
-          <Card className="text-center py-12">
+          <Card className="text-center py-12 rounded-md border-border bg-card/70">
             <CardContent>
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                 <BookOpen className="w-8 h-8 text-primary" />
@@ -397,7 +393,7 @@ const PublicLessonPreview = () => {
           </Card>
         )}
       </main>
-    </PageBackground>
+    </DashboardLayout>
   );
 };
 
