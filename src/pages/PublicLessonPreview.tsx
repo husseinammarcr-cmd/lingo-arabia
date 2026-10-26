@@ -247,13 +247,13 @@ const PublicLessonPreview = () => {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg font-bold text-primary">{item.english}</span>
+                              <span className="text-lg font-bold text-primary"><bdi dir="ltr" style={{ unicodeBidi: 'isolate' }}>{item.english}</bdi></span>
                               <AudioButton text={item.english} size="sm" />
                             </div>
                             <p className="text-muted-foreground">{item.arabic}</p>
                             {item.example && (
                               <p className="text-sm mt-2 text-muted-foreground/80 italic">
-                                "{item.example}"
+                                <bdi dir="ltr" style={{ unicodeBidi: 'isolate' }}>"{item.example}"</bdi>
                               </p>
                             )}
                           </div>
@@ -285,7 +285,7 @@ const PublicLessonPreview = () => {
                       <div key={index} className="flex items-start gap-3 pb-3 border-b last:border-0 last:pb-0">
                         <AudioButton text={sentence.english} size="sm" />
                         <div>
-                          <p className="font-medium text-foreground">{sentence.english}</p>
+                          <p className="font-medium text-foreground"><bdi dir="ltr" style={{ unicodeBidi: 'isolate' }}>{sentence.english}</bdi></p>
                           <p className="text-muted-foreground">{sentence.arabic}</p>
                         </div>
                       </div>
