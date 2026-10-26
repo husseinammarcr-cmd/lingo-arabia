@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import bgAnimation from '@/assets/lottie-bg.json';
 import { supabase } from '@/integrations/supabase/client';
@@ -306,6 +306,26 @@ export default function Index() {
         <HeroSection />
         <FeaturesSection />
         <BottomSection onStart={goStart} />
+        <footer className="landing-footer" data-testid="landing-footer">
+          <nav className="landing-footer-links" aria-label="روابط الموقع">
+            {[
+              ['/courses', 'الدورات'],
+              ['/free-lessons', 'دروس مجانية'],
+              ['/blog', 'المدونة'],
+              ['/ai-voice-chat', 'المحادثة الصوتية'],
+              ['/placement-test', 'تحديد المستوى'],
+              ['/about', 'من نحن'],
+              ['/faq', 'الأسئلة الشائعة'],
+              ['/contact', 'تواصل معنا'],
+              ['/privacy-policy', 'سياسة الخصوصية'],
+              ['/terms', 'الشروط والأحكام'],
+              ['/cookie-policy', 'ملفات الارتباط'],
+            ].map(([to, label]) => (
+              <Link key={to} to={to}>{label}</Link>
+            ))}
+          </nav>
+          <p className="landing-footer-copy">© {new Date().getFullYear()} Lingo Arab. جميع الحقوق محفوظة.</p>
+        </footer>
       </div>
     </div>
   );
