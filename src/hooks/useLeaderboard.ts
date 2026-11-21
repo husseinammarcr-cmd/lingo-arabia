@@ -33,7 +33,7 @@ export const useLeaderboard = (
     queryKey: ['leaderboard', type, timeFrame, countryCode, courseLevel, limit],
     queryFn: async () => {
       let query = supabase
-        .from('profiles')
+        .from('public_leaderboard')
         .select('id, name, display_name, avatar_url, xp, weekly_xp, monthly_xp, user_level, streak_count, country_code, current_level, is_founder, is_verified, privacy_show_progress');
 
       // Filter by country for local leaderboard
@@ -114,7 +114,7 @@ export const useUserRank = (userId: string | undefined, type: LeaderboardType = 
 
       // Count users with more XP
       let query = supabase
-        .from('profiles')
+        .from('public_leaderboard')
         .select('id', { count: 'exact', head: true });
 
       if (type === 'local' && (countryCode || userProfile.country_code)) {
