@@ -20,6 +20,21 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, resetUrl }: PasswordResetRequest = await req.json();
 
+    // Security: only allow links to the app or its Supabase auth domain (anti-phishing)
+    const ALLOWED_LINK_HOSTS = ["lingoarab.com", "xsrskveeamjrdncvnpmd.supabase.co"];
+    let linkHost = "";
+    try {
+      linkHost = new URL(resetUrl).hostname;
+    } catch {
+      linkHost = "";
+    }
+    if (!ALLOWED_LINK_HOSTS.some((h) => linkHost === h || linkHost.endsWith("." + h))) {
+      return new Response(JSON.stringify({ error: "Invalid reset URL" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     console.log("Sending password reset email to:", email);
 
     const emailResponse = await resend.emails.send({

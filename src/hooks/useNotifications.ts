@@ -63,10 +63,9 @@ export const useMarkAsRead = () => {
 
   return useMutation({
     mutationFn: async (notificationId: string) => {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('id', notificationId);
+      const { error } = await supabase.rpc('mark_notifications_read', {
+        p_notification_id: notificationId,
+      });
 
       if (error) throw error;
     },
@@ -85,11 +84,7 @@ export const useMarkAllAsRead = () => {
     mutationFn: async () => {
       if (!user) return;
 
-      const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .or(`user_id.eq.${user.id},and(target_type.eq.all,user_id.is.null)`)
-        .eq('is_read', false);
+      const { error } = await supabase.rpc('mark_notifications_read', {});
 
       if (error) throw error;
     },

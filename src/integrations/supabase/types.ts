@@ -868,7 +868,25 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_leaderboard: {
+        Row: {
+          avatar_url: string | null
+          country_code: string | null
+          current_level: string | null
+          display_name: string | null
+          id: string | null
+          is_founder: boolean | null
+          is_verified: boolean | null
+          monthly_xp: number | null
+          name: string | null
+          privacy_show_progress: boolean | null
+          streak_count: number | null
+          user_level: number | null
+          weekly_xp: number | null
+          xp: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       compute_user_level: {
@@ -880,6 +898,10 @@ export type Database = {
         Returns: number
       }
       generate_certificate_code: { Args: never; Returns: string }
+      mark_notifications_read: {
+        Args: { p_notification_id?: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
